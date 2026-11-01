@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tủ sách">
+<title>Tủ Sách Cá Nhân</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%234f46e5'/%3E%3Cpath d='M28 24h34a10 10 0 0 1 10 10v42H38a10 10 0 0 1-10-10z' fill='none' stroke='white' stroke-width='7' stroke-linejoin='round'/%3E%3Cpath d='M40 42h20M40 56h14' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f5f6f8; --surface: #ffffff; --text: #1f2937; --muted: #6b7280; --faint: #9ca3af;
+    --border: #e5e7eb; --accent: #4f46e5; --accent-hover: #4338ca; --accent-soft: #f3f4ff;
+    --soft: #f3f4f6; --sel: #ffffff; --panel: #f8fafc; --hover: #eef1f5; --body: #475569; --danger: #dc2626; --ok: #059669; --warn: #d97706;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column;
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  input, textarea, select { font: inherit; color: inherit; }
+  [hidden] { display: none !important; }
+
+  /* ---------- Thanh trên cùng ---------- */
+  .top {
+    position: relative; z-index: 30; flex: none; background: var(--surface); border-bottom: 1px solid var(--border);
+    min-height: 56px; padding: 8px 16px; padding-top: calc(8px + env(safe-area-inset-top));
+    display: flex; align-items: center; gap: 16px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; flex: none; }
+  .logo { width: 32px; height: 32px; border-radius: 9px; background: var(--accent); display: grid; place-items: center; flex: none; }
+  .logo svg { width: 19px; height: 19px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .brand h1 { margin: 0; font-size: 15px; font-weight: 700; white-space: nowrap; }
+  .search { position: relative; flex: 1; max-width: 560px; margin: 0 auto 0 8px; }
+  .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--faint); fill: none; stroke-width: 2; stroke-linecap: round; }
+  .search input {
+    width: 100%; background: var(--soft); border: 1px solid transparent; border-radius: 10px;
+    padding: 8px 12px 8px 36px; font-size: 15px;
+  }
+  .search input:focus { outline: none; background: var(--surface); border-color: var(--accent); }
+  .head-actions { display: flex; align-items: center; gap: 8px; flex: none; }
+  .btn {
+    border: 1px solid var(--border); background: var(--surface); border-radius: 10px; padding: 7px 12px;
+    display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: 14px; white-space: nowrap;
+  }
+  .btn:hover { background: var(--soft); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { background: var(--accent-hover); }
+  .btn:disabled { opacity: .55; cursor: default; }
+  .btn:disabled:hover { background: var(--surface); }
+  .btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .menu { position: relative; }
+  .menu > summary { list-style: none; }
+  .menu > summary::-webkit-details-marker { display: none; }
+  .menu-pop {
+    position: absolute; right: 0; top: calc(100% + 6px); width: 270px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,.14);
+  }
+  .menu-pop button { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 9px 10px; border-radius: 8px; }
+  .menu-pop button:hover { background: var(--soft); }
+  .menu-pop hr { border: 0; border-top: 1px solid var(--border); margin: 6px 0; }
+  .menu-label { padding: 4px 10px 0; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
+  #syncStatus { padding: 2px 10px 6px; font-size: 12px; color: var(--muted); }
+  #syncStatus.ok { color: var(--ok); } #syncStatus.warn { color: var(--warn); } #syncStatus.err { color: var(--danger); }
+  #syncStatus.link { cursor: pointer; text-decoration: underline; }
+  kbd { font: 11px ui-monospace, Consolas, monospace; background: var(--soft); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; color: var(--muted); }
+  code { font: 12px ui-monospace, Consolas, monospace; background: var(--soft); border-radius: 4px; padding: 1px 4px; }
+
+  /* ---------- Bố cục 3 cột: trang cố định, từng cột cuộn riêng ---------- */
+  .app { flex: 1; min-height: 0; display: grid; grid-template-columns: 268px 350px minmax(0, 1fr); }
+  .col-topics, .col-list, .col-detail { min-height: 0; overflow-y: auto; }
+  .col-topics { padding: 14px 10px; background: #f1f5f9; border-right: 1px solid var(--border); }
+  .col-list { background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+  .col-detail { background: var(--panel); padding: 24px 28px 48px; }
+
+  /* Thu/phóng cột (chỉ khi đủ rộng cho bố cục nhiều cột) */
+  @media (min-width: 1100px) {
+    .app.hide-topics { grid-template-columns: 350px minmax(0, 1fr); }
+    .app.hide-topics .col-topics { display: none; }
+    .app.hide-topics #showTopics { display: inline-grid; }
+  }
+  @media (min-width: 768px) {
+    .app.focus { grid-template-columns: minmax(0, 1fr); }
+    .app.focus .col-topics, .app.focus .col-list { display: none; }
+  }
+  .icon-btn { display: inline-grid; place-items: center; background: none; border: 0; border-radius: 8px; padding: 5px; color: var(--faint); }
+  .icon-btn:hover { background: var(--soft); color: var(--text); }
+  .icon-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  #showTopics { display: none; margin-right: 2px; }
+  .topics-head { display: flex; align-items: center; justify-content: space-between; margin: 0 4px 8px 0; }
+
+  /* Thanh cuộn mỏng */
+  * { scrollbar-width: thin; scrollbar-color: #cbd0d8 transparent; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd0d8; border-radius: 8px; border: 2px solid transparent; background-clip: content-box; }
+  ::-webkit-scrollbar-thumb:hover { background: #9ca3af; background-clip: content-box; }
+
+  .col-topics h2 { margin: 2px 10px 8px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+  .topic-btn {
+    width: 100%; text-align: left; background: none; border: 0; border-radius: 8px; padding: 7px 10px;
+    display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--muted);
+  }
+  .topic-btn:hover { background: var(--hover); }
+  .topic-btn.on { background: var(--surface); color: var(--text); font-weight: 600; box-shadow: 0 1px 2px rgba(15,23,42,.08); }
+  .topic-btn span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .count { font-size: 12px; color: var(--faint); font-weight: 400; }
+  .topic-btn .r { display: inline-flex; align-items: center; gap: 10px; flex: none; }
+  .topic-btn .r .count { min-width: 20px; text-align: right; }
+  .due-badge { font-size: 11px; font-weight: 600; color: #047857; background: #d1fae5; border-radius: 99px; padding: 1px 8px; white-space: nowrap; }
+  .tray { margin: 2px 2px 6px; padding: 8px; background: rgba(255,251,235,.6); border: 1px solid rgba(253,230,138,.8); border-radius: 10px; }
+  .tray .sub-h { margin: 0 4px 6px; color: #b45309; }
+  .tray .topic-btn { color: #78350f; font-weight: 500; }
+  .tray .topic-btn:hover { background: #fef3c7; }
+  .tray .topic-btn.on { background: #fff; box-shadow: 0 0 0 1px #fcd34d; }
+  .tray .count { min-width: 22px; text-align: center; padding: 1px 7px; border-radius: 99px; background: #f97316; color: #fff; font-weight: 700; font-size: 12px; }
+  .sub-h { margin: 12px 10px 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 600; }
+  .due-tag { font-size: 11px; font-weight: 600; color: #047857; background: #d1fae5; border-radius: 99px; padding: 0 7px; flex: none; }
+
+  .list-head { position: sticky; top: 0; z-index: 2; background: var(--panel); padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .topic-select { display: none; width: 100%; margin-bottom: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 7px 10px; font-size: 15px; }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 13px; color: var(--muted); min-height: 24px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; background: #e8ecf1; color: var(--text); border: 0; border-radius: 99px; padding: 2px 10px; font-size: 12px; font-weight: 500; }
+  .chip:hover { background: var(--border); }
+
+  .item {
+    display: block; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--border);
+    border-left: 4px solid transparent; padding: 11px 14px 11px 11px; position: relative;
+  }
+  .item:hover { background: var(--hover); }
+  .item.sel { background: var(--surface); border-left-color: var(--accent); box-shadow: 0 1px 3px rgba(15,23,42,.10); z-index: 1; }
+  .item.sel .t { color: #312e81; }
+  .item .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: 600; font-size: 14px; line-height: 1.35; }
+  .item .m { margin-top: 4px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .item .mt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); flex: none; }
+  .more { margin: 12px auto; display: block; }
+  .empty { padding: 40px 18px; text-align: center; color: var(--faint); font-size: 14px; }
+
+  /* ---------- Khung đọc chi tiết ---------- */
+  .doc { max-width: 820px; margin: 0 auto; padding: 0 32px 32px; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 25px -4px rgba(0,0,0,.05); }
+  .doc-bar {
+    position: sticky; top: -24px; z-index: 3; display: flex; align-items: center; gap: 8px; min-height: 56px;   /* -24px = phần đệm trên của .col-detail */
+    margin: 0 -32px 6px; padding: 8px 32px 0; border-radius: 16px 16px 0 0; background: #fff; border-bottom: 1px solid transparent;
+  }
+  .doc-bar.scrolled { border-bottom-color: var(--border); }
+  .bar-title { display: none; flex: 1; min-width: 0; font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .doc-bar.scrolled .bar-title { display: block; }
+  .doc-bar.scrolled .sp { display: none; }
+  .doc blockquote.clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .more-link { background: none; border: 0; padding: 6px 0 0 14px; font-size: 13px; color: var(--accent); }
+  .more-link:hover { text-decoration: underline; }
+  .sp { flex: 1; }
+  .back { display: none; background: none; border: 0; padding: 6px 0; color: var(--muted); font-size: 14px; }
+  .acts { display: flex; gap: 6px; }
+  .acts button { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #e2e8f0; padding: 5px 10px; border-radius: 8px; color: var(--muted); font-size: 13px; }
+  .acts button:hover { background: #fff; color: #4f46e5; border-color: #a5b4fc; }
+  .acts button svg { width: 15px; height: 15px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .acts .danger:hover { background: #fee2e2; border-color: #fecaca; color: var(--danger); }
+  @media (max-width: 520px) { .acts button span { display: none; } .acts button { padding: 6px 8px; } }
+  .acts .ok-btn { background: #ecfdf5; border-color: #a7f3d0; color: #047857; font-weight: 600; }
+  .acts .ok-btn:hover { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
+  button.badge { cursor: pointer; font: inherit; font-size: 12px; font-weight: 600; }
+  button.badge:hover { background: #fef3c7; border-color: #fcd34d; }
+  .chip-review { background: #e0e7ff; color: #3730a3; }
+  .chip-review:hover { background: #c7d2fe; }
+  .chip-review.on { background: var(--accent); color: #fff; }
+  .rv-count { font-size: 13px; color: var(--muted); white-space: nowrap; margin-right: 6px; }
+  .rv-cover { margin-top: 20px; padding: 32px 20px; border: 2px dashed #c7d2fe; border-radius: 12px; background: #f8faff; text-align: center; color: var(--muted); }
+  .rv-cover p { margin: 0 0 14px; font-size: 15px; }
+  .rv-grade { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+  .rv-grade .btn { flex: 1; min-width: 160px; justify-content: center; flex-direction: column; gap: 2px; padding: 10px 14px; font-size: 15px; font-weight: 600; }
+  .rv-grade small { font-size: 12px; font-weight: 400; opacity: .85; }
+  .rv-yes { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
+  .rv-yes:hover { background: #d1fae5; }
+  .rv-no { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
+  .rv-no:hover { background: #fee2e2; }
+  .greet { margin-top: 70px; text-align: center; }
+  .greet h2 { font-size: 26px; margin: 0 0 10px; }
+  .greet p { margin: 6px 0; font-size: 16px; color: var(--muted); }
+  .greet p b { color: var(--text); font-size: 20px; }
+  .greet .go { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+  .greet .go .btn { padding: 11px 20px; font-size: 15px; font-weight: 600; }
+  .greet .hint { margin-top: 18px; font-size: 13px; color: var(--faint); }
+  .rv-done { margin-top: 60px; text-align: center; color: var(--muted); }
+  .rv-done h2 { color: var(--text); margin-bottom: 8px; }
+  .st-streak { display: flex; align-items: center; gap: 16px; padding: 14px 16px; background: #eef2ff; border-radius: 12px; margin-top: 4px; }
+  .st-streak b { font-size: 34px; line-height: 1; color: #3730a3; }
+  .st-streak small { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .st-days { display: flex; gap: 6px; margin-left: auto; }
+  .st-day { display: grid; justify-items: center; gap: 3px; font-size: 11px; color: var(--faint); }
+  .st-day i { width: 16px; height: 16px; border-radius: 50%; background: #dbe0ee; }
+  .st-day.on i { background: var(--accent); }
+  .st-day.today { color: var(--accent); font-weight: 700; }
+  .st-day.today i { box-shadow: 0 0 0 2px #eef2ff, 0 0 0 4px var(--accent); }
+  .st-nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px; }
+  .st-num { padding: 12px; border: 1px solid var(--border); border-radius: 12px; text-align: center; }
+  .st-num b { display: block; font-size: 26px; line-height: 1.2; }
+  .st-num span { font-size: 12px; color: var(--muted); }
+  .st-num small { display: block; font-size: 11px; color: var(--faint); margin-top: 1px; }
+  .st-num.due b { color: var(--accent); }
+  .st-h { margin: 18px 0 8px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 600; }
+  .st-bar { height: 10px; background: var(--soft); border-radius: 99px; overflow: hidden; }
+  .st-bar span { display: block; height: 100%; background: #c7d2fe; border-radius: 99px; }
+  .st-bar span i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+  @media (max-width: 640px) {
+    .st-nums { grid-template-columns: repeat(2, 1fr); }
+    .st-topic { grid-template-columns: 1fr; gap: 8px; }
+    .st-topic .btn { justify-self: start; }
+    .st-streak { flex-wrap: wrap; }
+    .st-days { margin-left: 0; }
+  }
+  .st-topic { display: grid; grid-template-columns: minmax(120px, 1.2fr) 1.6fr 1.1fr auto; gap: 12px; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
+  .st-topic .nm { font-weight: 600; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .st-topic .tm { margin-top: 2px; font-size: 12px; color: var(--muted); }
+  .st-topic .tm b { color: var(--text); }
+  .st-topic .lb { font-size: 11px; color: var(--faint); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+  .st-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .st-chip { font-size: 12px; background: #eef2ff; color: #3730a3; border-radius: 99px; padding: 1px 9px; white-space: nowrap; }
+  .st-chip.none { background: var(--soft); color: var(--muted); }
+  .st-next { font-size: 13px; }
+  .st-next.today { color: #047857; font-weight: 600; }
+  .st-topic .btn { padding: 5px 12px; font-size: 13px; white-space: nowrap; }
+  .st-note { margin: 8px 0 0; font-size: 12px; color: var(--faint); }
+  .doc-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--faint); flex-wrap: wrap; }
+  .doc-meta time { margin-left: auto; }
+  .pill { display: inline-block; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--soft); border-radius: 99px; padding: 2px 10px; }
+  .badge { font-size: 12px; font-weight: 600; color: #b45309; background: #fffbeb; border: 1px solid #fde68a; border-radius: 99px; padding: 1px 10px; }
+  .doc h2 { margin: 10px 0 0; font-size: 22px; line-height: 1.3; }
+  .take {
+    margin-top: 18px; padding: 14px 16px; background: #e0e7ff; color: #1e293b; border-left: 4px solid var(--accent);
+    border-radius: 8px; font-size: 16px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .sec { margin: 24px 0 8px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 600; }
+  .doc blockquote {
+    margin: 0; padding-left: 14px; border-left: 2px solid var(--border); color: var(--body); font-size: 14.5px; line-height: 1.7;
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .tags { margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .tags-label { font-size: 12px; color: var(--faint); margin-right: 2px; }
+  .badge.ok { color: #047857; background: #ecfdf5; border-color: #a7f3d0; }
+  .tag { background: #f1f5f9; border: 0; border-radius: 6px; padding: 3px 8px; font-size: 12px; color: #475569; }
+  .tag:hover { background: #eef2ff; color: #4f46e5; }
+  .src { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); display: flex; gap: 6px; align-items: flex-start; overflow-wrap: anywhere; }
+  .src a { color: inherit; }
+  .ico { width: 14px; height: 14px; margin-top: 3px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linejoin: round; }
+
+  /* ---------- Hộp thoại ---------- */
+  .modal { position: fixed; inset: 0; z-index: 50; background: rgba(15,23,42,.5); display: flex; align-items: flex-end; justify-content: center; }
+  @media (min-width: 640px) { .modal { align-items: center; padding: 16px; } }
+  .sheet {
+    background: var(--surface); width: 100%; max-width: 560px; max-height: 94vh; overflow: auto;
+    border-radius: 18px 18px 0 0; padding: 18px 18px calc(18px + env(safe-area-inset-bottom));
+  }
+  @media (min-width: 640px) { .sheet { border-radius: 18px; } }
+  .sheet-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .sheet-head h3 { margin: 0; font-size: 17px; }
+  .x { background: none; border: 0; font-size: 26px; line-height: 1; color: var(--faint); padding: 0 6px; }
+  .field { margin-top: 12px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .field .hint { font-weight: 400; color: var(--faint); }
+  .field input, .field textarea {
+    width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 9px 11px; font-size: 16px; resize: vertical;
+  }
+  .field input:focus, .field textarea:focus, .topic-select:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+  .field textarea.raw { background: var(--soft); }
+  .field textarea.mono { font: 13px/1.45 ui-monospace, Consolas, monospace; }
+  .form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .note { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+
+  /* ---------- Màn khóa ---------- */
+  .gate { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: grid; place-items: center; padding: 16px; }
+  .gate-card { width: 100%; max-width: 360px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px 24px; text-align: center; box-shadow: 0 8px 30px rgba(15,23,42,.08); }
+  .gate-card .logo { margin: 0 auto 12px; width: 44px; height: 44px; border-radius: 12px; }
+  .gate-card h2 { margin: 0 0 4px; font-size: 20px; }
+  .gate-card .field { text-align: left; }
+  .gate-card .btn { width: 100%; justify-content: center; margin-top: 14px; padding: 10px; }
+  .gate-err { min-height: 18px; margin: 8px 0 0; font-size: 13px; color: var(--danger); }
+  .gate-forgot { background: none; border: 0; margin-top: 10px; font-size: 12px; color: var(--faint); text-decoration: underline; }
+  body.locked .top, body.locked .app { visibility: hidden; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .btn.spin svg { animation: spin 1s linear infinite; }
+  .btn.sync-warn { color: var(--warn); }
+  .btn.sync-err { color: var(--danger); }
+  .gh-guide { margin-top: 10px; font-size: 13px; color: var(--muted); }
+  .gh-guide summary { cursor: pointer; color: var(--accent); }
+  .gh-guide ol { margin: 6px 0 0; padding-left: 20px; }
+  .gh-guide li { margin: 3px 0; }
+  .danger-link { background: none; border: 0; margin-right: auto; font-size: 13px; color: var(--danger); text-decoration: underline; }
+  @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  .gate-card.bad { animation: shake .25s; }
+  .check { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; font-size: 13px; cursor: pointer; }
+  .check input { margin-top: 3px; width: 16px; height: 16px; flex: none; }
+  .check .hint { color: var(--faint); }
+  .preview { margin-top: 10px; font-size: 13px; color: var(--muted); }
+  .preview.bad { color: var(--danger); }
+  .preview ul { margin: 6px 0 0; padding-left: 18px; }
+
+  #toast {
+    position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 80;
+    background: #1f2937; color: #f9fafb; border-radius: 12px; padding: 10px 14px; font-size: 14px;
+    display: flex; gap: 12px; align-items: center; max-width: calc(100vw - 32px); box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  }
+  #toast button { background: none; border: 0; color: #a5b4fc; font-weight: 600; padding: 0; }
+
+  /* ---------- Co giãn ---------- */
+  @media (max-width: 1099px) {
+    .app { grid-template-columns: 340px minmax(0, 1fr); }
+    .col-topics { display: none; }
+    .topic-select { display: block; }
+  }
+  @media (max-width: 767px) {
+    .brand h1 { display: none; }
+    .search { margin-left: 0; }
+    .btn span { display: none; }
+    .app { grid-template-columns: 1fr; }
+    .col-list { border-right: 0; }
+    .col-detail { display: none; padding: 12px 12px 40px; }
+    .app.detail-open .col-list { display: none; }
+    .app.detail-open .col-detail { display: block; }
+    .back { display: inline-flex; }
+    .focus-btn { display: none; }
+    .doc { padding: 0 16px 20px; border-radius: 14px; }
+    .doc-bar { top: -12px; margin: 0 -16px 6px; padding: 6px 16px 0; }
+    .doc h2 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 9h5M9 13h3"/></svg></div>
+    <h1>Tủ Sách Cá Nhân</h1>
+  </div>
+
+  <div class="search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input type="search" id="searchInput" placeholder="Tìm ghi chú… (gõ không dấu cũng được)" autocomplete="off">
+  </div>
+
+  <div class="head-actions">
+    <button class="btn" id="syncTopBtn" title="Đồng bộ GitHub"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.5 6.4M3 12a9 9 0 0 1 15.5-6.4M18.5 2v4h-4M5.5 22v-4h4"/></svg><span>Đồng bộ</span></button>
+    <button class="btn" id="statsBtn" title="Thống kê học tập"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Thống kê</span></button>
+    <button class="btn primary" id="addBtn" title="Thêm ghi chú (Alt+N)">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Thu thập</span>
+    </button>
+    <details class="menu" id="menu">
+      <summary class="btn" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3"/></svg></summary>
+      <div class="menu-pop">
+        <button id="exportBtn">Xuất sao lưu (JSON)</button>
+        <button id="importBtn">Nhập ghi chú (dán / file JSON)</button>
+        <hr>
+        <div class="menu-label">Khóa ứng dụng</div>
+        <button id="lockSetBtn">Đặt mật khẩu</button>
+        <button id="lockNowBtn" hidden>Khóa ngay</button>
+        <button id="lockOffBtn" hidden>Tắt khóa</button>
+        <hr>
+        <div class="menu-label">GitHub</div>
+        <div id="syncStatus"></div>
+        <button id="syncBtn">Đồng bộ ngay</button>
+        <button id="settingsBtn">Cài đặt kết nối</button>
+        <hr>
+        <div class="note" style="padding:2px 10px 4px">Phím tắt: <kbd>/</kbd> tìm · <kbd>Alt+N</kbd> thêm · <kbd>↑</kbd><kbd>↓</kbd> chọn · <kbd>Ctrl+Enter</kbd> lưu<br><kbd>D</kbd> duyệt · <kbd>E</kbd> sửa · <kbd>C</kbd> chép · <kbd>Space</kbd> trích dẫn · <kbd>F</kbd> tập trung · <kbd>Esc</kbd> thoát/bỏ lọc thẻ</div>
+      </div>
+    </details>
+  </div>
+</header>
+
+<main class="app" id="app">
+  <nav class="col-topics">
+    <div class="topics-head">
+      <h2>Chủ đề</h2>
+      <button type="button" class="icon-btn" id="hideTopics" title="Ẩn cột chủ đề" aria-label="Ẩn cột chủ đề"><svg viewBox="0 0 24 24"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"/></svg></button>
+    </div>
+    <div id="topicList"></div>
+  </nav>
+
+  <section class="col-list">
+    <div class="list-head">
+      <select id="mobileTopic" class="topic-select" aria-label="Chủ đề"></select>
+      <div class="meta">
+        <button type="button" class="icon-btn" id="showTopics" title="Hiện cột chủ đề" aria-label="Hiện cột chủ đề"><svg viewBox="0 0 24 24"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"/></svg></button>
+        <span id="countText"></span>
+        <span id="tagChip"></span>
+        <span id="draftChip"></span>
+        <span id="reviewChip"></span>
+      </div>
+    </div>
+    <div id="notes"></div>
+  </section>
+
+  <article class="col-detail" id="detail"></article>
+</main>
+
+<!-- Form thêm / sửa -->
+<div class="modal" id="noteModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="formTitleHead">
+    <div class="sheet-head">
+      <h3 id="formTitleHead">Ghi nhận kiến thức mới</h3>
+      <button class="x" type="button" id="closeNote" aria-label="Đóng">&times;</button>
+    </div>
+    <form id="noteForm" autocomplete="off">
+      <input type="hidden" id="formId">
+      <div class="field">
+        <label for="formTopic">Chủ đề</label>
+        <input id="formTopic" list="topicOptions" required placeholder="Ví dụ: Dân sự, Quản trị, Kỹ năng…">
+        <datalist id="topicOptions"></datalist>
+      </div>
+      <div class="field">
+        <label for="formTitle">Tiêu đề ý tưởng</label>
+        <input id="formTitle" required placeholder="Tóm lược ngắn gọn">
+      </div>
+      <div class="field">
+        <label for="formTakeaway">Ý hiểu &amp; bài học rút ra</label>
+        <textarea id="formTakeaway" required rows="4" placeholder="- Bản chất là gì?&#10;- Vận dụng thế nào?"></textarea>
+      </div>
+      <div class="field">
+        <label for="formExcerpt">Trích dẫn nguyên văn <span class="hint">(với luật: dán đúng từng chữ)</span></label>
+        <textarea id="formExcerpt" class="raw" rows="3" placeholder="Nội dung gốc từ sách / văn bản…"></textarea>
+      </div>
+      <div class="field">
+        <label for="formSource">Nguồn <span class="hint">(sách + trang, văn bản + điều khoản + năm, hoặc link)</span></label>
+        <input id="formSource" placeholder="VD: Bộ luật Dân sự 2015, Điều 117, khoản 1">
+      </div>
+      <div class="field">
+        <label for="formTags">Tag <span class="hint">(tùy chọn, cách nhau bằng dấu phẩy)</span></label>
+        <input id="formTags" placeholder="VD: hợp đồng, cần kiểm tra hiệu lực">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn" id="cancelNote">Hủy</button>
+        <button type="submit" class="btn primary">Lưu lại <span style="font-weight:400;opacity:.8;font-size:12px">(Ctrl+Enter)</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Cài đặt kết nối -->
+<div class="modal" id="settingsModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="settingsHead">
+    <div class="sheet-head">
+      <h3 id="settingsHead">Kết nối GitHub</h3>
+      <button class="x" type="button" id="closeSettings" aria-label="Đóng">&times;</button>
+    </div>
+    <p class="note">Mỗi thiết bị nhập một lần. Thông tin chỉ lưu trong trình duyệt của thiết bị đó, không nằm trong code. Dữ liệu đẩy lên kho riêng (private), được mã hóa nếu bạn đã đặt mật khẩu khóa. Chưa cần dùng thì cứ bỏ qua, ghi chú vẫn lưu trên máy này.</p>
+    <details class="gh-guide">
+      <summary>Cách tạo kho và token</summary>
+      <ol>
+        <li>GitHub → <b>New repository</b>, đặt tên (ví dụ <code>pkv-data</code>), chọn <b>Private</b>, tick <b>Add a README</b>.</li>
+        <li>Avatar → <b>Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</b>.</li>
+        <li><b>Repository access</b>: <i>Only select repositories</i> → chọn đúng kho vừa tạo.</li>
+        <li><b>Permissions → Repository permissions → Contents: Read and write</b> (không cần quyền nào khác).</li>
+        <li>Chọn hạn dùng, bấm <b>Generate token</b>, chép token (chỉ hiện một lần) và dán vào ô bên dưới.</li>
+      </ol>
+    </details>
+    <form id="settingsForm" autocomplete="off">
+      <div class="field">
+        <label for="cfgUser">Tên người dùng GitHub</label>
+        <input id="cfgUser" type="text" placeholder="ten-cua-ban" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="cfgRepo">Tên kho (Private)</label>
+        <input id="cfgRepo" type="text" placeholder="pkv-data" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="cfgPath">Đường dẫn file lưu <span class="hint">(mặc định data.json)</span></label>
+        <input id="cfgPath" type="text" placeholder="data.json" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="cfgToken">Fine-grained token</label>
+        <input id="cfgToken" type="password" autocomplete="off" placeholder="github_pat_…">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="danger-link" id="cfgDisconnect" hidden>Ngắt kết nối</button>
+        <button type="button" class="btn" id="cancelSettings">Đóng</button>
+        <button type="submit" class="btn primary">Lưu &amp; đồng bộ</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Hỏi mật khẩu giải mã / mã hóa file đồng bộ -->
+<div class="modal" id="pwAskModal" hidden>
+  <form class="sheet" id="pwAskForm" style="max-width:400px" autocomplete="off">
+    <div class="sheet-head"><h3 id="pwAskTitle">Nhập mật khẩu</h3></div>
+    <p class="note" id="pwAskNote"></p>
+    <div class="field"><input type="password" id="pwAskIn" autocomplete="current-password" aria-label="Mật khẩu"></div>
+    <div class="gate-err" id="pwAskErr" role="alert"></div>
+    <div class="form-actions"><button type="button" class="btn" id="pwAskCancel">Để sau</button><button type="submit" class="btn primary" id="pwAskOk">Tiếp tục</button></div>
+  </form>
+</div>
+
+<!-- Màn khóa -->
+<div class="gate" id="gate" hidden>
+  <form class="gate-card" id="gateForm" autocomplete="off">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 9h5M9 13h3"/></svg></div>
+    <h2>Tủ Sách Cá Nhân</h2>
+    <p class="note">Nhập mật khẩu để mở.</p>
+    <div class="field"><input type="password" id="gatePw" placeholder="Mật khẩu" autocomplete="current-password" aria-label="Mật khẩu"></div>
+    <div class="gate-err" id="gateErr" role="alert"></div>
+    <button type="submit" class="btn primary">Mở khóa</button>
+    <button type="button" class="gate-forgot" id="gateForgot">Quên mật khẩu?</button>
+  </form>
+</div>
+
+<!-- Đặt / đổi / tắt mật khẩu -->
+<div class="modal" id="lockModal" hidden>
+  <form class="sheet" id="lockForm" style="max-width:400px" autocomplete="off">
+    <div class="sheet-head"><h3 id="lockTitle">Đặt mật khẩu</h3><button type="button" class="x" id="lockClose" aria-label="Đóng">&times;</button></div>
+    <p class="note" id="lockNote"></p>
+    <div class="field" id="lkCurRow"><label for="lkCur">Mật khẩu hiện tại</label><input type="password" id="lkCur" autocomplete="current-password"></div>
+    <div class="field" id="lkNewRow"><label for="lkNew">Mật khẩu mới</label><input type="password" id="lkNew" autocomplete="new-password"></div>
+    <div class="field" id="lkNew2Row"><label for="lkNew2">Nhập lại mật khẩu mới</label><input type="password" id="lkNew2" autocomplete="new-password"></div>
+    <div class="gate-err" id="lockErr" role="alert"></div>
+    <div class="form-actions"><button type="button" class="btn" id="lockCancel">Hủy</button><button type="submit" class="btn primary" id="lockOk">Lưu</button></div>
+  </form>
+</div>
+
+<!-- Thống kê -->
+<div class="modal" id="statsModal" hidden>
+  <div class="sheet" style="max-width:860px">
+    <div class="sheet-head"><h3>Thống kê học tập</h3><button type="button" class="x" id="closeStats" aria-label="Đóng">&times;</button></div>
+    <div id="statsBody"></div>
+  </div>
+</div>
+
+<!-- Cảnh báo thiếu nguyên văn khi duyệt -->
+<div class="modal" id="warnModal" hidden>
+  <div class="sheet" style="max-width:440px">
+    <div class="sheet-head"><h3>Ghi chú thiếu nguyên văn</h3></div>
+    <p class="note" id="warnText"></p>
+    <div class="form-actions">
+      <button type="button" class="btn" id="warnCancel">Hủy</button>
+      <button type="button" class="btn" id="warnGo">Vẫn duyệt</button>
+      <button type="button" class="btn primary" id="warnEdit">Mở form bổ sung</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nhập ghi chú -->
+<div class="modal" id="importModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="importHead">
+    <div class="sheet-head">
+      <h3 id="importHead">Nhập ghi chú</h3>
+      <button class="x" type="button" id="closeImport" aria-label="Đóng">&times;</button>
+    </div>
+    <p class="note">Dán JSON từ Gemini hoặc chọn file sao lưu. App tự bỏ khung <code>```json</code>, loại ghi chú trùng và cho xem trước trước khi nhập.</p>
+    <div class="field">
+      <textarea id="importText" class="mono" rows="9" placeholder='[ { "topic": "...", "title": "...", "takeaway": "- ...", "raw_excerpt": "...", "source": "...", "tags": "..." } ]'></textarea>
+    </div>
+    <label class="check">
+      <input type="checkbox" id="overwrite">
+      <span>Ghi đè ghi chú trùng <span class="hint">(cùng tiêu đề + nguồn). Giữ ngày tạo, thay nội dung bằng bản mới và gắn lại tag “chưa duyệt”. Ghi chú giống hệt thì không đổi.</span></span>
+    </label>
+    <div id="importPreview" class="preview"></div>
+    <div class="form-actions">
+      <button type="button" class="btn" id="pickFile">Chọn file…</button>
+      <button type="button" class="btn primary" id="doImport" disabled>Nhập</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+<div id="toast" hidden></div>
+
+<script>
+(() => {
+  'use strict';
+
+  const LS_NOTES = 'pkv_notes', LS_DIRTY = 'pkv_dirty', LS_GH = 'pkv_gh', LS_UI = 'pkv_ui';
+  const LS_REVIEW = 'pkv_review', LS_ACT = 'pkv_activity', LS_RMETA = 'pkv_review_meta', LS_RCOUNT = 'pkv_review_count';   // lịch ôn tập: chỉ lưu trên máy, chưa đồng bộ
+  const PAGE = 100;
+  const DRAFT_TAG = 'chưa duyệt';
+  const MISSING_TAG = 'thiếu nguyên văn';
+  const SYSTEM_TAGS = [DRAFT_TAG, MISSING_TAG];   // thẻ nội bộ, không hiện ở dòng Thẻ
+
+  // ---------- Lưu trữ cục bộ ----------
+  const lsGet = (k, def) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch (e) { return def; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+
+  let notes = lsGet(LS_NOTES, []);           // gồm cả ghi chú đã xóa mềm (deleted=true)
+  let dirty = new Set(lsGet(LS_DIRTY, []));   // id ghi chú đổi từ lần đồng bộ trước ('__review' = lịch ôn đổi)
+  let cfg = lsGet(LS_GH, { token: '', user: '', repo: '', path: 'data.json' });   // kết nối GitHub (token nằm trong máy này)
+  const ui = lsGet(LS_UI, { topicsHidden: false });   // tùy chọn giao diện nhớ giữa các lần mở
+  const state = { topic: 'all', tag: '', q: '', limit: PAGE, sel: '', detailOpen: false, focus: false, review: false, flip: false, revDone: 0, greet: false, reviewTopic: '' };
+  let lastSync = '';
+  let lastDetail = '';
+
+  const $ = id => document.getElementById(id);
+
+  function persist() {
+    if (!lsSet(LS_NOTES, notes) || !lsSet(LS_DIRTY, [...dirty])) toast('Không lưu được vào bộ nhớ trình duyệt (đầy hoặc bị chặn).');
+  }
+
+  // ---------- Tiện ích ----------
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+  const time = iso => { const t = Date.parse(iso); return isNaN(t) ? 0 : t; };
+  const pad = n => String(n).padStart(2, '0');
+  let idSeq = 0;   // nhập hàng loạt có thể tạo nhiều id trong cùng một mili-giây
+  const newId = () => { const d = new Date(); return `pkv_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}_${Date.now()}${String(idSeq++ % 1000).padStart(3, '0')}`; };
+  const fmtDate = iso => { const t = Date.parse(iso); return isNaN(t) ? esc(iso) : new Date(t).toLocaleDateString('vi-VN'); };
+  const parseTags = s => [...new Set(String(s || '').split(/[,;]/).map(t => t.trim().toLowerCase()).filter(Boolean))];
+  const active = () => notes.filter(n => !n.deleted);
+
+  // ---------- Lịch ôn tập (chỉ trên máy) ----------
+  // review[id] = { stage, due }: stage là chỉ số trong INTERVALS, due là ngày hẹn ôn (YYYY-MM-DD, giờ địa phương).
+  const INTERVALS = [1, 3, 7, 30];   // ngày
+  const DAILY_NEW = 20;              // ghi chú cũ (đã duyệt, chưa có lịch) được đưa vào ôn mỗi ngày
+  let review = lsGet(LS_REVIEW, {});
+  let rcount = lsGet(LS_RCOUNT, {});   // review_count: số lần đã chấm bài của từng ghi chú (tính từ khi có tính năng này, không mất khi Bỏ duyệt)
+  let activity = new Set(lsGet(LS_ACT, []));
+  let rmeta = lsGet(LS_RMETA, { day: '', intake: 0 });
+
+  const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const today = () => ymd(new Date());
+  const addDays = (day, n) => { const d = new Date(day + 'T12:00:00'); d.setDate(d.getDate() + n); return ymd(d); };
+  const writeReview = () => { lsSet(LS_REVIEW, review); lsSet(LS_RMETA, rmeta); lsSet(LS_ACT, [...activity].sort()); lsSet(LS_RCOUNT, rcount); };
+  const saveReview = () => { writeReview(); dirty.add('__review'); lsSet(LS_DIRTY, [...dirty]); scheduleSync(); };
+  const isApproved = n => !parseTags(n.tags).includes(DRAFT_TAG);
+
+  function logActivity() { activity.add(today()); saveReview(); }
+
+  // Ghi chú vừa được duyệt / vừa thêm tay: ôn lần đầu sau 1 ngày
+  function scheduleNew(id) { review[id] = { stage: 0, due: addDays(today(), INTERVALS[0]) }; saveReview(); }
+  function unschedule(id) { delete review[id]; saveReview(); }
+
+  // Ghi chú cũ đã duyệt mà chưa có lịch: mỗi ngày đưa tối đa DAILY_NEW bài (cũ nhất trước) vào ôn ngay hôm nay
+  function ensureIntake() {
+    const day = today();
+    if (rmeta.day !== day) rmeta = { day, intake: 0 };
+    const room = DAILY_NEW - rmeta.intake;
+    if (room <= 0) return;
+    const legacy = active().filter(n => isApproved(n) && !review[n.id]).sort((a, b) => time(a.created_at) - time(b.created_at)).slice(0, room);
+    if (!legacy.length) return;
+    legacy.forEach(n => { review[n.id] = { stage: 0, due: day }; });
+    rmeta.intake += legacy.length;
+    saveReview();
+  }
+
+  // Ghi chú đến hạn ôn hôm nay (kể cả quá hạn), hạn cũ nhất trước
+  function dueList() {
+    const day = today();
+    return active()
+      .filter(n => isApproved(n) && review[n.id] && review[n.id].due <= day)
+      .sort((a, b) => review[a.id].due.localeCompare(review[b.id].due) || time(a.created_at) - time(b.created_at));
+  }
+
+  // Hàng đợi của lượt ôn đang chạy: toàn bộ bài đến hạn, hoặc chỉ bài của một chủ đề khi ôn theo chủ đề
+  const reviewQueue = () => state.reviewTopic ? dueList().filter(n => n.topic === state.reviewTopic) : dueList();
+
+  // Chấm một bài ôn: nhớ -> lên mốc kế (tối đa 30 ngày); chưa nhớ -> về mốc 1 ngày
+  function gradeReview(id, remembered) {
+    const r = review[id] || { stage: 0 };
+    const stage = remembered ? Math.min((r.stage || 0) + 1, INTERVALS.length - 1) : 0;
+    review[id] = { stage, due: addDays(today(), INTERVALS[stage]) };
+    rcount[id] = (rcount[id] || 0) + 1;
+    activity.add(today());
+    saveReview();
+    return review[id];
+  }
+
+  // Chuỗi ngày học liên tiếp. Hôm nay chưa học thì chuỗi vẫn còn (tính đến hôm qua) cho tới hết ngày.
+  function streak() {
+    let day = today();
+    if (!activity.has(day)) day = addDays(day, -1);
+    let n = 0;
+    while (activity.has(day)) { n++; day = addDays(day, -1); }
+    return n;
+  }
+
+
+  function normalizeNote(r) {
+    const now = new Date().toISOString();
+    return {
+      id: String(r.id || ''),
+      topic: String(r.topic || '').trim(),
+      title: String(r.title || ''),
+      takeaway: String(r.takeaway || ''),
+      raw_excerpt: String(r.raw_excerpt || ''),
+      source: String(r.source || ''),
+      tags: parseTags(r.tags).join(', '),
+      created_at: String(r.created_at || now),
+      updated_at: String(r.updated_at || r.created_at || now),
+      deleted: r.deleted === true || r.deleted === 'true' || r.deleted === 1 || r.deleted === '1'
+    };
+  }
+
+  // Dùng lại đúng cách viết chủ đề đã có ("quan tri" -> "Quản trị") để không sinh chủ đề trùng.
+  function canonicalTopic(input) {
+    const t = input.trim().replace(/\s+/g, ' ');
+    const hit = active().find(n => norm(n.topic) === norm(t));
+    return hit ? hit.topic : t;
+  }
+
+  let toastTimer;
+  function toast(msg, actionLabel, onAction) {
+    const el = $('toast');
+    el.innerHTML = `<span>${esc(msg)}</span>` + (actionLabel ? `<button type="button">${esc(actionLabel)}</button>` : '');
+    el.hidden = false;
+    if (actionLabel) el.querySelector('button').onclick = () => { el.hidden = true; onAction(); };
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.hidden = true; }, actionLabel ? 6000 : 3000);
+  }
+
+  function setStatus(text, cls) {
+    const el = $('syncStatus');
+    el.textContent = text;
+    el.className = cls || '';
+    const tb = $('syncTopBtn');
+    tb.title = text;
+    tb.classList.toggle('spin', !cls);
+    tb.classList.toggle('sync-warn', /warn/.test(cls || ''));
+    tb.classList.toggle('sync-err', /err/.test(cls || ''));
+  }
+
+  // ---------- Tìm kiếm / lọc ----------
+  const hayCache = new WeakMap();
+  function haystack(n) {
+    let h = hayCache.get(n);
+    if (h === undefined) {
+      h = norm([n.title, n.takeaway, n.raw_excerpt, n.source, n.topic, n.tags].join('\n'));
+      hayCache.set(n, h);
+    }
+    return h;
+  }
+
+  function filtered() {
+    if (state.review) return reviewQueue();   // chế độ ôn tập: chỉ các bài đến hạn
+    const words = norm(state.q).split(/\s+/).filter(Boolean);
+    return active()
+      .filter(n => state.topic === 'all' || n.topic === state.topic)
+      .filter(n => !state.tag || parseTags(n.tags).includes(state.tag))
+      .filter(n => { const h = haystack(n); return words.every(w => h.includes(w)); })
+      .sort((a, b) => (state.topic !== 'all' ? Number(!!isDue(b)) - Number(!!isDue(a)) : 0) || time(b.created_at) - time(a.created_at));   // xem theo chủ đề: bài cần ôn lên đầu
+  }
+
+  // ---------- Hiển thị ----------
+  function renderTopics() {
+    const list = active();
+    const counts = {};
+    list.forEach(n => { counts[n.topic] = (counts[n.topic] || 0) + 1; });
+    const topics = Object.keys(counts).sort((a, b) => a.localeCompare(b, 'vi'));
+    if (state.topic !== 'all' && !counts[state.topic]) state.topic = 'all';
+
+    const dueBy = {};
+    dueList().forEach(n => { dueBy[n.topic] = (dueBy[n.topic] || 0) + 1; });
+    const dueN = dueList().length;
+    const draftN = list.filter(n => !isApproved(n)).length;
+    const plain = !state.review && state.tag !== DRAFT_TAG;   // đang xem theo chủ đề, không phải chế độ hành động
+
+    const btn = (value, label, count) =>
+      `<button class="topic-btn ${plain && state.topic === value ? 'on' : ''}" data-topic="${esc(value)}"><span title="${esc(label)}">${esc(label)}</span><span class="r">${dueBy[value] ? `<span class="due-badge" title="Bài đến hạn ôn hôm nay">• ${dueBy[value]} cần ôn</span>` : ''}<span class="count">${count}</span></span></button>`;
+    const act = (kind, icon, label, count, on) =>
+      `<button class="topic-btn act-btn ${on ? 'on' : ''}" data-action="${kind}"><span>${icon} ${label}</span><span class="count">${count}</span></button>`;
+    const actions = (dueN ? act('review', '🔥', 'Cần ôn hôm nay', dueN, state.review) : '') +
+      (draftN ? act('draft', '⏳', 'Chưa duyệt', draftN, !state.review && state.tag === DRAFT_TAG) : '');
+    $('topicList').innerHTML = (actions ? `<div class="tray"><div class="sub-h">Hành động hôm nay</div>${actions}</div><div class="sub-h">Danh mục</div>` : '') +
+      btn('all', 'Tất cả ghi chú', list.length) + topics.map(t => btn(t, t, counts[t])).join('');
+
+    $('mobileTopic').innerHTML = `<option value="all">Tất cả (${list.length})</option>` +
+      topics.map(t => `<option value="${esc(t)}">${esc(t)} (${counts[t]})</option>`).join('');
+    $('mobileTopic').value = state.topic;
+
+    $('topicOptions').innerHTML = topics.map(t => `<option value="${esc(t)}">`).join('');
+  }
+
+  // Ý hiểu có cấu trúc "- TỔNG QUAN: ..." -> in đậm phần nhãn viết hoa. Chuỗi đã escape trước khi thêm thẻ.
+  const LABEL_RE = /^(- )?([A-ZÀ-Ỹ][A-ZÀ-Ỹ0-9 \/]{2,30}):/;
+  function takeHtml(text) {
+    return String(text || '').split('\n').map(line => {
+      const m = line.match(LABEL_RE);
+      return m ? esc(m[1] || '') + '<strong>' + esc(m[2]) + ':</strong>' + esc(line.slice(m[0].length)) : esc(line);
+    }).join('\n');
+  }
+
+  const isDue = n => isApproved(n) && review[n.id] && review[n.id].due <= today();
+
+  function itemHtml(n) {
+    const draft = parseTags(n.tags).includes(DRAFT_TAG);
+    return `<button type="button" class="item${n.id === state.sel && !state.greet ? ' sel' : ''}" data-id="${esc(n.id)}">
+      <span class="t">${esc(n.title)}</span>
+      <span class="m">${draft ? '<span class="dot" title="Chưa duyệt"></span>' : ''}<span class="mt">${esc(n.topic)}</span><span>·</span><span>${fmtDate(n.created_at)}</span>${isDue(n) && !state.review ? '<span class="due-tag">Cần ôn</span>' : ''}</span>
+    </button>`;
+  }
+
+  const URL_RE = /^https?:\/\/\S+$/i;
+  const SRC_ICON = '<svg class="ico" viewBox="0 0 24 24"><path d="M6 4h12v17l-6-4-6 4z"/></svg>';
+
+  // Trích dẫn dài thu gọn còn 3 dòng để phần Ý hiểu luôn nằm trọn trong màn hình.
+  const expanded = new Set();
+  const isLong = s => s.length > 200 || (s.match(/\n/g) || []).length >= 2;
+  function excerptHtml(n) {
+    const long = isLong(n.raw_excerpt), open = expanded.has(n.id);
+    return `<blockquote class="${long && !open ? 'clamp' : ''}">${esc(n.raw_excerpt)}</blockquote>` +
+      (long ? `<button type="button" class="more-link" data-act="expand">${open ? 'Thu gọn trích dẫn ▴' : 'Xem toàn bộ trích dẫn ▾'}</button>` : '');
+  }
+
+  function detailHtml(n) {
+    const tags = parseTags(n.tags).filter(t => !SYSTEM_TAGS.includes(t)).map(t => `<button type="button" class="tag" data-act="tag" data-tag="${esc(t)}">#${esc(t)}</button>`).join('');
+    const draft = parseTags(n.tags).includes(DRAFT_TAG);
+    const src = !n.source ? '' : URL_RE.test(n.source.trim())
+      ? `<a href="${esc(n.source.trim())}" target="_blank" rel="noopener noreferrer">${esc(n.source.trim())}</a>`
+      : esc(n.source);
+    return `<div class="doc" data-id="${esc(n.id)}">
+      <div class="doc-bar" id="docBar">
+        <button type="button" class="back" data-act="back">&larr; Danh sách</button>
+        <span class="bar-title">${esc(n.title)}</span>
+        <span class="sp"></span>
+        <span class="acts">
+          <button type="button" class="focus-btn" data-act="focus" title="Ẩn hai cột bên trái để đọc (Esc để thoát)"><svg viewBox="0 0 24 24">${state.focus ? '<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>' : '<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>'}</svg><span>${state.focus ? 'Thoát tập trung' : 'Tập trung'}</span></button>
+          <button type="button" data-act="copy" title="Sao chép ghi chú"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><span>Sao chép</span></button>
+          ${draft ? '' : '<button type="button" data-act="unapprove" title="Đưa về hàng đợi chưa duyệt"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg><span>Bỏ duyệt</span></button>'}
+          ${draft ? '<button type="button" class="ok-btn" data-act="approve" title="Duyệt ghi chú này (phím D)"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>Duyệt</span></button>' : ''}
+          <button type="button" data-act="edit" title="Sửa ghi chú (phím E)"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Sửa</span></button>
+          <button type="button" data-act="del" class="danger" title="Xóa ghi chú"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg><span>Xóa</span></button>
+        </span>
+      </div>
+      <div class="doc-meta"><span class="pill">${esc(n.topic)}</span>${draft ? '<button type="button" class="badge" data-act="approve" title="Bấm để duyệt (phím D)">Chưa duyệt ✓</button>' : '<span class="badge ok">Đã duyệt ✓</span>'}${parseTags(n.tags).includes(MISSING_TAG) ? '<span class="badge" title="Nguồn không có nguyên văn điều luật">Thiếu nguyên văn</span>' : ''}<time>${fmtDate(n.created_at)}</time></div>
+      <h2>${esc(n.title)}</h2>
+      <div class="take">${takeHtml(n.takeaway)}</div>
+      ${n.raw_excerpt ? `<h3 class="sec">Trích dẫn</h3>${excerptHtml(n)}` : ''}
+      ${tags ? `<div class="tags"><span class="tags-label">Thẻ:</span>${tags}</div>` : ''}
+      ${src ? `<div class="src">${SRC_ICON}<span>${src}</span></div>` : ''}
+    </div>`;
+  }
+
+  function applyView() {
+    const a = $('app'), has = !!state.sel;
+    a.classList.toggle('detail-open', state.detailOpen && has);
+    a.classList.toggle('focus', state.focus && has);
+    a.classList.toggle('hide-topics', !!ui.topicsHidden);
+  }
+
+  function toggleTopics() {
+    ui.topicsHidden = !ui.topicsHidden;
+    lsSet(LS_UI, ui);
+    applyView();
+  }
+
+  // Thanh công cụ dính ở đầu khung đọc: khi cuộn qua tiêu đề lớn thì hiện tiêu đề thu nhỏ trên thanh.
+  function updateBar() {
+    const bar = $('docBar'), h = document.querySelector('.doc h2');
+    if (!bar || !h) return;
+    bar.classList.toggle('scrolled', h.getBoundingClientRect().bottom < bar.getBoundingClientRect().bottom);
+  }
+
+  function reviewHtml(n) {
+    const left = reviewQueue().length;
+    const r = review[n.id] || { stage: 0 };
+    const days = INTERVALS[Math.min((r.stage || 0) + 1, INTERVALS.length - 1)];
+    const src = !n.source ? '' : URL_RE.test(n.source.trim())
+      ? `<a href="${esc(n.source.trim())}" target="_blank" rel="noopener noreferrer">${esc(n.source.trim())}</a>` : esc(n.source);
+    const back = !state.flip ? `<div class="rv-cover"><p>Nhớ lại ý chính của ghi chú này, rồi lật để đối chiếu.</p><button type="button" class="btn primary" data-act="flip">Lật xem <kbd>Space</kbd></button></div>`
+      : `<div class="take">${takeHtml(n.takeaway)}</div>
+      ${n.raw_excerpt ? `<h3 class="sec">Trích dẫn</h3>${excerptHtml(n)}` : ''}
+      ${src ? `<div class="src">${SRC_ICON}<span>${src}</span></div>` : ''}
+      <div class="rv-grade">
+        <button type="button" class="btn rv-yes" data-act="grade-yes"><span><kbd>1</kbd> Đã nhớ</span><small>ôn lại sau ${days} ngày</small></button>
+        <button type="button" class="btn rv-no" data-act="grade-no"><span><kbd>2</kbd> Chưa nhớ</span><small>ôn lại ngày mai</small></button>
+      </div>`;
+    return `<div class="doc" data-id="${esc(n.id)}">
+      <div class="doc-bar" id="docBar">
+        <button type="button" class="back" data-act="back">&larr; Danh sách</button>
+        <span class="bar-title">${esc(n.title)}</span>
+        <span class="sp"></span>
+        <span class="rv-count">Còn ${left} bài</span>
+        <span class="acts"><button type="button" data-act="exitReview" title="Thoát ôn tập (Esc)"><span>Thoát ôn tập</span></button></span>
+      </div>
+      <div class="doc-meta"><span class="pill">${esc(n.topic)}</span></div>
+      <h2>${esc(n.title)}</h2>
+      ${back}
+    </div>`;
+  }
+
+  function doneHtml() {
+    return `<div class="doc rv-done"><h2>${state.reviewTopic ? `Đã ôn xong chủ đề “${esc(state.reviewTopic)}”` : 'Hôm nay đã ôn xong'}</h2>
+      <p>${state.revDone ? `Bạn vừa ôn ${state.revDone} bài. ` : ''}Chuỗi ngày học: ${streak()} ngày.</p>
+      <button type="button" class="btn primary" data-act="exitReview">Quay lại danh sách</button></div>`;
+  }
+
+  function statsHtml() {
+    const list = active();
+    const day = today();
+    const tomorrow = addDays(day, 1);
+    const approvedNotes = list.filter(isApproved);
+    const due = dueList().length;
+    const sk = streak();
+    const totalReps = list.reduce((sum, n) => sum + (rcount[n.id] || 0), 0);
+    const names = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = addDays(day, -i);
+      days.push(`<div class="st-day${activity.has(d) ? ' on' : ''}${d === day ? ' today' : ''}" title="${d === day ? 'Hôm nay · ' : ''}${d}"><i></i>${names[new Date(d + 'T12:00:00').getDay()]}</div>`);
+    }
+    const msg = activity.has(day) ? 'Hôm nay bạn đã học.' : sk ? 'Hôm nay chưa học. Làm một việc nhỏ để giữ chuỗi.' : 'Thêm, duyệt hoặc ôn một ghi chú để bắt đầu chuỗi.';
+
+    // Gom theo chủ đề: tổng bài, chặng ôn, lịch hẹn gần nhất, lượt ôn
+    const by = {};
+    list.forEach(n => {
+      const t = by[n.topic] || (by[n.topic] = { all: 0, ok: 0, due: 0, reps: 0, stage: INTERVALS.map(() => 0), none: 0, dates: {} });
+      t.all++; t.reps += rcount[n.id] || 0;
+      if (isApproved(n) && review[n.id]) {
+        t.ok++;
+        t.stage[Math.min(review[n.id].stage || 0, INTERVALS.length - 1)]++;
+        const d = review[n.id].due <= day ? day : review[n.id].due;   // bài quá hạn tính vào hôm nay
+        t.dates[d] = (t.dates[d] || 0) + 1;
+        if (isDue(n)) t.due++;
+      } else if (isApproved(n)) { t.ok++; t.none++; } else t.none++;
+    });
+    const topics = Object.entries(by).sort((a, b) => b[1].all - a[1].all || a[0].localeCompare(b[0], 'vi'));
+    const fmt = d => d.split('-').reverse().join('/');
+    const cards = topics.map(([name, t]) => {
+      const chips = INTERVALS.map((d, i) => t.stage[i] ? `<span class="st-chip">Sau ${d} ngày: ${t.stage[i]}</span>` : '').join('') +
+        (t.none ? `<span class="st-chip none">Chưa vào lịch: ${t.none}</span>` : '');
+      const first = Object.keys(t.dates).sort()[0];
+      const next = !first ? '–' : first === day ? `Hôm nay: ${t.dates[first]} bài` : first === tomorrow ? `Ngày mai: ${t.dates[first]} bài` : `${fmt(first)}: ${t.dates[first]} bài`;
+      return `<div class="st-topic">
+        <div><div class="nm" title="${esc(name)}">${esc(name)}</div>
+          <div class="tm"><b>${t.all}</b> bài (${Math.round(t.all / list.length * 100)}%) · ${approvedNotes.filter(n => n.topic === name).length} đã duyệt · ${t.reps} lượt ôn</div></div>
+        <div><div class="lb">Chặng ôn</div><div class="st-chips">${chips || '<span class="st-chip none">–</span>'}</div></div>
+        <div><div class="lb">Lịch hẹn gần nhất</div><div class="st-next${first === day ? ' today' : ''}">${next}</div></div>
+        ${t.due ? `<button type="button" class="btn primary" data-review-topic="${esc(name)}">Ôn theo chủ đề này (${t.due})</button>` : '<button type="button" class="btn" disabled>Chưa đến hạn</button>'}
+      </div>`;
+    }).join('');
+
+    return `<div class="st-streak"><b>${sk}</b><div>ngày học liên tiếp<small>${msg}</small></div><div class="st-days">${days.join('')}</div></div>
+      <div class="st-nums">
+        <div class="st-num"><b>${topics.length}</b><span>Chủ đề</span><small>chứa ${list.length} ghi chú</small></div>
+        <div class="st-num"><b>${list.length}</b><span>Tổng ghi chú</span><small>(${approvedNotes.length} đã duyệt)</small></div>
+        <div class="st-num due"><b>${due}</b><span>Cần ôn hôm nay</span></div>
+        <div class="st-num"><b>${totalReps}</b><span>Tổng lượt ôn</span></div>
+      </div>
+      <h4 class="st-h">Tiến độ theo chủ đề</h4>
+      ${cards || '<p class="note">Chưa có ghi chú nào.</p>'}
+      ${cards ? '<p class="st-note">Chặng là khoảng cách hẹn ôn kế tiếp: “Sau 1 ngày” gồm cả bài mới duyệt lẫn bài vừa bấm Chưa nhớ. Bài chưa duyệt chưa vào lịch ôn. Số lượt ôn chỉ tính từ khi app bắt đầu ghi lại.</p>' : ''}`;
+  }
+
+  function openStats() {
+    $('menu').open = false;
+    $('statsBody').innerHTML = statsHtml();
+    $('statsModal').hidden = false;
+  }
+
+  $('statsBody').onclick = e => {
+    const b = e.target.closest('[data-review-topic]');
+    if (!b) return;
+    $('statsModal').hidden = true;
+    enterReview('', b.dataset.reviewTopic);
+  };
+
+  function greetHtml() {
+    const due = dueList().length, drafts = active().filter(n => !isApproved(n)).length, sk = streak();
+    const primary = due ? 'review' : 'draft';
+    return `<div class="doc greet"><h2>Chào bạn!</h2>
+      <p>Hôm nay bạn có <b>${due}</b> bài cần ôn tập và <b>${drafts}</b> bài chưa duyệt.</p>
+      ${sk ? `<p>Chuỗi ngày học: ${sk} ngày.</p>` : ''}
+      <div class="go">
+        ${due ? `<button type="button" class="btn primary" data-act="greet-review">Bắt đầu ôn ngay <kbd>Space</kbd></button>` : ''}
+        ${drafts ? `<button type="button" class="btn${primary === 'draft' ? ' primary' : ''}" data-act="greet-draft">Duyệt bài mới${primary === 'draft' ? ' <kbd>Space</kbd>' : ''}</button>` : ''}
+      </div>
+      <p class="hint">Hoặc chọn một ghi chú ở danh sách để xem.</p></div>`;
+  }
+
+  // Chỉ hiện màn chào lúc mở app, khi có việc cần làm (trên điện thoại cột đọc đang ẩn nên chưa thấy, chạm vào ghi chú là tắt)
+  function startGreeting() {
+    ensureIntake();
+    state.greet = dueList().length > 0 || active().some(n => !isApproved(n));
+  }
+
+  function startDrafts() {
+    leaveReview();
+    state.topic = 'all'; state.tag = DRAFT_TAG; state.q = ''; $('searchInput').value = ''; state.limit = PAGE;
+    render();
+  }
+
+  function enterReview(firstId, topic) {
+    state.reviewTopic = topic || '';
+    const list = reviewQueue();
+    if (!list.length) { state.reviewTopic = ''; return; }
+    state.review = true; state.flip = false; state.revDone = 0; state.greet = false;
+    state.sel = (firstId && list.some(n => n.id === firstId)) ? firstId : list[0].id; state.detailOpen = true;
+    renderNotes();
+  }
+
+  function exitReview() {
+    state.review = false; state.flip = false; state.detailOpen = false; state.reviewTopic = '';
+    renderNotes();
+  }
+
+  const leaveReview = () => { state.review = false; state.flip = false; state.greet = false; state.reviewTopic = ''; };
+
+  function flipCard() {
+    if (!state.review || state.flip || !state.sel) return;
+    state.flip = true; renderDetail();
+  }
+
+  function gradeCurrent(remembered) {
+    if (!state.review || !state.flip || !state.sel) return;
+    const id = state.sel, prev = review[id], prevCount = rcount[id] || 0;
+    const r = gradeReview(id, remembered);
+    const days = INTERVALS[r.stage];
+    state.revDone++; state.flip = false;
+    render();
+    const el = document.querySelector('.item.sel');
+    if (el) el.scrollIntoView({ block: 'nearest' });
+    toast(remembered ? `Đã nhớ. Ôn lại sau ${days} ngày.` : 'Chưa nhớ. Ôn lại ngày mai.', 'Hoàn tác', () => {
+      if (prev) review[id] = prev; else delete review[id];
+      rcount[id] = prevCount;
+      saveReview();
+      state.review = true; state.flip = false; state.sel = id; state.revDone = Math.max(0, state.revDone - 1);
+      render();
+    });
+  }
+
+  function renderDetail() {
+    const n = active().find(x => x.id === state.sel);
+    const el = $('detail');
+    if (state.greet) { el.innerHTML = greetHtml(); lastDetail = ''; return; }
+    if (state.review && !n) {
+      el.innerHTML = doneHtml(); lastDetail = ''; return;
+    }
+    if (!n) {
+      el.innerHTML = `<div class="empty">${active().length ? 'Chọn một ghi chú ở danh sách.' : 'Chưa có ghi chú nào. Bấm “Thu thập” để bắt đầu!'}</div>`;
+      lastDetail = '';
+      return;
+    }
+    el.innerHTML = state.review ? reviewHtml(n) : detailHtml(n);
+    if (lastDetail !== n.id) el.scrollTop = 0;
+    lastDetail = n.id;
+    updateBar();
+  }
+
+  function selectNote(id, open) {
+    state.greet = false;
+    if (state.sel !== id) state.flip = false;
+    state.sel = id;
+    if (open) state.detailOpen = true;
+    document.querySelectorAll('.item').forEach(el => el.classList.toggle('sel', el.dataset.id === id));
+    renderDetail();
+    applyView();
+  }
+
+  function renderNotes() {
+    renderTopics();   // cột chủ đề phụ thuộc bộ lọc / chế độ ôn nên luôn vẽ lại cùng danh sách
+    const list = filtered();
+    const total = active().length;
+    if (!list.some(n => n.id === state.sel)) { state.sel = list[0] ? list[0].id : ''; state.flip = false; state.detailOpen = state.review && !!list[0]; }
+    const idx = list.findIndex(n => n.id === state.sel);
+    if (idx >= state.limit) state.limit = idx + 1;
+    const shown = list.slice(0, state.limit);
+
+    $('countText').textContent = state.review ? `${list.length} bài cần ôn hôm nay` : list.length === total ? `${total} ghi chú` : `${list.length} / ${total} ghi chú`;
+    $('tagChip').innerHTML = state.tag ? `<button type="button" class="chip">#${esc(state.tag)} &times;</button>` : '';
+    const drafts = active().filter(n => parseTags(n.tags).includes(DRAFT_TAG)).length;
+    $('draftChip').innerHTML = drafts && state.tag !== DRAFT_TAG ? `<button type="button" class="chip">Chưa duyệt (${drafts})</button>` : '';
+
+    const due = state.review ? reviewQueue().length : dueList().length;
+    $('reviewChip').innerHTML = state.review ? `<button type="button" class="chip chip-review on">Đang ôn${state.reviewTopic ? ': ' + esc(state.reviewTopic) : ' tập'} · ${due} &times;</button>`
+      : due ? `<button type="button" class="chip chip-review">Ôn tập (${due})</button>` : '';
+
+    $('notes').innerHTML = !list.length
+      ? `<div class="empty">${state.review ? 'Đã hết bài cần ôn.' : total ? 'Không có ghi chú nào khớp.' : 'Chưa có ghi chú nào.'}</div>`
+      : shown.map(itemHtml).join('') +
+        (list.length > shown.length ? `<button type="button" class="btn more" data-act="more">Hiện thêm (${list.length - shown.length})</button>` : '');
+    renderDetail();
+    applyView();
+  }
+
+  function render() { ensureIntake(); renderNotes(); }
+
+  window.pkv = { dueList, streak, gradeReview, get review() { return review; }, get rcount() { return rcount; }, get activity() { return activity; } };   // để kiểm tra bằng Console (F12)
+
+  // ---------- Thêm / sửa / xóa ----------
+  function openNote(id) {
+    const n = id ? notes.find(x => x.id === id) : null;
+    $('formTitleHead').textContent = n ? 'Sửa ghi chú' : 'Ghi nhận kiến thức mới';
+    $('formId').value = n ? n.id : '';
+    $('formTopic').value = n ? n.topic : (state.topic !== 'all' ? state.topic : '');
+    $('formTitle').value = n ? n.title : '';
+    $('formTakeaway').value = n ? n.takeaway : '';
+    $('formExcerpt').value = n ? n.raw_excerpt : '';
+    $('formSource').value = n ? n.source : '';
+    $('formTags').value = n ? n.tags : '';
+    $('noteModal').hidden = false;
+    $(n ? 'formTakeaway' : (state.topic !== 'all' ? 'formTitle' : 'formTopic')).focus();
+  }
+
+  const formHasContent = () => ['formTitle', 'formTakeaway', 'formExcerpt', 'formSource', 'formTags'].some(f => $(f).value.trim());
+
+  function closeNote(ask) {
+    if (ask && !$('formId').value && formHasContent() && !confirm('Bỏ nội dung đang nhập?')) return;
+    $('noteModal').hidden = true;
+  }
+
+  // Chủ đề gõ khác hoa/thường hoặc dấu với chủ đề đang có thì mặc định theo cách viết đang có (tránh trùng lặp).
+  // Riêng khi sửa chính ghi chú đang mang chủ đề đó, hỏi có muốn đổi cách viết cho cả chủ đề không.
+  function resolveTopic(id, input, now) {
+    const typed = input.trim().replace(/\s+/g, ' ');
+    const canon = canonicalTopic(typed);
+    const cur = id ? notes.find(n => n.id === id) : null;
+    if (canon === typed || !cur || cur.topic !== canon) return canon;
+    const same = active().filter(n => n.topic === canon);
+    if (!confirm(`Chủ đề đang viết là “${canon}” (${same.length} ghi chú).
+Đổi thành “${typed}” cho tất cả ghi chú của chủ đề này?
+
+OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
+    same.forEach(n => { n.topic = typed; n.updated_at = now; dirty.add(n.id); });
+    return typed;
+  }
+
+  function saveNote(e) {
+    e.preventDefault();
+    const now = new Date().toISOString();
+    const fields = {
+      topic: resolveTopic($('formId').value, $('formTopic').value, now),
+      title: $('formTitle').value.trim(),
+      takeaway: $('formTakeaway').value.trim(),
+      raw_excerpt: $('formExcerpt').value.trim(),
+      source: $('formSource').value.trim(),
+      tags: parseTags($('formTags').value).join(', ')
+    };
+    if (!fields.topic || !fields.title || !fields.takeaway) return;
+
+    const id = $('formId').value;
+    let savedId = id;
+    const idx = id ? notes.findIndex(n => n.id === id) : -1;
+    if (idx >= 0) {
+      notes[idx] = { ...notes[idx], ...fields, updated_at: now };
+    } else {
+      savedId = newId();
+      notes.unshift({ id: savedId, ...fields, created_at: now, updated_at: now, deleted: false });
+      if (!parseTags(fields.tags).includes(DRAFT_TAG)) { scheduleNew(savedId); logActivity(); }
+    }
+    dirty.add(savedId);
+    persist();
+    $('noteModal').hidden = true;
+    state.greet = false;
+    state.sel = savedId;
+    if (!filtered().some(n => n.id === savedId)) {   // ghi chú vừa lưu bị bộ lọc ẩn -> bỏ bộ lọc để thấy nó
+      state.topic = 'all'; state.tag = ''; state.q = ''; $('searchInput').value = '';
+    }
+    render();
+    scheduleSync();
+  }
+
+  function deleteNote(id) {
+    const n = notes.find(x => x.id === id);
+    if (!n) return;
+    const list = filtered();
+    const i = list.findIndex(x => x.id === id);
+    const next = list[i + 1] || list[i - 1];
+    n.deleted = true; n.updated_at = new Date().toISOString();
+    if (state.sel === id) { state.sel = next ? next.id : ''; state.detailOpen = false; }
+    dirty.add(id); persist(); render(); scheduleSync();
+    toast('Đã xóa ghi chú.', 'Hoàn tác', () => {
+      const cur = notes.find(x => x.id === id);   // tra lại theo id: đồng bộ có thể đã thay đối tượng cũ
+      if (!cur) return;
+      cur.deleted = false; cur.updated_at = new Date().toISOString();
+      state.sel = id;
+      dirty.add(id); persist(); render(); scheduleSync();
+    });
+  }
+
+  let warnId = '';
+
+  const isDraft = n => parseTags(n.tags).includes(DRAFT_TAG);
+
+  function approveNote(id, skipWarn) {
+    const n = notes.find(x => x.id === id && !x.deleted);
+    if (!n) return;
+    if (!isDraft(n)) return toast('Ghi chú này đã được duyệt.');
+    if (!skipWarn && parseTags(n.tags).includes(MISSING_TAG)) {
+      warnId = id;
+      $('warnText').textContent = `“${n.title}” đang có tag “${MISSING_TAG}”: nguồn không có nguyên văn nên phần trích dẫn có thể chưa đúng. Bạn muốn bổ sung nguồn trước, hay vẫn duyệt?`;
+      $('warnModal').hidden = false;
+      $('warnEdit').focus();
+      return;
+    }
+    // chọn ghi chú chưa duyệt kế tiếp (trong danh sách đang hiển thị) trước khi đổi tag
+    const list = filtered();
+    const i = list.findIndex(x => x.id === id);
+    const next = list.slice(i + 1).find(isDraft) || list.slice(0, Math.max(i, 0)).find(isDraft);
+    const oldTags = n.tags, oldReview = review[id];
+    n.tags = parseTags(n.tags).filter(t => t !== DRAFT_TAG).join(', ');
+    n.updated_at = new Date().toISOString();
+    dirty.add(id); persist(); scheduleNew(id); logActivity();
+    if (next) state.sel = next.id;
+    else if (state.tag === DRAFT_TAG) state.tag = '';   // hết ghi chú chưa duyệt: thoát bộ lọc rỗng
+    render(); scheduleSync();
+    const el = document.querySelector('.item.sel');
+    if (el) el.scrollIntoView({ block: 'nearest' });
+    const left = active().filter(isDraft).length;
+    toast(left ? `Đã duyệt. Còn ${left} ghi chú chưa duyệt.` : 'Đã duyệt. Không còn ghi chú nào chưa duyệt.', 'Hoàn tác', () => {
+      const cur = notes.find(x => x.id === id);
+      if (!cur) return;
+      cur.tags = oldTags; cur.updated_at = new Date().toISOString();
+      if (oldReview) { review[id] = oldReview; saveReview(); } else unschedule(id);
+      state.sel = id; dirty.add(id); persist(); render(); scheduleSync();
+    });
+  }
+
+  function unapproveNote(id) {
+    const n = notes.find(x => x.id === id && !x.deleted);
+    if (!n || isDraft(n)) return;
+    const oldTags = n.tags, oldReview = review[id];
+    n.tags = [...parseTags(n.tags), DRAFT_TAG].join(', ');
+    n.updated_at = new Date().toISOString();
+    unschedule(id);
+    dirty.add(id); persist(); render(); scheduleSync();
+    toast('Đã đưa về “Chưa duyệt”.', 'Hoàn tác', () => {
+      const cur = notes.find(x => x.id === id);
+      if (!cur) return;
+      cur.tags = oldTags; cur.updated_at = new Date().toISOString();
+      if (oldReview) { review[id] = oldReview; saveReview(); }
+      state.sel = id; dirty.add(id); persist(); render(); scheduleSync();
+    });
+  }
+
+  $('warnCancel').onclick = () => { $('warnModal').hidden = true; };
+  $('warnGo').onclick = () => { $('warnModal').hidden = true; approveNote(warnId, true); };
+  $('warnEdit').onclick = () => { $('warnModal').hidden = true; openNote(warnId); };
+
+  async function copyNote(id) {
+    const n = notes.find(x => x.id === id);
+    if (!n) return;
+    const text = `${n.title}\n${n.takeaway}` + (n.source ? `\n— ${n.source}` : '');
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e2) { /* bỏ qua */ }
+      ta.remove();
+    }
+    toast('Đã sao chép.');
+  }
+
+  // ---------- Đồng bộ qua GitHub ----------
+  // Một file JSON trong kho riêng. Mỗi lượt: tải về -> gộp (bản có updated_at mới hơn thắng) -> đẩy lên nếu có khác biệt.
+  // Nếu đã đặt mật khẩu khóa thì file được mã hóa AES-GCM; khóa suy ra từ mật khẩu, nhớ trong IndexedDB dưới dạng không trích xuất được.
+  const GH_API = 'https://api.github.com';
+  const ENC_ITER = 600000;
+  let syncing = false, syncAgain = false, syncTimer;
+  const ghReady = () => !!(cfg.token && cfg.user && cfg.repo);
+  const saveCfg = () => lsSet(LS_GH, cfg);
+
+  function updateIdleStatus() {
+    if (!ghReady()) return setStatus('Chỉ lưu trên máy · bấm để kết nối', 'warn link');
+    if (!navigator.onLine) return setStatus('Offline', 'warn');
+    if (dirty.size) return setStatus('Có thay đổi chưa đồng bộ', 'warn');
+    setStatus(lastSync ? `Đã đồng bộ ${lastSync}` : 'Sẵn sàng đồng bộ', 'ok');
+  }
+
+  function scheduleSync() {
+    updateIdleStatus();
+    if (!ghReady()) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => sync(false), 800);
+  }
+
+  // --- khóa mã hóa ---
+  const keyMem = new Map();   // salt (base64) -> CryptoKey
+  const idb = () => new Promise((res, rej) => { const r = indexedDB.open('pkv_keys', 1); r.onupgradeneeded = () => r.result.createObjectStore('k'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+  async function keyGet(salt) {
+    if (keyMem.has(salt)) return keyMem.get(salt);
+    try {
+      const db = await idb();
+      const k = await new Promise((res, rej) => { const q = db.transaction('k').objectStore('k').get(salt); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); });
+      if (k) keyMem.set(salt, k);
+      return k || null;
+    } catch (e) { return null; }
+  }
+  async function keyPut(salt, key) {
+    keyMem.set(salt, key);
+    try {
+      const db = await idb();
+      await new Promise((res, rej) => { const t = db.transaction('k', 'readwrite'); t.objectStore('k').put(key, salt); t.oncomplete = res; t.onerror = () => rej(t.error); });
+    } catch (e) { /* không có IndexedDB: chỉ nhớ trong lần mở này */ }
+  }
+  const keysForget = () => { keyMem.clear(); try { indexedDB.deleteDatabase('pkv_keys'); } catch (e) { /* bỏ qua */ } };
+  async function deriveKey(pw, saltB64, iter) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: unb64(saltB64), iterations: iter }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+  async function encryptText(key, saltB64, text) {
+    const iv = crypto.getRandomValues(new Uint8Array(12));   // IV mới cho mỗi lần mã hóa
+    const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(text)));
+    return JSON.stringify({ pkv: 1, enc: 'AES-GCM', kdf: 'PBKDF2-SHA256', iter: ENC_ITER, salt: saltB64, iv: b64(iv), ct: b64(ct) });
+  }
+  const decryptText = async (key, env) => new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(env.iv) }, key, unb64(env.ct)));
+
+  // Đặt / đổi mật khẩu khóa -> lượt đồng bộ kế tiếp mã hóa lại file bằng khóa mới
+  async function enableEncryption(pw) {
+    if (!canCrypto()) return;
+    const salt = b64(crypto.getRandomValues(new Uint8Array(16)));
+    await keyPut(salt, await deriveKey(pw, salt, ENC_ITER));
+    cfg.encSalt = salt; cfg.rekey = true; saveCfg();
+  }
+
+  // Hộp hỏi mật khẩu; tryPw(pw) trả về true nếu mật khẩu đúng
+  function askPassword(tryPw, title, note) {
+    return new Promise(resolve => {
+      $('pwAskTitle').textContent = title; $('pwAskNote').textContent = note;
+      $('pwAskErr').textContent = ''; $('pwAskIn').value = '';
+      $('pwAskModal').hidden = false;
+      setTimeout(() => $('pwAskIn').focus(), 0);
+      const done = v => { $('pwAskModal').hidden = true; $('pwAskForm').onsubmit = null; $('pwAskCancel').onclick = null; resolve(v); };
+      $('pwAskForm').onsubmit = async e => {
+        e.preventDefault();
+        const pw = $('pwAskIn').value;
+        if (!pw) return;
+        $('pwAskOk').disabled = true;
+        const ok = await tryPw(pw);
+        $('pwAskOk').disabled = false;
+        if (ok) done(true); else { $('pwAskErr').textContent = 'Sai mật khẩu.'; $('pwAskIn').select(); }
+      };
+      $('pwAskCancel').onclick = () => done(false);
+    });
+  }
+
+  // --- gọi GitHub ---
+  const toB64Utf8 = s => b64(new TextEncoder().encode(s));
+  const fromB64Utf8 = s => new TextDecoder().decode(unb64(s.replace(/\s/g, '')));
+  const httpErr = res => Object.assign(new Error('http ' + res.status), { status: res.status });
+  const repoUrl = () => `${GH_API}/repos/${encodeURIComponent(cfg.user)}/${encodeURIComponent(cfg.repo)}`;
+  const fileUrl = () => `${repoUrl()}/contents/${cfg.path.split('/').map(encodeURIComponent).join('/')}`;
+  const ghFetch = (url, opts = {}) => fetch(url, { cache: 'no-store', ...opts, headers: { Authorization: 'Bearer ' + cfg.token, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', ...(opts.headers || {}) } });
+
+  // Trả về null nếu chưa có file; còn lại { sha, text }
+  async function ghGet() {
+    const res = await ghFetch(fileUrl());
+    if (res.status === 404) {
+      const repo = await ghFetch(repoUrl());
+      if (repo.status === 404) throw new Error('no-repo');
+      if (!repo.ok) throw httpErr(repo);
+      return null;
+    }
+    if (!res.ok) throw httpErr(res);
+    const j = await res.json();
+    if (Array.isArray(j) || j.type !== 'file') throw new Error('not-file');
+    if (j.encoding === 'base64' && typeof j.content === 'string') return { sha: j.sha, text: fromB64Utf8(j.content) };
+    const raw = await ghFetch(fileUrl(), { headers: { Accept: 'application/vnd.github.raw+json' } });   // file lớn hơn 1MB
+    if (!raw.ok) throw httpErr(raw);
+    return { sha: j.sha, text: await raw.text() };
+  }
+
+  async function ghPut(text, sha) {
+    const body = { message: 'sync ' + new Date().toISOString(), content: toB64Utf8(text) };
+    if (sha) body.sha = sha;
+    const res = await ghFetch(fileUrl(), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if (res.ok) return;
+    const m = await res.json().catch(() => ({}));
+    if (res.status === 409 || (res.status === 422 && /sha/i.test(m.message || ''))) throw new Error('conflict');
+    throw httpErr(res);
+  }
+
+  // Giải mã (nếu cần) nội dung file tải về; trả về { payload, salt }
+  async function decodeRemote(text, interactive) {
+    if (!text.trim()) return { payload: null, salt: '' };
+    let obj;
+    try { obj = JSON.parse(text); } catch (e) { throw new Error('bad-remote'); }
+    if (!(obj && obj.pkv === 1 && obj.ct)) return { payload: obj, salt: '' };
+    if (!canCrypto()) throw new Error('no-crypto');
+    if (!(obj.iter >= 1000 && obj.iter <= 5e6) || !obj.salt || !obj.iv) throw new Error('bad-remote');
+    const tryKey = async k => { try { return await decryptText(k, obj); } catch (e) { return null; } };
+    const cached = await keyGet(obj.salt);
+    let plain = cached ? await tryKey(cached) : null;
+    if (plain === null) {
+      if (!interactive) throw new Error('need-password');
+      const ok = await askPassword(async pw => {
+        const k = await deriveKey(pw, obj.salt, obj.iter);
+        const t = await tryKey(k);
+        if (t === null) return false;
+        plain = t; await keyPut(obj.salt, k);
+        return true;
+      }, 'Nhập mật khẩu giải mã', 'File trên GitHub đang được mã hóa. Nhập mật khẩu đã dùng khi mã hóa (thường là mật khẩu khóa của máy đã đẩy dữ liệu). Chỉ hỏi một lần trên máy này.');
+      if (!ok) throw new Error('need-password');
+    }
+    try { return { payload: JSON.parse(plain), salt: obj.salt }; } catch (e) { throw new Error('bad-remote'); }
+  }
+
+  // --- gộp ---
+  function buildPayload() { return { pkv: 'sync', version: 1, saved_at: new Date().toISOString(), notes, review, review_counts: rcount, activity: [...activity].sort() }; }
+  const stable = v => Array.isArray(v) ? '[' + v.map(stable).join(',') + ']' : v && typeof v === 'object' ? '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + stable(v[k])).join(',') + '}' : String(JSON.stringify(v));
+  const canon = p => stable({ notes: (p.notes || []).map(normalizeNote).filter(n => n.id).sort((x, y) => x.id < y.id ? -1 : x.id > y.id ? 1 : 0), review: p.review || {}, review_counts: p.review_counts || {}, activity: [...(p.activity || [])].sort() });
+
+  function mergeNotes(remote) {
+    const local = new Map(notes.map(n => [n.id, n]));
+    remote.forEach(r => {
+      if (!r || typeof r !== 'object') return;
+      const rn = normalizeNote(r);
+      const l = local.get(rn.id);
+      if (rn.id && (!l || time(rn.updated_at) > time(l.updated_at))) local.set(rn.id, rn);   // xóa mềm cũng là một bản cập nhật
+    });
+    notes = [...local.values()];
+  }
+
+  function mergeProgress(p) {
+    const DAY = /^\d{4}-\d{2}-\d{2}$/;
+    const live = new Map(active().map(n => [n.id, n]));
+    const rc = p.review_counts && typeof p.review_counts === 'object' ? p.review_counts : {};
+    const cnt = id => Math.max(0, Math.floor(Number(rc[id])) || 0);
+    Object.entries(p.review && typeof p.review === 'object' ? p.review : {}).forEach(([id, r]) => {
+      const n = live.get(id);
+      if (!n || !isApproved(n) || !r || !DAY.test(r.due || '')) return;
+      const stage = Math.min(Math.max(parseInt(r.stage, 10) || 0, 0), INTERVALS.length - 1);
+      const cur = review[id], mine = rcount[id] || 0, theirs = cnt(id);
+      // Nhiều lượt ôn hơn thắng; bằng nhau thì hạn muộn hơn, rồi chặng cao hơn (để hai máy hội tụ về cùng một kết quả)
+      if (!cur || theirs > mine || (theirs === mine && (r.due > cur.due || (r.due === cur.due && stage > cur.stage)))) review[id] = { stage, due: r.due };
+    });
+    Object.keys(review).forEach(id => { const n = live.get(id); if (!n || !isApproved(n)) delete review[id]; });
+    Object.keys(rc).forEach(id => { const k = cnt(id); if (live.has(id) && k > (rcount[id] || 0) && k < 1e6) rcount[id] = k; });
+    (Array.isArray(p.activity) ? p.activity : []).forEach(d => { if (typeof d === 'string' && DAY.test(d)) activity.add(d); });
+  }
+
+  async function runSync(interactive) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const remote = await ghGet();
+      let rp = null, rsalt = '';
+      if (remote) {
+        const d = await decodeRemote(remote.text, interactive);
+        rp = d.payload; rsalt = d.salt;
+        if (rp !== null && !(rp && typeof rp === 'object' && Array.isArray(rp.notes))) throw new Error('bad-remote');
+        if (rp && rp.version > 1) throw new Error('newer-version');
+      }
+      if (rp) { mergeNotes(rp.notes); mergeProgress(rp); }
+      if (rsalt && !cfg.rekey && cfg.encSalt !== rsalt) { cfg.encSalt = rsalt; saveCfg(); }   // máy khác đã đổi khóa: theo khóa đó
+
+      // Chọn khóa mã hóa cho lần đẩy này
+      let salt = cfg.rekey ? cfg.encSalt : (rsalt || cfg.encSalt || '');
+      if (!salt && lsGet(LS_GATE, null) && canCrypto()) {   // đã đặt mật khẩu khóa nhưng máy này chưa có khóa mã hóa
+        if (!interactive) throw new Error('need-password');
+        const ok = await askPassword(async pw => { if (!(await checkPw(pw))) return false; await enableEncryption(pw); return true; },
+          'Nhập mật khẩu để mã hóa', 'Dữ liệu đẩy lên GitHub sẽ được mã hóa bằng mật khẩu khóa của bạn. Nhập mật khẩu đó một lần để bắt đầu.');
+        if (!ok) throw new Error('need-password');
+        salt = cfg.encSalt;
+      }
+      const key = salt ? await keyGet(salt) : null;
+      if (salt && !key) throw new Error('no-key');
+
+      if (rp && canon(rp) === canon(buildPayload()) && salt === rsalt) return { pushed: false, sent: null };   // giống hệt: không cần đẩy
+
+      const sent = new Map(notes.map(n => [n.id, n.updated_at]));
+      const payload = JSON.stringify(buildPayload());
+      try {
+        await ghPut(key ? await encryptText(key, salt, payload) : payload, remote ? remote.sha : '');
+      } catch (e) {
+        if (e.message === 'conflict') continue;   // máy khác vừa đẩy: tải lại, gộp lại
+        throw e;
+      }
+      if (cfg.rekey) { cfg.rekey = false; saveCfg(); }
+      return { pushed: true, sent };
+    }
+    throw new Error('conflict');
+  }
+
+  function explain(e) {
+    const m = String(e && e.message || e);
+    if (m === 'need-password') return ['Cần mật khẩu · bấm Đồng bộ', 'Cần nhập mật khẩu để giải mã hoặc mã hóa file trên GitHub.'];
+    if (m === 'no-repo') return ['Không thấy kho', 'Không tìm thấy kho này, hoặc token chưa được cấp quyền cho kho. Kiểm tra tên người dùng, tên kho và Repository access của token.'];
+    if (m === 'bad-remote') return ['File GitHub lạ', 'File trên GitHub không đúng định dạng của ứng dụng nên không ghi đè. Đổi đường dẫn file hoặc xóa file đó rồi thử lại.'];
+    if (m === 'not-file') return ['Đường dẫn là thư mục', 'Đường dẫn file đang trỏ tới một thư mục. Hãy nhập tên file, ví dụ data.json.'];
+    if (m === 'newer-version') return ['Cần cập nhật app', 'File trên GitHub do phiên bản mới hơn của ứng dụng tạo. Hãy cập nhật index.html.'];
+    if (m === 'conflict') return ['Xung đột, thử lại', 'Hai máy đồng bộ cùng lúc. Bấm Đồng bộ thêm một lần nữa.'];
+    if (m === 'no-crypto') return ['Không giải mã được', 'Trình duyệt này chưa hỗ trợ mã hóa (cần https hoặc localhost).'];
+    if (m === 'no-key') return ['Mất khóa mã hóa', 'Máy này không còn khóa mã hóa. Vào menu → Đổi mật khẩu (có thể đặt lại cùng mật khẩu) rồi đồng bộ lại.'];
+    if (e && e.status === 401) return ['Token sai hoặc hết hạn', 'GitHub từ chối token. Tạo token mới và nhập lại trong Cài đặt kết nối.'];
+    if (e && e.status === 403) return ['Token thiếu quyền', 'Token cần quyền Contents: Read and write cho kho này (hoặc đã vượt giới hạn gọi API, thử lại sau).'];
+    if (e && e.status === 404) return ['Không thấy kho', 'Không tìm thấy kho hoặc file. Kiểm tra tên kho và quyền của token.'];
+    if (e instanceof TypeError) return ['Không kết nối được', 'Không kết nối được tới GitHub. Kiểm tra mạng.'];
+    return ['Lỗi đồng bộ', 'Lỗi đồng bộ: ' + m];
+  }
+
+  async function sync(manual) {
+    if (locked) return;
+    if (!ghReady()) {
+      updateIdleStatus();
+      if (manual) { toast('Hãy nhập thông tin GitHub để đồng bộ.'); openSettings(); }
+      return;
+    }
+    if (syncing) { syncAgain = true; return; }
+    if (!navigator.onLine) { updateIdleStatus(); if (manual) toast('Đang offline, sẽ đồng bộ khi có mạng.'); return; }
+
+    syncing = true;
+    setStatus('Đang đồng bộ…');
+    try {
+      const r = await runSync(manual);
+      // Chỉ bỏ cờ "chưa đồng bộ" của những gì thật sự đã được gửi đi
+      if (r.pushed) {
+        [...dirty].forEach(id => { if (id === '__review' || (notes.find(n => n.id === id) || {}).updated_at === r.sent.get(id)) dirty.delete(id); });
+      } else if (r.pushed === false) dirty.clear();
+      const d = new Date();
+      lastSync = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      writeReview();
+      persist();
+      render();
+      updateIdleStatus();
+      if (manual) toast('Đã đồng bộ.');
+    } catch (err) {
+      const [short, long] = explain(err);
+      setStatus(short, 'err');
+      if (manual) toast(long);
+      persist(); writeReview();   // phần đã gộp từ GitHub vẫn được giữ
+      render();
+    } finally {
+      syncing = false;
+      if (syncAgain) { syncAgain = false; scheduleSync(); }
+    }
+  }
+
+  // ---------- Cài đặt / sao lưu ----------
+  function openSettings() {
+    $('menu').open = false;
+    $('cfgUser').value = cfg.user || '';
+    $('cfgRepo').value = cfg.repo || '';
+    $('cfgPath').value = cfg.path || 'data.json';
+    $('cfgToken').value = cfg.token || '';
+    $('cfgDisconnect').hidden = !ghReady();
+    $('settingsModal').hidden = false;
+    $('cfgUser').focus();
+  }
+
+  function exportJson() {
+    $('menu').open = false;
+    const data = active().map(({ deleted, ...n }) => n);
+    const ids = new Set(data.map(n => n.id));
+    const rv = {};
+    Object.keys(review).forEach(id => { if (ids.has(id)) rv[id] = review[id]; });
+    const rc = {};
+    Object.keys(rcount).forEach(id => { if (ids.has(id) && rcount[id] > 0) rc[id] = rcount[id]; });
+    const backup = { version: 3, exported_at: new Date().toISOString(), notes: data, review: rv, review_counts: rc, activity: [...activity].sort() };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    const d = new Date();
+    a.href = URL.createObjectURL(blob);
+    a.download = `pkv_backup_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    toast(`Đã xuất ${data.length} ghi chú kèm lịch ôn và nhật ký ngày học.`);
+  }
+
+  // Nhận JSON dán từ Gemini (có thể kèm khung ```json) hoặc file sao lưu của chính app.
+  function parseImportData(text) {
+    const t = text.trim().replace(/^```[a-z]*\s*/i, '').replace(/```\s*$/, '').trim();
+    const broken = new Error('JSON không hợp lệ hoặc bị cắt dở. Thử gửi Gemini ít ảnh hơn mỗi lượt.');
+    let v;
+    try { v = JSON.parse(t); } catch (e) {
+      const a = t.indexOf('['), b = t.lastIndexOf(']');
+      if (a < 0 || b <= a) throw broken;
+      try { v = JSON.parse(t.slice(a, b + 1)); } catch (e2) { throw broken; }
+    }
+    const arr = Array.isArray(v) ? v : (v && v.notes);
+    if (!Array.isArray(arr)) throw new Error('Cần một mảng ghi chú dạng JSON.');
+    const obj = v && !Array.isArray(v) ? v : {};
+    return { arr, review: obj.review && typeof obj.review === 'object' ? obj.review : null, counts: obj.review_counts && typeof obj.review_counts === 'object' ? obj.review_counts : null, activity: Array.isArray(obj.activity) ? obj.activity : [] };
+  }
+  const parseImportText = text => parseImportData(text).arr;
+
+  // Khôi phục lịch ôn / nhật ký từ file sao lưu. Không ghi đè lịch đang có trên máy này.
+  function restoreProgress(extra) {
+    const DAY = /^\d{4}-\d{2}-\d{2}$/;
+    let n = 0;
+    if (extra.review) {
+      const byId = new Map(notes.filter(x => !x.deleted).map(x => [x.id, x]));
+      Object.entries(extra.review).forEach(([id, r]) => {
+        const note = byId.get(id);
+        if (!note || !isApproved(note) || review[id] || !r || !DAY.test(r.due || '')) return;
+        review[id] = { stage: Math.min(Math.max(parseInt(r.stage, 10) || 0, 0), INTERVALS.length - 1), due: r.due };
+        n++;
+      });
+    }
+    let reps = 0;
+    if (extra.counts) {
+      const live = new Set(notes.filter(x => !x.deleted).map(x => x.id));
+      Object.entries(extra.counts).forEach(([id, c]) => {
+        const k = Math.floor(Number(c));
+        if (live.has(id) && k > (rcount[id] || 0) && k < 1e6) { reps += k - (rcount[id] || 0); rcount[id] = k; }
+      });
+    }
+    let days = 0;
+    extra.activity.forEach(d => { if (typeof d === 'string' && DAY.test(d) && !activity.has(d)) { activity.add(d); days++; } });
+    if (n || days || reps) saveReview();
+    return { n, days, reps };
+  }
+
+  // Chưa ghi gì: chỉ tính xem sẽ thêm / cập nhật / bỏ qua những gì.
+  // Số trích dẫn NotebookLM hay tự chèn: [1], [12], [1, 2], [1-3]. Không áp dụng cho ô Nguồn (có thể ghi "tr. [12]").
+  const CITE_RE = /\s?\[\d+(?:\s*[,\-–]\s*\d+)*\]/g;
+
+  function planImport(arr, overwrite) {
+    const byId = new Map(notes.map(n => [n.id, n]));
+    const topicOf = new Map();   // norm(chủ đề) -> cách viết đã có, để "dan su" gộp vào "Dân sự"
+    const existing = new Map();  // tiêu đề + nguồn -> ghi chú đang có: nhận ra ghi chú trùng khi nhập lại
+    const seen = new Set();      // tiêu đề + nguồn đã gặp trong chính lượt nhập này
+    const keyOf = n => norm(n.title) + '|' + norm(n.source);
+    const tagKey = t => parseTags(t).filter(x => x !== DRAFT_TAG).sort().join(',');
+    active().forEach(n => {
+      if (!existing.has(keyOf(n))) existing.set(keyOf(n), n);
+      if (n.topic && !topicOf.has(norm(n.topic))) topicOf.set(norm(n.topic), n.topic);
+    });
+    const plan = { add: [], update: [], replace: [], dup: 0, same: 0, bad: 0, drafts: 0, cites: 0 };
+    const base = Date.now();
+    arr.forEach((r, i) => {
+      if (!r || typeof r !== 'object' || !String(r.title || '').trim() || !String(r.takeaway || '').trim()) { plan.bad++; return; }
+      const hasId = !!r.id;
+      // Ghi chú không có created_at: ghi chú đầu tiên trong mảng sẽ nằm trên cùng.
+      let src = r;
+      if (!hasId) {                                  // từ AI: bỏ số trích dẫn lọt vào nội dung
+        src = { ...r };
+        ['title', 'takeaway', 'raw_excerpt'].forEach(f => {
+          if (typeof src[f] !== 'string') return;
+          const found = src[f].match(CITE_RE);
+          if (found) { plan.cites += found.length; src[f] = src[f].replace(CITE_RE, ''); }
+        });
+      }
+      const n = normalizeNote({ ...src, id: hasId ? r.id : 'tmp', created_at: r.created_at || new Date(base - i).toISOString() });
+      n.topic = topicOf.get(norm(n.topic)) || n.topic || 'Chưa phân loại';
+      if (!topicOf.has(norm(n.topic))) topicOf.set(norm(n.topic), n.topic);
+      if (hasId) {                                   // file sao lưu: gộp theo id
+        const cur = byId.get(n.id);
+        if (!cur) plan.add.push(n);
+        else if (time(n.updated_at) > time(cur.updated_at)) plan.update.push(n);
+        else { plan.dup++; return; }
+        byId.set(n.id, n);
+        seen.add(keyOf(n));
+      } else {                                       // từ Gemini: gắn tag chưa duyệt; trùng thì bỏ qua hoặc ghi đè
+        const k = keyOf(n);
+        if (seen.has(k)) { plan.dup++; return; }
+        seen.add(k);
+        const cur = existing.get(k);
+        const withDraft = t => [...new Set([...parseTags(t), DRAFT_TAG])].join(', ');
+        if (!cur) {
+          n.id = newId();
+          n.tags = withDraft(n.tags);
+          plan.drafts++;
+          plan.add.push(n);
+        } else if (!overwrite) {
+          plan.dup++;
+        } else if (['topic', 'title', 'takeaway', 'raw_excerpt', 'source'].every(f => n[f] === cur[f]) && tagKey(n.tags) === tagKey(cur.tags)) {
+          plan.same++;                               // giống hệt: không đụng vào (giữ nguyên trạng thái đã duyệt)
+        } else {
+          plan.replace.push({ ...n, id: cur.id, created_at: cur.created_at, updated_at: new Date().toISOString(), tags: withDraft(n.tags) });
+          plan.drafts++;
+        }
+      }
+    });
+    return plan;
+  }
+
+  function previewImport() {
+    const el = $('importPreview'), btn = $('doImport');
+    btn.disabled = true; btn.textContent = 'Nhập'; el.className = 'preview';
+    if (!$('importText').value.trim()) { el.textContent = ''; return; }
+    try {
+      const plan = planImport(parseImportText($('importText').value), $('overwrite').checked);
+      const changes = [...plan.add, ...plan.replace, ...plan.update];
+      const total = changes.length;
+      const parts = [`Sẽ thêm ${plan.add.length}`];
+      if (plan.replace.length) parts.push(`ghi đè ${plan.replace.length}`);
+      if (plan.update.length) parts.push(`cập nhật ${plan.update.length}`);
+      if (plan.same) parts.push(`${plan.same} không đổi`);
+      if (plan.dup) parts.push(`bỏ qua ${plan.dup} trùng`);
+      if (plan.bad) parts.push(`loại ${plan.bad} mục thiếu tiêu đề hoặc ý hiểu`);
+      const titles = changes.slice(0, 6).map(n => `<li>${esc(n.title)}</li>`).join('');
+      el.innerHTML = `<strong>${esc(parts.join(' · '))}.</strong>` +
+        (plan.drafts ? ` ${plan.drafts} ghi chú sẽ được gắn tag “${DRAFT_TAG}”.` : '') +
+        (plan.cites ? ` Đã tự bỏ ${plan.cites} số trích dẫn kiểu [1].` : '') +
+        (titles ? `<ul>${titles}${total > 6 ? `<li>… và ${total - 6} ghi chú khác</li>` : ''}</ul>` : '');
+      btn.disabled = total === 0;
+      if (total) btn.textContent = `Nhập ${total} ghi chú`;
+    } catch (e) {
+      el.className = 'preview bad';
+      el.textContent = e.message;
+    }
+  }
+
+  function openImport() {
+    $('menu').open = false;
+    $('importText').value = '';
+    $('overwrite').checked = false;
+    previewImport();
+    $('importModal').hidden = false;
+    $('importText').focus();
+  }
+
+  function applyImport() {
+    let plan, extra;
+    try { extra = parseImportData($('importText').value); plan = planImport(extra.arr, $('overwrite').checked); } catch (e) { return previewImport(); }
+    const changes = [...plan.update, ...plan.replace, ...plan.add];
+    const byId = new Map(notes.map(n => [n.id, n]));
+    changes.forEach(n => { byId.set(n.id, n); dirty.add(n.id); });
+    notes = [...byId.values()];
+    persist();
+    const restored = restoreProgress(extra);
+    $('importModal').hidden = true;
+    $('importText').value = '';
+    if (plan.drafts) state.tag = DRAFT_TAG;
+    state.limit = PAGE;
+    render();
+    scheduleSync();
+    toast(`Đã nhập ${changes.length} ghi chú` + (restored.n || restored.days || restored.reps ? `, khôi phục ${restored.n} lịch ôn, ${restored.reps} lượt ôn và ${restored.days} ngày học.` : '.'));
+  }
+
+  async function readImportFile(file) {
+    $('importText').value = await file.text();
+    previewImport();
+  }
+
+  // ---------- Sự kiện ----------
+  $('addBtn').onclick = () => openNote();
+  $('syncBtn').onclick = () => { $('menu').open = false; sync(true); };
+  $('closeNote').onclick = $('cancelNote').onclick = () => closeNote(true);
+  $('noteForm').onsubmit = saveNote;
+  $('settingsBtn').onclick = openSettings;
+  $('syncStatus').onclick = () => { if (!ghReady()) openSettings(); };
+  $('exportBtn').onclick = exportJson;
+  $('importBtn').onclick = openImport;
+  $('closeImport').onclick = () => { $('importModal').hidden = true; };
+  $('pickFile').onclick = () => $('importFile').click();
+  $('importFile').onchange = e => { if (e.target.files[0]) readImportFile(e.target.files[0]); e.target.value = ''; };
+  let importTimer;
+  $('importText').oninput = () => { clearTimeout(importTimer); importTimer = setTimeout(previewImport, 250); };
+  $('overwrite').onchange = previewImport;
+  $('doImport').onclick = applyImport;
+  $('statsBtn').onclick = openStats;
+  $('closeStats').onclick = () => { $('statsModal').hidden = true; };
+  $('reviewChip').onclick = () => { if (state.review) exitReview(); else enterReview(); };
+  $('draftChip').onclick = () => { leaveReview(); state.tag = DRAFT_TAG; state.limit = PAGE; renderNotes(); };
+  $('closeSettings').onclick = $('cancelSettings').onclick = () => { $('settingsModal').hidden = true; };
+  $('settingsForm').onsubmit = e => {
+    e.preventDefault();
+    let user = $('cfgUser').value.trim(), repo = $('cfgRepo').value.trim();
+    if (repo.includes('/')) [user, repo] = [user || repo.split('/')[0], repo.split('/').pop()];   // dán nguyên "tên/kho" cũng được
+    const path = ($('cfgPath').value.trim() || 'data.json').replace(/^\/+/, '');
+    const token = $('cfgToken').value.trim();
+    const NAME = /^[A-Za-z0-9_.-]+$/;
+    if (!NAME.test(user) || !NAME.test(repo)) return toast('Tên người dùng và tên kho chỉ gồm chữ, số, dấu - _ .');
+    if (path.split('/').some(x => !x || x === '.' || x === '..')) return toast('Đường dẫn file không hợp lệ.');
+    if (!token) return toast('Hãy dán fine-grained token.');
+    cfg = { ...cfg, user, repo, path, token };
+    saveCfg();
+    $('settingsModal').hidden = true;
+    sync(true);
+  };
+  $('cfgDisconnect').onclick = () => {
+    if (!confirm('Ngắt kết nối GitHub trên máy này? Dữ liệu trên máy và trên GitHub đều giữ nguyên.')) return;
+    cfg = { token: '', user: '', repo: '', path: 'data.json' };
+    saveCfg(); keysForget();
+    $('settingsModal').hidden = true;
+    updateIdleStatus();
+    toast('Đã ngắt kết nối.');
+  };
+  $('syncTopBtn').onclick = () => sync(true);
+
+  $('searchInput').oninput = e => { leaveReview(); state.q = e.target.value; state.limit = PAGE; renderNotes(); };
+  $('mobileTopic').onchange = e => { leaveReview(); state.topic = e.target.value; state.limit = PAGE; render(); };
+  $('topicList').onclick = e => {
+    const a = e.target.closest('[data-action]');
+    if (a) {
+      if (a.dataset.action === 'review') { if (state.review) exitReview(); else enterReview(); return; }
+      startDrafts();
+      return;
+    }
+    const b = e.target.closest('[data-topic]');
+    if (b) { leaveReview(); state.topic = b.dataset.topic; if (state.tag === DRAFT_TAG) state.tag = ''; state.limit = PAGE; render(); }
+  };
+  $('tagChip').onclick = () => { leaveReview(); state.tag = ''; state.limit = PAGE; renderNotes(); };
+  $('hideTopics').onclick = $('showTopics').onclick = toggleTopics;
+  $('detail').addEventListener('scroll', updateBar, { passive: true });
+
+  $('notes').onclick = e => {
+    if (e.target.closest('[data-act="more"]')) { state.limit += PAGE; return renderNotes(); }
+    const it = e.target.closest('.item');
+    if (it) selectNote(it.dataset.id, true);
+  };
+
+  function toggleExcerpt() {
+    const b = $('detail').querySelector('[data-act="expand"]');
+    if (!b) return;
+    const id = b.closest('.doc').dataset.id;
+    const open = !b.previousElementSibling.classList.toggle('clamp');   // toggle trả về true khi đang thu gọn
+    if (open) expanded.add(id); else expanded.delete(id);
+    b.textContent = open ? 'Thu gọn trích dẫn ▴' : 'Xem toàn bộ trích dẫn ▾';
+    updateBar();
+  }
+
+  $('detail').onclick = e => {
+    const b = e.target.closest('[data-act]');
+    if (!b) return;
+    const act = b.dataset.act;
+    if (act === 'back') { state.detailOpen = false; return applyView(); }
+    if (act === 'greet-review') return enterReview();
+    if (act === 'greet-draft') return startDrafts();
+    if (act === 'flip') return flipCard();
+    if (act === 'grade-yes') return gradeCurrent(true);
+    if (act === 'grade-no') return gradeCurrent(false);
+    if (act === 'exitReview') return exitReview();
+    if (act === 'tag') { leaveReview(); state.tag = b.dataset.tag; state.limit = PAGE; return renderNotes(); }
+    if (act === 'focus') { state.focus = !state.focus; renderDetail(); return applyView(); }
+    const id = b.closest('.doc').dataset.id;
+    if (act === 'expand') return toggleExcerpt();
+    if (act === 'approve') approveNote(id);
+    else if (act === 'unapprove') unapproveNote(id);
+    else if (act === 'edit') openNote(id);
+    else if (act === 'del') deleteNote(id);
+    else if (act === 'copy') copyNote(id);
+  };
+
+  document.addEventListener('keydown', e => {
+    if (locked) return;
+    if (e.key === 'Escape' && !$('pwAskModal').hidden) { $('pwAskCancel').click(); return; }
+    if (e.key === 'Escape' && !$('lockModal').hidden) { closeLock(); return; }
+    const modalOpen = !$('statsModal').hidden || !$('warnModal').hidden || !$('noteModal').hidden || !$('settingsModal').hidden || !$('importModal').hidden;
+    if (e.key === 'Escape') {
+      if (!$('statsModal').hidden) $('statsModal').hidden = true;
+      else if (!$('warnModal').hidden) $('warnModal').hidden = true;
+      else if (!$('noteModal').hidden) closeNote(true);
+      else if (!$('settingsModal').hidden) $('settingsModal').hidden = true;
+      else if (!$('importModal').hidden) $('importModal').hidden = true;
+      else if (state.greet) { state.greet = false; renderNotes(); }
+      else if (state.focus) { state.focus = false; renderDetail(); applyView(); }
+      else if (state.review) exitReview();
+      else if (state.tag) { state.tag = ''; state.limit = PAGE; renderNotes(); }
+      else if (state.detailOpen) { state.detailOpen = false; applyView(); }
+      return;
+    }
+    if (modalOpen) {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !$('noteModal').hidden) $('noteForm').requestSubmit();
+      return;
+    }
+    const ae = document.activeElement;
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName);
+    if ((e.key === '/' && !typing) || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k')) {
+      e.preventDefault(); $('searchInput').focus(); $('searchInput').select();
+    } else if (state.greet && !typing && e.key === ' ' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      e.preventDefault();
+      if (dueList().length) enterReview(); else startDrafts();
+    } else if (state.review && !typing && !e.ctrlKey && !e.metaKey && !e.altKey && (e.key === '1' || e.key === '2')) {
+      e.preventDefault();
+      if (state.flip) gradeCurrent(e.key === '1'); else if (state.sel) toast('Bấm Space để lật trước, rồi mới chấm.');
+    } else if (!typing && !state.greet && !e.ctrlKey && !e.metaKey && !e.altKey && state.sel && ['d', 'e', 'c', 'f', ' '].includes(e.key.toLowerCase())) {
+      e.preventDefault();
+      const k = e.key.toLowerCase();
+      if (k === 'd') approveNote(state.sel);
+      else if (k === 'e') openNote(state.sel);
+      else if (k === 'c') copyNote(state.sel);
+      else if (k === 'f') { state.focus = !state.focus; renderDetail(); applyView(); }
+      else if (state.review && !state.flip) flipCard();
+      else toggleExcerpt();
+    } else if (e.altKey && e.key.toLowerCase() === 'n') {
+      e.preventDefault(); openNote();
+    } else if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && (ae === document.body || ae.classList.contains('item'))) {
+      const list = filtered();
+      const i = list.findIndex(n => n.id === state.sel);
+      const next = state.greet ? list[0] : list[i + (e.key === 'ArrowDown' ? 1 : -1)];   // đang ở màn chào: mũi tên chọn bài đầu tiên
+      if (next) {
+        e.preventDefault();
+        if (list.indexOf(next) >= state.limit) { state.limit = list.indexOf(next) + 1; state.sel = next.id; renderNotes(); } else selectNote(next.id, false);
+        const el = document.querySelector('.item.sel');
+        if (el) el.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  });
+
+  // Space trên nút đang focus sẽ "bấm" nút khi nhả phím; chặn để Space chỉ dùng cho đóng/mở trích dẫn
+  document.addEventListener('keyup', e => {
+    if (e.key === ' ' && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) && state.sel && !e.target.closest('#menu')) e.preventDefault();
+  });
+
+  document.addEventListener('click', e => { if (!e.target.closest('#menu')) $('menu').open = false; });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') sync(false); });
+  window.addEventListener('online', () => sync(false));
+  window.addEventListener('offline', updateIdleStatus);
+
+  // ---------- Khóa ứng dụng (chỉ khóa giao diện, dữ liệu trên máy không mã hóa) ----------
+  const LS_GATE = 'pkv_gate', SS_OPEN = 'pkv_unlocked', GATE_ITER = 150000;
+  const ssGet = () => { try { return sessionStorage.getItem(SS_OPEN) === '1'; } catch (e) { return false; } };
+  const ssSet = on => { try { on ? sessionStorage.setItem(SS_OPEN, '1') : sessionStorage.removeItem(SS_OPEN); } catch (e) { /* bỏ qua */ } };
+  const b64 = u8 => { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); };
+  const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const canCrypto = () => !!(window.crypto && crypto.subtle);
+
+  async function gateHash(pw, salt, iter) {
+    const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']);
+    return b64(new Uint8Array(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iter }, key, 256)));
+  }
+  async function makeGate(pw) {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    return { salt: b64(salt), iter: GATE_ITER, hash: await gateHash(pw, salt, GATE_ITER) };
+  }
+  async function checkPw(pw) {
+    const g = lsGet(LS_GATE, null);
+    if (!g || !canCrypto()) return false;
+    try { return (await gateHash(pw, unb64(g.salt), g.iter)) === g.hash; } catch (e) { return false; }
+  }
+
+  let locked = !!lsGet(LS_GATE, null) && !ssGet();
+  let lockMode = '';
+
+  function updateLockMenu() {
+    const has = !!lsGet(LS_GATE, null);
+    $('lockSetBtn').textContent = has ? 'Đổi mật khẩu' : 'Đặt mật khẩu';
+    $('lockNowBtn').hidden = !has;
+    $('lockOffBtn').hidden = !has;
+  }
+
+  function showGate() {
+    document.body.classList.add('locked');
+    $('gate').hidden = false;
+    $('gatePw').value = ''; $('gateErr').textContent = '';
+    setTimeout(() => $('gatePw').focus(), 0);
+  }
+
+  $('gateForm').onsubmit = async e => {
+    e.preventDefault();
+    const pw = $('gatePw').value;
+    if (!pw) return;
+    if (await checkPw(pw)) {
+      ssSet(true); locked = false;
+      $('gate').hidden = true; document.body.classList.remove('locked');
+      boot();
+    } else {
+      const card = $('gateForm');
+      $('gateErr').textContent = canCrypto() ? 'Sai mật khẩu, thử lại.' : 'Trình duyệt này không mở được khóa (cần https hoặc localhost).';
+      $('gatePw').value = '';
+      card.classList.remove('bad'); void card.offsetWidth; card.classList.add('bad');
+      $('gatePw').focus();
+    }
+  };
+
+  // Quên mật khẩu: khóa chỉ che giao diện nên không có cửa sau. Cách duy nhất là xóa dữ liệu trên máy rồi nạp lại từ bản sao lưu.
+  $('gateForgot').onclick = () => {
+    const ans = prompt('Quên mật khẩu thì chỉ có cách xóa TOÀN BỘ dữ liệu trên máy này, rồi nhập lại từ file sao lưu JSON.\n\nGõ XOA để xác nhận:');
+    if (ans === null || ans.trim().toUpperCase() !== 'XOA') return;
+    try { Object.keys(localStorage).filter(k => k.startsWith('pkv_')).forEach(k => localStorage.removeItem(k)); } catch (e) { /* bỏ qua */ }
+    keysForget(); ssSet(false);
+    setTimeout(() => location.reload(), 150);
+  };
+
+  function openLock(mode) {
+    if (!canCrypto()) { toast('Trình duyệt này chưa hỗ trợ khóa (cần https hoặc localhost).'); return; }
+    lockMode = mode;
+    const t = { set: 'Đặt mật khẩu', change: 'Đổi mật khẩu', off: 'Tắt khóa' }[mode];
+    $('lockTitle').textContent = t;
+    $('lockNote').textContent = mode === 'set' ? 'Mật khẩu chỉ che giao diện khi mở web, dữ liệu trên máy không bị mã hóa. Nhớ giữ thói quen xuất sao lưu JSON.'
+      : mode === 'off' ? 'Nhập mật khẩu hiện tại để tắt khóa.' : '';
+    $('lkCurRow').hidden = mode === 'set';
+    $('lkNewRow').hidden = $('lkNew2Row').hidden = mode === 'off';
+    $('lockOk').textContent = mode === 'off' ? 'Tắt khóa' : 'Lưu';
+    ['lkCur', 'lkNew', 'lkNew2'].forEach(id => { $(id).value = ''; });
+    $('lockErr').textContent = '';
+    $('lockModal').hidden = false;
+    $('menu').open = false;
+    setTimeout(() => $(mode === 'set' ? 'lkNew' : 'lkCur').focus(), 0);
+  }
+  const closeLock = () => { $('lockModal').hidden = true; };
+
+  $('lockForm').onsubmit = async e => {
+    e.preventDefault();
+    const err = m => { $('lockErr').textContent = m; };
+    if (lockMode !== 'set' && !(await checkPw($('lkCur').value))) return err('Mật khẩu hiện tại không đúng.');
+    if (lockMode === 'off') {
+      try { localStorage.removeItem(LS_GATE); } catch (x) { /* bỏ qua */ }
+      ssSet(false); updateLockMenu(); closeLock(); toast('Đã tắt khóa.');
+      return;
+    }
+    const a = $('lkNew').value, b = $('lkNew2').value;
+    if (a.length < 4) return err('Mật khẩu cần ít nhất 4 ký tự.');
+    if (a !== b) return err('Hai lần nhập chưa khớp.');
+    if (!lsSet(LS_GATE, await makeGate(a))) return err('Không lưu được mật khẩu (bộ nhớ trình duyệt bị chặn).');
+    ssSet(true); updateLockMenu(); closeLock();
+    await enableEncryption(a);
+    scheduleSync();
+    toast(lockMode === 'set' ? 'Đã đặt mật khẩu. Lần mở sau sẽ hỏi mật khẩu.' : 'Đã đổi mật khẩu.');
+  };
+  $('lockClose').onclick = $('lockCancel').onclick = closeLock;
+  $('lockSetBtn').onclick = () => openLock(lsGet(LS_GATE, null) ? 'change' : 'set');
+  $('lockOffBtn').onclick = () => openLock('off');
+  $('lockNowBtn').onclick = () => { ssSet(false); location.reload(); };
+
+  // ---------- Khởi động ----------
+  function boot() {
+    notes = notes.map(normalizeNote).filter(n => n.id);
+    startGreeting();
+    render();
+    updateIdleStatus();
+    sync(false);
+  }
+  updateLockMenu();
+  if (locked) showGate(); else boot();
+})();
+</script>
+</body>
+</html>
