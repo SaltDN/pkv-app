@@ -57,6 +57,13 @@
   .btn:disabled { opacity: .55; cursor: default; }
   .btn:disabled:hover { background: var(--surface); }
   .btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  /* Bảng màu ngữ nghĩa cho thanh trên: Thu thập (chàm đậm, nút chính) · Ghi nhanh (hổ phách) · Thống kê (xanh trời) · Đồng bộ (xanh lá; vàng khi có việc chờ, đỏ khi lỗi) */
+  #quickBtn { background: #fef3c7; border-color: #fde68a; color: #92400e; }
+  #quickBtn:hover { background: #fde68a; }
+  #statsBtn { background: #e0f2fe; border-color: #bae6fd; color: #0369a1; }
+  #statsBtn:hover { background: #bae6fd; }
+  #syncTopBtn { background: #dcfce7; border-color: #bbf7d0; color: #15803d; }
+  #syncTopBtn:hover { background: #bbf7d0; }
 
   .menu { position: relative; }
   .menu > summary { list-style: none; }
@@ -152,20 +159,30 @@
 
   .item {
     display: block; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--border);
-    border-left: 4px solid transparent; padding: 11px 14px 11px 11px; position: relative;
+    border-left: 3px solid transparent; padding: 8px 12px 8px 10px; position: relative;
   }
   .item:hover { background: var(--hover); }
-  .item.sel { background: var(--surface); border-left-color: var(--accent); box-shadow: 0 1px 3px rgba(15,23,42,.10); z-index: 1; }
+  .item.sel { background: #f0f7ff; border-left-color: #2563eb; box-shadow: 0 1px 3px rgba(15,23,42,.10); z-index: 1; }
   .item.sel .t { color: #312e81; }
-  .item .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: 600; font-size: 14px; line-height: 1.35; }
-  .item .m { margin-top: 4px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .item .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: 600; font-size: 13.5px; line-height: 1.3; }
+  .item .m { margin-top: 2px; display: flex; align-items: center; gap: 5px; font-size: 11px; line-height: 1.35; color: #7c8696; }
   .item .mt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); flex: none; }
   .more { margin: 12px auto; display: block; }
+  /* Nhóm trong danh sách: tiêu đề nhỏ dính ngay dưới đầu cột (--lh = chiều cao phần đầu cột, đặt bằng JS) */
+  .grp-h { display: flex; align-items: center; gap: 6px; width: 100%; text-align: left; background: #f1f5f9; border: 0; border-bottom: 1px solid var(--border);
+    padding: 6px 12px; position: sticky; top: var(--lh, 0px); z-index: 1; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #1e293b; cursor: pointer; }
+  .grp-h:hover { background: #e2e8f0; }
+  .grp-h.static { cursor: default; }
+  .grp-h.static:hover { background: #f1f5f9; }
+  .grp-h .gc { width: 10px; flex: none; color: #64748b; }
+  .grp-h .gn { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .grp-h .gcount { font-weight: 500; color: #64748b; }
+  .grp .more { margin: 6px auto 10px; }
   .empty { padding: 40px 18px; text-align: center; color: var(--faint); font-size: 14px; }
 
   /* ---------- Khung đọc chi tiết ---------- */
-  .doc { --bar: 3px; --gut: 18px; --pad: 14px; max-width: 820px; margin: 0 auto; padding: 0 32px 32px; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 25px -4px rgba(0,0,0,.05); }
+  .doc { --bar: 3px; --gut: 18px; --pad: 14px; max-width: 960px; margin: 0 auto; padding: 0 40px 36px; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 25px -4px rgba(0,0,0,.05); }
   .doc-bar {
     position: sticky; top: -24px; z-index: 3; display: flex; align-items: center; gap: 8px; min-height: 56px;   /* -24px = phần đệm trên của .col-detail */
     margin: 0 -32px 6px; padding: 8px 32px 0; border-radius: 16px 16px 0 0; background: #fff; border-bottom: 1px solid transparent;
@@ -183,10 +200,22 @@
   .acts button { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #e2e8f0; padding: 5px 10px; border-radius: 8px; color: var(--muted); font-size: 13px; }
   .acts button:hover { background: #fff; color: #4f46e5; border-color: #a5b4fc; }
   .acts button svg { width: 15px; height: 15px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .acts .danger:hover { background: #fee2e2; border-color: #fecaca; color: var(--danger); }
   @media (max-width: 520px) { .acts button span { display: none; } .acts button { padding: 6px 8px; } }
   .acts .ok-btn { background: #ecfdf5; border-color: #a7f3d0; color: #047857; font-weight: 600; }
   .acts .ok-btn:hover { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
+  /* Thanh nút của bài viết: phối màu theo nhóm chức năng (trung tính · xuất · rèn luyện · bỏ duyệt · sửa · xóa) */
+  .acts .focus-btn, .acts [data-act="copy"] { background: #f1f5f9; border-color: #e2e8f0; color: #334155; }
+  .acts .focus-btn:hover, .acts [data-act="copy"]:hover { background: #e2e8f0; border-color: #cbd5e1; color: #1e293b; }
+  .acts [data-act="share"] { background: #dcfce7; border-color: #bbf7d0; color: #166534; }
+  .acts [data-act="share"]:hover { background: #bbf7d0; border-color: #86efac; color: #14532d; }
+  .acts .train-btn, .acts [data-act="unenroll"] { background: #eef2ff; border-color: #4338ca; color: #4338ca; font-weight: 600; }
+  .acts .train-btn:hover, .acts [data-act="unenroll"]:hover { background: #e0e7ff; border-color: #3730a3; color: #3730a3; }
+  .acts [data-act="unapprove"] { background: #fef9c3; border-color: #fef08a; color: #854d0e; }
+  .acts [data-act="unapprove"]:hover { background: #fef08a; border-color: #fde047; color: #713f12; }
+  .acts [data-act="edit"] { background: #e0f2fe; border-color: #bae6fd; color: #0369a1; }
+  .acts [data-act="edit"]:hover { background: #bae6fd; border-color: #7dd3fc; color: #075985; }
+  .acts .danger { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
+  .acts .danger:hover { background: #fecaca; border-color: #fca5a5; color: #7f1d1d; }
   button.badge { cursor: pointer; font: inherit; font-size: 12px; font-weight: 600; }
   button.badge:hover { background: #fef3c7; border-color: #fcd34d; }
   .chip-review { background: #e0e7ff; color: #3730a3; }
@@ -257,7 +286,7 @@
      thẳng hàng với tiêu đề, thẻ và nguồn. Cùng độ dày viền (--bar), cùng khoảng đệm (--gut). */
   .take {
     margin: 18px calc(-1 * var(--pad)) 0 calc(-1 * var(--gut)); padding: 14px var(--pad) 14px calc(var(--gut) - var(--bar));
-    background: #e0e7ff; color: #1e293b; border-left: var(--bar) solid var(--accent);
+    background: #e0e7ff; color: #1e293b; border-left: var(--bar) solid #3730a3;
     border-radius: 8px; font-size: 16px; line-height: 1.65;
   }
   /* Mỗi dòng là một khối; dòng có dấu đầu dòng (-, a), 1.) là lưới hai cột nên chữ rớt dòng thẳng hàng với chữ dòng đầu (thụt lề treo) */
@@ -275,9 +304,11 @@
   }
   .tags { margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
   .tags-label { font-size: 12px; color: var(--faint); margin-right: 2px; }
-  .badge.ok { color: #047857; background: #ecfdf5; border-color: #a7f3d0; }
-  .tag { background: #f1f5f9; border: 0; border-radius: 6px; padding: 3px 8px; font-size: 12px; color: #475569; }
-  .tag:hover { background: #eef2ff; color: #4f46e5; }
+  .badge.ok { color: #03543f; background: #def7ec; border-color: #bcf0da; }
+  .badge.mute { color: #374151; background: #f3f4f6; border-color: #e5e7eb; font-weight: 500; }
+  .badge.rev { color: #4338ca; background: #eef2ff; border-color: #c7d2fe; }
+  .tag { background: #f5f3ff; border: 0; border-radius: 6px; padding: 3px 8px; font-size: 12px; color: #5b21b6; }
+  .tag:hover { background: #ede9fe; color: #4c1d95; }
   .src { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); display: flex; gap: 6px; align-items: flex-start; overflow-wrap: anywhere; }
   .src a { color: inherit; }
   .ico { width: 14px; height: 14px; margin-top: 3px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linejoin: round; }
@@ -322,8 +353,10 @@
   body.locked .top, body.locked .app { visibility: hidden; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .btn.spin svg { animation: spin 1s linear infinite; }
-  .btn.sync-warn { color: var(--warn); }
-  .btn.sync-err { color: var(--danger); }
+  #syncTopBtn.sync-warn { background: #fef3c7; border-color: #fde68a; color: #92400e; }
+  #syncTopBtn.sync-warn:hover { background: #fde68a; }
+  #syncTopBtn.sync-err { background: #fee2e2; border-color: #fecaca; color: #b91c1c; }
+  #syncTopBtn.sync-err:hover { background: #fecaca; }
   .gh-guide { margin-top: 10px; font-size: 13px; color: var(--muted); }
   .gh-guide summary { cursor: pointer; color: var(--accent); }
   .gh-guide ol { margin: 6px 0 0; padding-left: 20px; }
@@ -394,7 +427,7 @@
       <div class="menu-pop">
         <button id="exportBtn">Xuất sao lưu (JSON)</button>
         <button id="importBtn">Nhập ghi chú (dán / file JSON)</button>
-        <button id="topicMgrBtn">Quản lý chủ đề</button>
+        <button id="topicMgrBtn">Quản lý chuyên đề</button>
         <hr>
         <div class="menu-label">Khóa ứng dụng</div>
         <button id="lockSetBtn">Đặt mật khẩu</button>
@@ -406,7 +439,7 @@
         <button id="syncBtn">Đồng bộ ngay</button>
         <button id="settingsBtn">Cài đặt kết nối</button>
         <hr>
-        <div class="note" style="padding:2px 10px 4px">Phím tắt: <kbd>/</kbd> tìm · <kbd>Alt+N</kbd> thêm · <kbd>Alt+Q</kbd> ghi nhanh · <kbd>↑</kbd><kbd>↓</kbd> chọn · <kbd>Ctrl+Enter</kbd> lưu<br><kbd>D</kbd> duyệt · <kbd>R</kbd> bắt đầu/ngừng ôn · <kbd>E</kbd> sửa · <kbd>C</kbd> chép · <kbd>Space</kbd> trích dẫn · <kbd>F</kbd> tập trung · <kbd>Esc</kbd> thoát/bỏ lọc thẻ</div>
+        <div class="note" style="padding:2px 10px 4px">Phím tắt: <kbd>/</kbd> tìm · <kbd>Alt+N</kbd> thêm · <kbd>Alt+Q</kbd> ghi nhanh · <kbd>↑</kbd><kbd>↓</kbd> chọn · <kbd>Ctrl+Enter</kbd> lưu<br><kbd>D</kbd> duyệt · <kbd>R</kbd> bật/tắt rèn luyện · <kbd>E</kbd> sửa · <kbd>C</kbd> sao chép · <kbd>Space</kbd> trích dẫn · <kbd>F</kbd> tập trung · <kbd>Esc</kbd> thoát/bỏ lọc thẻ</div>
       </div>
     </details>
   </div>
@@ -415,18 +448,18 @@
 <main class="app" id="app">
   <nav class="col-topics">
     <div class="topics-head">
-      <h2>Chủ đề</h2>
-      <button type="button" class="icon-btn" id="hideTopics" title="Ẩn cột chủ đề" aria-label="Ẩn cột chủ đề"><svg viewBox="0 0 24 24"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"/></svg></button>
+      <h2>Chuyên đề</h2>
+      <button type="button" class="icon-btn" id="hideTopics" title="Ẩn cột chuyên đề" aria-label="Ẩn cột chuyên đề"><svg viewBox="0 0 24 24"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"/></svg></button>
     </div>
     <div id="topicList"></div>
   </nav>
 
   <section class="col-list">
     <div class="list-head">
-      <select id="mobileTopic" class="topic-select" aria-label="Chủ đề"></select>
+      <select id="mobileTopic" class="topic-select" aria-label="Chuyên đề"></select>
       <div class="topic-title" id="topicTitle"></div>
       <div class="meta">
-        <button type="button" class="icon-btn" id="showTopics" title="Hiện cột chủ đề" aria-label="Hiện cột chủ đề"><svg viewBox="0 0 24 24"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"/></svg></button>
+        <button type="button" class="icon-btn" id="showTopics" title="Hiện cột chuyên đề" aria-label="Hiện cột chuyên đề"><svg viewBox="0 0 24 24"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"/></svg></button>
         <span id="countText"></span>
         <span id="tagChip"></span>
         <span id="draftChip"></span>
@@ -449,8 +482,8 @@
     <form id="noteForm" autocomplete="off">
       <input type="hidden" id="formId">
       <div class="field">
-        <label for="formTopic">Chủ đề</label>
-        <input id="formTopic" list="topicOptions" required placeholder="Ví dụ: Dân sự — hoặc Pháp luật/Dân sự (chủ đề con)">
+        <label for="formTopic">Chuyên đề / Chủ đề</label>
+        <input id="formTopic" list="topicOptions" required placeholder="Ví dụ: Pháp luật / Dân sự">
         <datalist id="topicOptions"></datalist>
       </div>
       <div class="field">
@@ -458,7 +491,7 @@
         <input id="formTitle" required placeholder="Tóm lược ngắn gọn">
       </div>
       <div class="field">
-        <label for="formTakeaway">Ý hiểu &amp; bài học rút ra</label>
+        <label for="formTakeaway">Nội dung cốt lõi</label>
         <textarea id="formTakeaway" required rows="4" placeholder="- Bản chất là gì?&#10;- Vận dụng thế nào?"></textarea>
       </div>
       <div class="field">
@@ -470,7 +503,7 @@
         <input id="formSource" placeholder="VD: Bộ luật Dân sự 2015, Điều 117, khoản 1">
       </div>
       <div class="field">
-        <label for="formTags">Tag <span class="hint">(tùy chọn, cách nhau bằng dấu phẩy)</span></label>
+        <label for="formTags">Thẻ <span class="hint">(tùy chọn, cách nhau bằng dấu phẩy)</span></label>
         <input id="formTags" placeholder="VD: hợp đồng, cần kiểm tra hiệu lực">
       </div>
       <div class="form-actions">
@@ -567,7 +600,7 @@
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shareHead" style="max-width:480px">
     <div class="sheet-head"><h3 id="shareHead">Xuất bài đọc</h3><button type="button" class="x" id="shareClose" aria-label="Đóng">&times;</button></div>
     <p class="note"><b id="shareTitle"></b></p>
-    <p class="note">Mặc định chỉ gồm Tiêu đề và Ý hiểu. Chỉ bài bạn chọn được xuất; không kèm gì khác trong kho.</p>
+    <p class="note">Mặc định chỉ gồm Tiêu đề và Nội dung cốt lõi. Chỉ ghi chú bạn chọn được xuất, không kèm dữ liệu nào khác.</p>
     <label class="check"><input type="checkbox" id="shExcerpt"><span>Kèm trích dẫn nguyên văn<br><span id="shExcerptHint" style="font-size:12px;color:var(--faint)"></span></span></label>
     <label class="check"><input type="checkbox" id="shSource"><span>Kèm nguồn</span></label>
     <div class="form-actions" style="flex-wrap:wrap">
@@ -584,7 +617,7 @@
   <form class="sheet" id="quickForm" role="dialog" aria-modal="true" aria-labelledby="quickHead" style="max-width:520px" autocomplete="off">
     <div class="sheet-head"><h3 id="quickHead">Ghi nhanh</h3><button type="button" class="x" id="quickClose" aria-label="Đóng">&times;</button></div>
     <textarea id="quickText" class="quick-text" rows="7" placeholder="Gõ ý tưởng, từ khóa, đoạn cần nhớ… Dòng đầu tiên sẽ làm tiêu đề." aria-label="Nội dung ghi nhanh"></textarea>
-    <p class="note">Lưu vào “Hộp thư đến”, trạng thái chưa duyệt; chủ đề, thẻ, nguồn bổ sung sau cũng được. Đóng hộp mà chưa lưu thì nội dung được giữ lại cho lần mở sau.</p>
+    <p class="note">Lưu vào “Hộp thư đến”, trạng thái chưa duyệt; chuyên đề, thẻ, nguồn bổ sung sau cũng được. Đóng hộp mà chưa lưu thì nội dung được giữ lại cho lần mở sau.</p>
     <div class="form-actions"><button type="button" class="btn" id="quickCancel" title="Bỏ nội dung đang gõ">Hủy bỏ</button><button type="button" class="btn" id="quickMore">Lưu &amp; ghi tiếp</button><button type="submit" class="btn primary" title="Ctrl+Enter">Lưu</button></div>
   </form>
 </div>
@@ -592,32 +625,32 @@
 <!-- Quản lý chủ đề -->
 <div class="modal" id="topicModal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="topicHead" style="max-width:520px">
-    <div class="sheet-head"><h3 id="topicHead">Quản lý chủ đề</h3><button type="button" class="x" id="tmClose" aria-label="Đóng">&times;</button></div>
+    <div class="sheet-head"><h3 id="topicHead">Quản lý chuyên đề</h3><button type="button" class="x" id="tmClose" aria-label="Đóng">&times;</button></div>
     <div class="field">
-      <label for="tmSel">Chủ đề cần sửa</label>
+      <label for="tmSel">Chuyên đề / chủ đề cần sửa</label>
       <select id="tmSel" class="mg-sel"></select>
       <div class="note" id="tmInfo"></div>
     </div>
     <div class="mg-sec">
       <h4>Đổi tên</h4>
       <div class="mg-row"><input id="tmName" type="text" aria-label="Tên mới" autocomplete="off"><button type="button" class="btn primary" id="tmRename">Đổi tên</button></div>
-      <div class="note">Đổi tên chủ đề mẹ thì mọi chủ đề con đi theo. Đổi thành tên đã có thì hai chủ đề được gộp (có hỏi lại). Gõ <b>Mẹ/Con</b> (ví dụ Kiến thức pháp luật/Bí mật nhà nước) để vừa đổi tên vừa lồng vào chủ đề mẹ; chỉ dùng được với chủ đề chưa có con.</div>
+      <div class="note">Đổi tên chuyên đề thì các chủ đề con đi theo. Đổi thành tên đã có sẽ gộp hai mục (có hỏi lại). Gõ <b>Chuyên đề/Chủ đề</b> (ví dụ Pháp luật/Dân sự) để vừa đổi tên vừa chuyển vào chuyên đề; chỉ áp dụng cho mục chưa có chủ đề con.</div>
     </div>
     <div class="mg-sec">
-      <h4>Chuyển vào chủ đề…</h4>
-      <div class="mg-row"><select id="tmTarget" aria-label="Chủ đề mẹ"></select><button type="button" class="btn" id="tmMove">Chuyển</button></div>
-      <input id="tmNewParent" class="mg-new" type="text" placeholder="Tên chủ đề mẹ mới" autocomplete="off" hidden>
+      <h4>Chuyển vào chuyên đề…</h4>
+      <div class="mg-row"><select id="tmTarget" aria-label="Chuyên đề"></select><button type="button" class="btn" id="tmMove">Chuyển</button></div>
+      <input id="tmNewParent" class="mg-new" type="text" placeholder="Tên chuyên đề mới" autocomplete="off" hidden>
       <div class="note" id="tmMoveNote"></div>
     </div>
     <div class="mg-sec">
-      <h4>Lịch ôn của chủ đề này</h4>
+      <h4>Rèn luyện của mục này</h4>
       <div class="note" id="tmRevInfo"></div>
-      <div class="mg-row split" style="margin-top:8px"><button type="button" class="btn" id="tmEnroll">Đưa vào lịch ôn</button><button type="button" class="btn" id="tmStop">Ngừng ôn</button></div>
+      <div class="mg-row split" style="margin-top:8px"><button type="button" class="btn" id="tmEnroll">Bật rèn luyện</button><button type="button" class="btn" id="tmStop">Tắt rèn luyện</button></div>
     </div>
     <div class="mg-sec">
       <h4>Dọn dẹp toàn kho</h4>
       <div class="note" id="tmAllInfo"></div>
-      <div class="mg-row" style="margin-top:8px"><button type="button" class="btn" id="tmStopAll">Ngừng ôn toàn bộ</button></div>
+      <div class="mg-row" style="margin-top:8px"><button type="button" class="btn" id="tmStopAll">Tắt rèn luyện toàn bộ</button></div>
     </div>
     <div class="gate-err" id="tmErr" role="alert"></div>
     <div class="form-actions"><button type="button" class="btn" id="tmDone">Đóng</button></div>
@@ -658,7 +691,7 @@
     </div>
     <label class="check">
       <input type="checkbox" id="overwrite">
-      <span>Ghi đè ghi chú trùng <span class="hint">(cùng tiêu đề + nguồn). Giữ ngày tạo, thay nội dung bằng bản mới và gắn lại tag “chưa duyệt”. Ghi chú giống hệt thì không đổi.</span></span>
+      <span>Ghi đè ghi chú trùng <span class="hint">(cùng tiêu đề + nguồn). Giữ ngày tạo, thay nội dung bằng bản mới và gắn lại thẻ “chưa duyệt”. Ghi chú giống hệt thì không đổi.</span></span>
     </label>
     <div id="importPreview" class="preview"></div>
     <div class="form-actions">
@@ -691,7 +724,7 @@
   let dirty = new Set(lsGet(LS_DIRTY, []));   // id ghi chú đổi từ lần đồng bộ trước ('__review' = lịch ôn đổi)
   let cfg = lsGet(LS_GH, { token: '', user: '', repo: '', path: 'data.json' });   // kết nối GitHub (token nằm trong máy này)
   const ui = lsGet(LS_UI, { topicsHidden: false });   // tùy chọn giao diện nhớ giữa các lần mở
-  const state = { topic: 'all', tag: '', q: '', limit: PAGE, sel: '', detailOpen: false, focus: false, review: false, flip: false, revDone: 0, greet: false, reviewTopic: '' };
+  const state = { topic: 'all', tag: '', q: '', limit: PAGE, sel: '', detailOpen: false, focus: false, review: false, flip: false, revDone: 0, greet: false, reviewTopic: '', glimit: {} };
   let lastSync = '';
   let lastDetail = '';
 
@@ -786,8 +819,8 @@
     if (sel.includes('/')) return n.topic === sel;
     return n.topic === sel || n.topic.startsWith(sel + '/');
   }
-  const prettyTopic = t => t.replace('/', ' › ');
-  const topicLabel = sel => sel.endsWith('/') ? sel.slice(0, -1) + ' (chung)' : prettyTopic(sel);
+  const prettyTopic = t => t.replace('/', ' / ');
+  const topicLabel = sel => sel.endsWith('/') ? sel.slice(0, -1) + ' / Tổng quan' : prettyTopic(sel);
   // Dùng đúng cách viết đã có cho cả đường dẫn lẫn phần Mẹ ("kien thuc/Con" -> "Kiến thức/Con")
   // childMatch (khi nhập từ AI): chỉ có tên con thì xếp vào đường dẫn đầy đủ nếu có đúng MỘT chủ đề con trùng tên
   function matchTopic(t, known, childMatch = false) {
@@ -854,7 +887,7 @@
     const tb = $('syncTopBtn');
     tb.title = text;
     tb.classList.toggle('spin', !cls);
-    tb.classList.toggle('sync-warn', /warn/.test(cls || ''));
+    tb.classList.toggle('sync-warn', /warn/.test(cls || '') && !/link/.test(cls || ''));   // chưa kết nối GitHub: giữ màu xanh, không nhắc nhở
     tb.classList.toggle('sync-err', /err/.test(cls || ''));
   }
 
@@ -898,22 +931,22 @@
     const sorted = [...groups.values()].sort((a, b) => a.name.localeCompare(b.name, 'vi'));
     const folded = new Set(ui.collapsed || []);
 
-    const badge = d => d ? `<span class="due-badge" title="Bài đến hạn ôn hôm nay">${d} ôn</span>` : '';
+    const badge = d => d ? `<span class="due-badge" title="Bài đến hạn rèn luyện hôm nay">${d} đến hạn</span>` : '';
     const btn = (value, icon, label, count, due) =>
       `<button class="topic-btn ${plain && state.topic === value ? 'on' : ''}" data-topic="${esc(value)}"><span title="${esc(label)}">${icon ? icon + ' ' : ''}${esc(label)}</span><span class="r">${badge(due)}<span class="count">${count}</span></span></button>`;
-    const pen = tok => `<button type="button" class="edit-btn" data-edit="${esc(tok)}" title="Đổi tên / chuyển chủ đề" aria-label="Sửa chủ đề ${esc(tok)}">✎</button>`;
+    const pen = tok => `<button type="button" class="edit-btn" data-edit="${esc(tok)}" title="Đổi tên hoặc chuyển mục này" aria-label="Sửa mục ${esc(tok)}">✎</button>`;
     const row = (lead, inner, extra = '') => `<div class="tp-row">${lead}${inner}${extra}</div>`;
     const act = (kind, icon, label, count, on) =>
       `<button class="topic-btn act-btn ${on ? 'on' : ''}" data-action="${kind}"><span>${icon} ${label}</span><span class="count">${count}</span></button>`;
     // Bộ lọc nhanh nằm cùng hàng với "Tất cả ghi chú": chỉ hiện khi có việc (chưa duyệt / bài đang ôn đến hạn), không có khung nổi bật
     const quick = (draftN ? row('<span class="caret-sp"></span>', act('draft', '⏳', 'Chưa duyệt', draftN, !state.review && state.tag === DRAFT_TAG)) : '') +
-      (dueN ? row('<span class="caret-sp"></span>', act('review', '🔁', 'Cần ôn', dueN, state.review)) : '');
+      (dueN ? row('<span class="caret-sp"></span>', act('review', '🔁', 'Đến hạn', dueN, state.review)) : '');
 
     const tree = sorted.map(g => {
       if (!g.kids.length) return row('<span class="caret-sp"></span>', btn(g.name, '📁', g.name, g.total, g.due), pen(g.name));
       const open = !folded.has(g.name);
       const caret = `<button type="button" class="caret" data-fold="${esc(g.name)}" aria-expanded="${open}" aria-label="${open ? 'Thu gọn' : 'Mở rộng'} ${esc(g.name)}">${open ? '▾' : '▸'}</button>`;
-      const kids = (g.own ? row('', btn(g.name + '/', '📄', '(chung)', g.own, dueBy[g.name] || 0)) : '') +
+      const kids = (g.own ? row('', btn(g.name + '/', '📄', 'Tổng quan', g.own, dueBy[g.name] || 0)) : '') +
         g.kids.sort((a, b) => a.name.localeCompare(b.name, 'vi')).map(k => row('', btn(k.path, '📄', k.name, k.n, k.due), pen(k.path))).join('');
       return row(caret, btn(g.name, '📁', g.name, g.total, g.due), pen(g.name)) + (open ? `<div class="tp-kids">${kids}</div>` : '');
     }).join('');
@@ -922,7 +955,7 @@
 
     $('mobileTopic').innerHTML = `<option value="all">Tất cả (${list.length})</option>` + sorted.map(g => !g.kids.length
       ? `<option value="${esc(g.name)}">${esc(g.name)} (${g.total})</option>`
-      : `<optgroup label="${esc(g.name)}"><option value="${esc(g.name)}">Cả nhánh ${esc(g.name)} (${g.total})</option>${g.own ? `<option value="${esc(g.name + '/')}">(chung) (${g.own})</option>` : ''}${g.kids.map(k => `<option value="${esc(k.path)}">${esc(k.name)} (${k.n})</option>`).join('')}</optgroup>`).join('');
+      : `<optgroup label="${esc(g.name)}"><option value="${esc(g.name)}">Toàn bộ ${esc(g.name)} (${g.total})</option>${g.own ? `<option value="${esc(g.name + '/')}">Tổng quan (${g.own})</option>` : ''}${g.kids.map(k => `<option value="${esc(k.path)}">${esc(k.name)} (${k.n})</option>`).join('')}</optgroup>`).join('');
     $('mobileTopic').value = state.topic;
 
     $('topicOptions').innerHTML = [...new Set([...groups.keys(), ...topics])].map(t => `<option value="${esc(t)}">`).join('');
@@ -950,11 +983,12 @@
 
   const isDue = n => inReview(n) && review[n.id].due <= today();
 
-  function itemHtml(n) {
+  // ctx: '' (danh sách phẳng, ghi cả chuyên đề), 'parent' (đã có tiêu đề chuyên đề, chỉ ghi chủ đề con), 'child' (đã có tiêu đề chủ đề con)
+  function itemHtml(n, ctx = '') {
     const draft = parseTags(n.tags).includes(DRAFT_TAG);
     return `<button type="button" class="item${n.id === state.sel && !state.greet ? ' sel' : ''}" data-id="${esc(n.id)}">
       <span class="t">${esc(n.title)}</span>
-      <span class="m">${draft ? '<span class="dot" title="Chưa duyệt"></span>' : ''}<span class="mt">${esc(prettyTopic(n.topic))}</span><span>·</span><span>${fmtDate(n.created_at)}</span>${isDue(n) && !state.review ? '<span class="due-tag">Cần ôn</span>' : ''}</span>
+      <span class="m">${draft ? '<span class="dot" title="Chưa duyệt"></span>' : ''}${(ctx === 'parent' ? splitTopic(n.topic).child : ctx === 'child' ? '' : prettyTopic(n.topic)) ? `<span class="mt">${esc(ctx === 'parent' ? splitTopic(n.topic).child : prettyTopic(n.topic))}</span><span>·</span>` : ''}<span>${fmtDate(n.created_at)}</span>${isDue(n) && !state.review ? '<span class="due-tag">Đến hạn</span>' : ''}</span>
     </button>`;
   }
 
@@ -985,14 +1019,14 @@
           <button type="button" class="focus-btn" data-act="focus" title="Ẩn hai cột bên trái để đọc (Esc để thoát)"><svg viewBox="0 0 24 24">${state.focus ? '<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>' : '<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>'}</svg><span>${state.focus ? 'Thoát tập trung' : 'Tập trung'}</span></button>
           <button type="button" data-act="copy" title="Sao chép ghi chú"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><span>Sao chép</span></button>
           <button type="button" data-act="share" title="Xuất bài đọc (file HTML) hoặc sao chép Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span>Xuất bài đọc</span></button>
-          ${draft ? '' : inReview(n) ? '<button type="button" data-act="unenroll" title="Ngừng ôn, giữ trong kho tra cứu (phím R)"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg><span>Ngừng ôn</span></button>' : '<button type="button" class="ok-btn" data-act="enroll" title="Đưa vào lịch ôn 1-3-7-30 ngày (phím R)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Bắt đầu ôn</span></button>'}
+          ${draft ? '' : inReview(n) ? '<button type="button" data-act="unenroll" title="Tắt rèn luyện, giữ bài ở mục Tra cứu (phím R)"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg><span>Tắt rèn luyện</span></button>' : '<button type="button" class="train-btn" data-act="enroll" title="Đưa bài vào lịch rèn luyện 1-3-7-30 ngày (phím R)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Bật rèn luyện</span></button>'}
           ${draft ? '' : '<button type="button" data-act="unapprove" title="Đưa về hàng đợi chưa duyệt"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg><span>Bỏ duyệt</span></button>'}
           ${draft ? '<button type="button" class="ok-btn" data-act="approve" title="Duyệt ghi chú này (phím D)"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>Duyệt</span></button>' : ''}
           <button type="button" data-act="edit" title="Sửa ghi chú (phím E)"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Sửa</span></button>
           <button type="button" data-act="del" class="danger" title="Xóa ghi chú"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg><span>Xóa</span></button>
         </span>
       </div>
-      <div class="doc-meta"><span class="pill">${esc(prettyTopic(n.topic))}</span>${draft ? '<button type="button" class="badge" data-act="approve" title="Bấm để duyệt (phím D)">Chưa duyệt ✓</button>' : '<span class="badge ok">Đã duyệt ✓</span>'}${draft ? '' : inReview(n) ? `<span class="badge" title="Đang trong lịch ôn, lần ôn kế tiếp">Đang ôn · ${fmtDay(review[n.id].due)}</span>` : '<span class="badge" title="Chưa đưa vào lịch ôn. Bấm Bắt đầu ôn (phím R) khi muốn ghi nhớ">Kho tra cứu</span>'}${parseTags(n.tags).includes(MISSING_TAG) ? '<span class="badge" title="Nguồn không có nguyên văn điều luật">Thiếu nguyên văn</span>' : ''}<time>${fmtDate(n.created_at)}</time></div>
+      <div class="doc-meta"><span class="pill">${esc(prettyTopic(n.topic))}</span>${draft ? '<button type="button" class="badge" data-act="approve" title="Bấm để duyệt (phím D)">Chưa duyệt ✓</button>' : '<span class="badge ok">Đã duyệt ✓</span>'}${draft ? '' : inReview(n) ? `<span class="badge rev" title="Đang rèn luyện; lần kế tiếp vào ngày này">Rèn luyện · ${fmtDay(review[n.id].due)}</span>` : '<span class="badge mute" title="Chưa bật rèn luyện. Bấm Bật rèn luyện (phím R) khi muốn ghi nhớ bài này">Tra cứu</span>'}${parseTags(n.tags).includes(MISSING_TAG) ? '<span class="badge" title="Nguồn không có nguyên văn điều luật">Thiếu nguyên văn</span>' : ''}<time>${fmtDate(n.created_at)}</time></div>
       <h2>${esc(n.title)}</h2>
       <div class="take">${takeHtml(n.takeaway)}</div>
       ${n.raw_excerpt ? `<h3 class="sec">Trích dẫn</h3>${excerptHtml(n)}` : ''}
@@ -1032,8 +1066,8 @@
       ${n.raw_excerpt ? `<h3 class="sec">Trích dẫn</h3>${excerptHtml(n)}` : ''}
       ${src ? `<div class="src">${SRC_ICON}<span>${src}</span></div>` : ''}
       <div class="rv-grade">
-        <button type="button" class="btn rv-yes" data-act="grade-yes"><span><kbd>1</kbd> Đã nhớ</span><small>ôn lại sau ${days} ngày</small></button>
-        <button type="button" class="btn rv-no" data-act="grade-no"><span><kbd>2</kbd> Chưa nhớ</span><small>ôn lại ngày mai</small></button>
+        <button type="button" class="btn rv-yes" data-act="grade-yes"><span><kbd>1</kbd> Đã nhớ</span><small>gặp lại sau ${days} ngày</small></button>
+        <button type="button" class="btn rv-no" data-act="grade-no"><span><kbd>2</kbd> Chưa nhớ</span><small>gặp lại ngày mai</small></button>
       </div>`;
     return `<div class="doc" data-id="${esc(n.id)}">
       <div class="doc-bar" id="docBar">
@@ -1041,7 +1075,7 @@
         <span class="bar-title">${esc(n.title)}</span>
         <span class="sp"></span>
         <span class="rv-count">Còn ${left} bài</span>
-        <span class="acts"><button type="button" data-act="unenroll" title="Đã vững: ngừng ôn, giữ trong kho tra cứu (phím R)"><span>Ngừng ôn</span></button><button type="button" data-act="exitReview" title="Thoát ôn tập (Esc)"><span>Thoát ôn tập</span></button></span>
+        <span class="acts"><button type="button" data-act="unenroll" title="Đã vững: tắt rèn luyện, giữ bài ở mục Tra cứu (phím R)"><span>Tắt rèn luyện</span></button><button type="button" data-act="exitReview" title="Thoát rèn luyện (Esc)"><span>Thoát rèn luyện</span></button></span>
       </div>
       <div class="doc-meta"><span class="pill">${esc(prettyTopic(n.topic))}</span></div>
       <h2>${esc(n.title)}</h2>
@@ -1050,8 +1084,8 @@
   }
 
   function doneHtml() {
-    return `<div class="doc rv-done"><h2>${state.reviewTopic ? `Đã ôn xong chủ đề “${esc(topicLabel(state.reviewTopic))}”` : 'Hôm nay đã ôn xong'}</h2>
-      <p>${state.revDone ? `Bạn vừa ôn ${state.revDone} bài. ` : ''}Chuỗi ngày học: ${streak()} ngày.</p>
+    return `<div class="doc rv-done"><h2>${state.reviewTopic ? `Đã hoàn tất rèn luyện “${esc(topicLabel(state.reviewTopic))}”` : 'Hôm nay đã hoàn tất rèn luyện'}</h2>
+      <p>${state.revDone ? `Bạn vừa rèn luyện ${state.revDone} bài. ` : ''}Chuỗi ngày học: ${streak()} ngày.</p>
       <button type="button" class="btn primary" data-act="exitReview">Quay lại danh sách</button></div>`;
   }
 
@@ -1070,7 +1104,7 @@
       days.push(`<div class="st-day${activity.has(d) ? ' on' : ''}${d === day ? ' today' : ''}" title="${d === day ? 'Hôm nay · ' : ''}${d}"><i></i>${names[new Date(d + 'T12:00:00').getDay()]}</div>`);
     }
     const reviewing = list.filter(inReview).length;
-    const msg = activity.has(day) ? 'Hôm nay bạn đã học.' : sk ? 'Hôm nay chưa học. Làm một việc nhỏ để giữ chuỗi.' : 'Thêm, duyệt hoặc ôn một ghi chú để bắt đầu chuỗi.';
+    const msg = activity.has(day) ? 'Hôm nay bạn đã học.' : sk ? 'Hôm nay chưa học. Làm một việc nhỏ để giữ chuỗi.' : 'Thêm, duyệt hoặc rèn luyện một ghi chú để bắt đầu chuỗi.';
 
     // Gom theo chuyên đề (chủ đề mẹ): số tài liệu, dung lượng; thêm chặng ôn và lịch hẹn nếu có bài đang ôn
     const enc = new TextEncoder();
@@ -1095,22 +1129,22 @@
     const fmt = d => d.split('-').reverse().join('/');
     const cards = topics.map(([name, t]) => {
       const chips = INTERVALS.map((d, i) => t.stage[i] ? `<span class="st-chip">Sau ${d} ngày: ${t.stage[i]}</span>` : '').join('') +
-        (t.none ? `<span class="st-chip none" title="Trong kho tra cứu, chưa có lịch ôn">Chưa ôn: ${t.none}</span>` : '');
+        (t.none ? `<span class="st-chip none" title="Chỉ lưu để tra cứu, chưa bật rèn luyện">Tra cứu: ${t.none}</span>` : '');
       // Chủ đề con: mỗi con (và mục chung) là một nút ôn riêng kèm số bài đến hạn
       const kidBtn = (token, label, c, d) => d
-        ? `<button type="button" class="kid-chip" data-review-topic="${esc(token)}" title="Ôn riêng ${esc(label)}: ${d} bài đến hạn">📄 ${esc(label)} <b>${c}</b> · ôn ${d}</button>`
+        ? `<button type="button" class="kid-chip" data-review-topic="${esc(token)}" title="Rèn luyện riêng ${esc(label)}: ${d} bài đến hạn">📄 ${esc(label)} <b>${c}</b> · ${d} đến hạn</button>`
         : `<span class="kid-chip off">📄 ${esc(label)} <b>${c}</b></span>`;
       const kidList = Object.entries(t.kids).sort((x, y) => y[1].n - x[1].n || x[0].localeCompare(y[0], 'vi'));
-      const kidsHtml = kidList.length ? `<div class="kid-chips">${t.own ? kidBtn(name + '/', '(chung)', t.own, t.ownDue) : ''}${kidList.map(([k, v]) => kidBtn(name + '/' + k, k, v.n, v.due)).join('')}</div>` : '';
+      const kidsHtml = kidList.length ? `<div class="kid-chips">${t.own ? kidBtn(name + '/', 'Tổng quan', t.own, t.ownDue) : ''}${kidList.map(([k, v]) => kidBtn(name + '/' + k, k, v.n, v.due)).join('')}</div>` : '';
       const first = Object.keys(t.dates).sort()[0];
       const next = !first ? '–' : first === day ? `Hôm nay: ${t.dates[first]} bài` : first === tomorrow ? `Ngày mai: ${t.dates[first]} bài` : `${fmt(first)}: ${t.dates[first]} bài`;
       const info = `<div><div class="nm" title="${esc(name)}">${esc(name)}</div>
-          <div class="tm"><b>${t.all}</b> tài liệu (${Math.round(t.all / list.length * 100)}%) · ${t.ok} đã duyệt · ${fmtSize(t.bytes)}${t.rev ? ` · ${t.rev} đang ôn` : ''}${t.reps ? ` · ${t.reps} lượt ôn` : ''}</div>${kidsHtml}</div>`;
+          <div class="tm"><b>${t.all}</b> tài liệu (${Math.round(t.all / list.length * 100)}%) · ${t.ok} đã duyệt · ${fmtSize(t.bytes)}${t.rev ? ` · ${t.rev} đang rèn luyện` : ''}${t.reps ? ` · ${t.reps} lượt rèn luyện` : ''}</div>${kidsHtml}</div>`;
       if (!t.rev) return `<div class="st-topic plain">${info}</div>`;   // chưa có bài đang ôn: chỉ thông tin kho, không có lịch ôn
       return `<div class="st-topic">${info}
-        <div><div class="lb">Chặng ôn</div><div class="st-chips">${chips || '<span class="st-chip none">–</span>'}</div></div>
+        <div><div class="lb">Chặng rèn luyện</div><div class="st-chips">${chips || '<span class="st-chip none">–</span>'}</div></div>
         <div><div class="lb">Lịch hẹn gần nhất</div><div class="st-next${first === day ? ' today' : ''}">${next}</div></div>
-        ${t.due ? `<button type="button" class="btn primary" data-review-topic="${esc(name)}">Ôn theo chủ đề này (${t.due})</button>` : '<button type="button" class="btn" disabled>Chưa đến hạn</button>'}
+        ${t.due ? `<button type="button" class="btn primary" data-review-topic="${esc(name)}">Rèn luyện chuyên đề này (${t.due})</button>` : '<button type="button" class="btn" disabled>Chưa đến hạn</button>'}
       </div>`;
     }).join('');
 
@@ -1122,15 +1156,15 @@
     return `${streakHtml}
       <div class="st-nums">
         <div class="st-num"><b>${list.length}</b><span>Tài liệu đã lưu</span><small>${approvedNotes.length} đã duyệt${list.length > approvedNotes.length ? ` · ${list.length - approvedNotes.length} chưa duyệt` : ''}</small></div>
-        <div class="st-num"><b>${topics.length}</b><span>Chuyên đề</span><small>${kidTotal ? `gồm ${kidTotal} chủ đề con` : 'chủ đề lớn'}</small></div>
+        <div class="st-num"><b>${topics.length}</b><span>Chuyên đề</span><small>${kidTotal ? `gồm ${kidTotal} chủ đề con` : 'chưa có chủ đề con'}</small></div>
         <div class="st-num"><b>${fmtSize(notesBytes)}</b><span>Dung lượng ghi chú</span><small>≈ ${Math.max(1, Math.round(notesBytes / 5242880 * 100))}% của 5 MB trên máy này</small></div>
-        ${usesReview ? `<div class="st-num"><b>${reviewing}</b><span>Đang ôn</span><small>${reviewing ? 'có lịch 1-3-7-30 ngày' : 'chưa bài nào'}</small></div>
-        <div class="st-num due"><b>${due}</b><span>Cần ôn hôm nay</span></div>
-        <div class="st-num"><b>${totalReps}</b><span>Tổng lượt ôn</span></div>` : ''}
+        ${usesReview ? `<div class="st-num"><b>${reviewing}</b><span>Đang rèn luyện</span><small>${reviewing ? 'có lịch 1-3-7-30 ngày' : 'chưa bài nào'}</small></div>
+        <div class="st-num due"><b>${due}</b><span>Đến hạn hôm nay</span></div>
+        <div class="st-num"><b>${totalReps}</b><span>Lượt rèn luyện</span></div>` : ''}
       </div>
       <h4 class="st-h">Theo chuyên đề</h4>
       ${cards || '<p class="note">Chưa có ghi chú nào.</p>'}
-      ${reviewing ? '<p class="st-note">Chặng là khoảng cách hẹn ôn kế tiếp: “Sau 1 ngày” gồm cả bài mới đưa vào ôn lẫn bài vừa bấm Chưa nhớ. Chỉ những bài bạn đã bấm Bắt đầu ôn mới có lịch. Số lượt ôn chỉ tính từ khi app bắt đầu ghi lại.</p>' : ''}`;
+      ${reviewing ? '<p class="st-note">Chặng là khoảng cách đến lần rèn luyện kế tiếp: “Sau 1 ngày” gồm cả bài mới bật rèn luyện lẫn bài vừa chọn Chưa nhớ. Chỉ bài đã bật rèn luyện mới có lịch. Số lượt chỉ tính từ khi ứng dụng bắt đầu ghi lại.</p>' : ''}`;
   }
 
   function openStats() {
@@ -1185,33 +1219,33 @@
     if (!g) return;
     $('tmName').value = isKid ? child : sel;
     $('tmInfo').textContent = isKid ? `${counts[sel]} ghi chú.`
-      : `${g.total} ghi chú` + (g.kids.length ? ` (${g.own} nằm thẳng ở mục chung, ${g.kids.length} chủ đề con).` : '.');
+      : `${g.total} ghi chú` + (g.kids.length ? ` (${g.own} thuộc Tổng quan, ${g.kids.length} chủ đề con).` : '.');
     const canMove = isKid || !g.kids.length;
     const parents = [...groups.keys()].filter(x => x !== (isKid ? parent : sel)).sort((a, b) => a.localeCompare(b, 'vi'));
-    $('tmTarget').innerHTML = (isKid ? '<option value="">— Đưa ra ngoài (thành chủ đề lớn) —</option>' : '') +
-      parents.map(x => `<option value="${esc(x)}">📁 ${esc(x)}</option>`).join('') + '<option value="__new">+ Chủ đề mẹ mới…</option>';
+    $('tmTarget').innerHTML = (isKid ? '<option value="">— Đưa ra ngoài (thành chuyên đề) —</option>' : '') +
+      parents.map(x => `<option value="${esc(x)}">📁 ${esc(x)}</option>`).join('') + '<option value="__new">+ Chuyên đề mới…</option>';
     $('tmTarget').disabled = $('tmMove').disabled = !canMove;
-    $('tmMoveNote').textContent = !canMove ? 'Chủ đề này đang có chủ đề con. App chỉ có 2 cấp nên hãy chuyển từng chủ đề con trước, hoặc đổi tên cho cả nhánh.'
-      : isKid ? 'Chủ đề con sẽ chuyển sang chủ đề mẹ bạn chọn.' : 'Chủ đề này sẽ trở thành chủ đề con của chủ đề mẹ bạn chọn.';
+    $('tmMoveNote').textContent = !canMove ? 'Chuyên đề này đang có chủ đề con. Ứng dụng chỉ có 2 cấp: hãy chuyển từng chủ đề con trước, hoặc chỉ đổi tên cả chuyên đề.'
+      : isKid ? 'Chủ đề con sẽ chuyển sang chuyên đề bạn chọn.' : 'Mục này sẽ trở thành chủ đề con của chuyên đề bạn chọn.';
     $('tmNewParent').hidden = true; $('tmNewParent').value = '';
     $('tmErr').textContent = '';
     const scope = active().filter(n => inTopic(n, sel));
     const can = scope.filter(n => isApproved(n) && !inReview(n)).length;
     const now = scope.filter(inReview).length;
     const drafts = scope.filter(n => !isApproved(n)).length;
-    $('tmRevInfo').textContent = `${scope.length} bài trong kho · ${now} đang ôn.` + (drafts ? ` ${drafts} bài chưa duyệt nên chưa đưa vào ôn được.` : '');
-    $('tmEnroll').textContent = `Đưa vào lịch ôn (${can} bài)`; $('tmEnroll').disabled = !can;
-    $('tmStop').textContent = `Ngừng ôn (${now} bài)`; $('tmStop').disabled = !now;
+    $('tmRevInfo').textContent = `${scope.length} ghi chú · ${now} đang rèn luyện.` + (drafts ? ` ${drafts} ghi chú chưa duyệt nên chưa bật rèn luyện được.` : '');
+    $('tmEnroll').textContent = `Bật rèn luyện (${can} bài)`; $('tmEnroll').disabled = !can;
+    $('tmStop').textContent = `Tắt rèn luyện (${now} bài)`; $('tmStop').disabled = !now;
     const all = active().filter(inReview).length;
-    $('tmAllInfo').textContent = `Toàn kho đang có ${all} bài trong lịch ôn. Ngừng ôn chỉ đưa bài về kho tra cứu: ghi chú và số lượt ôn vẫn giữ nguyên.`;
-    $('tmStopAll').textContent = `Ngừng ôn toàn bộ (${all} bài)`; $('tmStopAll').disabled = !all;
+    $('tmAllInfo').textContent = `Toàn kho đang có ${all} bài rèn luyện. Tắt rèn luyện chỉ đưa bài về mục Tra cứu: ghi chú và số lượt rèn luyện vẫn giữ nguyên.`;
+    $('tmStopAll').textContent = `Tắt rèn luyện toàn bộ (${all} bài)`; $('tmStopAll').disabled = !all;
   }
 
   function openTopicMgr(sel) {
     $('menu').open = false;
     const counts = topicCounts();
     const groups = buildGroups(counts);
-    if (!groups.size) { toast('Chưa có chủ đề nào.'); return; }
+    if (!groups.size) { toast('Chưa có chuyên đề nào.'); return; }
     const opts = [];
     [...groups.values()].sort(byViName).forEach(g => {
       opts.push(`<option value="${esc(g.name)}">📁 ${esc(g.name)} (${g.total})</option>`);
@@ -1238,14 +1272,14 @@
     const all = allTopics();
     if (raw.includes('/')) {
       // Gõ đường dẫn Mẹ/Con: vừa đổi tên vừa lồng cấp (chỉ cho chủ đề chưa có con)
-      if (!sel.includes('/') && all.some(t => t.startsWith(sel + '/'))) return err('Chủ đề này đang có chủ đề con nên chỉ đổi phần tên, không dùng dấu /. Muốn lồng, hãy chuyển từng chủ đề con.');
+      if (!sel.includes('/') && all.some(t => t.startsWith(sel + '/'))) return err('Chuyên đề này đang có chủ đề con nên chỉ đổi phần tên, không dùng dấu /. Muốn chuyển cấp, hãy chuyển từng chủ đề con.');
       const path = normTopicPath(raw);
       if (!path.includes('/')) return err('Cần có cả tên mẹ và tên con, ví dụ: Kiến thức pháp luật/Bí mật nhà nước.');
       if (path.indexOf('/') !== path.lastIndexOf('/')) return err('Chỉ có 2 cấp: Mẹ/Con.');
       const aligned = matchTopic(path, all.filter(t => t !== sel));
       if (aligned === sel) return err('Tên chưa thay đổi.');
       const other = all.find(t => t !== sel && t === aligned);
-      const msg = other ? `Đã có chủ đề “${prettyTopic(other)}” (${countOf(other)} ghi chú).\nGộp ${countOf(sel)} ghi chú của “${prettyTopic(sel)}” vào đó?`
+      const msg = other ? `Đã có “${prettyTopic(other)}” (${countOf(other)} ghi chú).\nGộp ${countOf(sel)} ghi chú của “${prettyTopic(sel)}” vào đó?`
         : `Đổi “${prettyTopic(sel)}” thành “${prettyTopic(aligned)}” (${countOf(sel)} ghi chú)?`;
       if (!confirm(msg)) return;
       closeTopicMgr();
@@ -1258,7 +1292,7 @@
       if (name === child) return err('Tên chưa thay đổi.');
       const want = parent + '/' + name;
       const other = all.find(t => t !== sel && norm(t) === norm(want));
-      if (other && !confirm(`Đã có chủ đề “${prettyTopic(other)}” (${countOf(other)} ghi chú).\nGộp ${countOf(sel)} ghi chú của “${prettyTopic(sel)}” vào đó?`)) return;
+      if (other && !confirm(`Đã có “${prettyTopic(other)}” (${countOf(other)} ghi chú).\nGộp ${countOf(sel)} ghi chú của “${prettyTopic(sel)}” vào đó?`)) return;
       const to = other || want;
       closeTopicMgr();
       retopic(t => t === sel ? to : t, to, other ? 'Đã gộp' : 'Đã đổi tên');
@@ -1268,7 +1302,7 @@
     const parents = [...new Set(all.map(t => splitTopic(t).parent))];
     const other = parents.find(x => x !== sel && norm(x) === norm(name));
     const mine = active().filter(n => inTopic(n, sel)).length;
-    if (other && !confirm(`Đã có chủ đề “${other}” (${active().filter(n => inTopic(n, other)).length} ghi chú).\nGộp ${mine} ghi chú của “${sel}” vào đó? Chủ đề con trùng tên sẽ nhập chung.`)) return;
+    if (other && !confirm(`Đã có “${other}” (${active().filter(n => inTopic(n, other)).length} ghi chú).\nGộp ${mine} ghi chú của “${sel}” vào đó? Các chủ đề con trùng tên sẽ nhập chung.`)) return;
     const to = other || name;
     ui.collapsed = (ui.collapsed || []).map(x => x === sel ? to : x); lsSet(LS_UI, ui);
     closeTopicMgr();
@@ -1281,21 +1315,21 @@
     const all = allTopics();
     const parents = [...new Set(all.map(t => splitTopic(t).parent))];
     const isKid = sel.includes('/');
-    if (!isKid && all.some(t => t.startsWith(sel + '/'))) return err('Chủ đề này đang có chủ đề con, hãy chuyển từng con.');
+    if (!isKid && all.some(t => t.startsWith(sel + '/'))) return err('Chuyên đề này đang có chủ đề con, hãy chuyển từng chủ đề con.');
     let q = target;
     if (target === '__new') {
       q = cleanName($('tmNewParent').value);
-      if (!q || q.includes('/')) return err('Tên chủ đề mẹ không được để trống và không dùng dấu /.');
+      if (!q || q.includes('/')) return err('Tên chuyên đề không được để trống và không dùng dấu /.');
       q = parents.find(x => norm(x) === norm(q)) || q;
     }
     const { parent: from, child } = splitTopic(sel);
     const name = isKid ? child : sel;
-    if (q === (isKid ? from : sel)) return err(isKid ? 'Chủ đề này đã nằm trong chủ đề mẹ đó.' : 'Không thể chuyển chủ đề vào chính nó.');
-    if (!q && !isKid) return err('Hãy chọn chủ đề mẹ.');
+    if (q === (isKid ? from : sel)) return err(isKid ? 'Chủ đề này đã thuộc chuyên đề đó.' : 'Không thể chuyển vào chính nó.');
+    if (!q && !isKid) return err('Hãy chọn chuyên đề.');
     const want = q ? q + '/' + name : name;
     const other = all.find(t => t !== sel && norm(t) === norm(want));
     const branch = !q ? parents.find(x => norm(x) === norm(name)) : '';
-    if ((other || branch) && !confirm(`Đã có chủ đề “${prettyTopic(other || branch)}”.\nGộp ${countOf(sel)} ghi chú của “${prettyTopic(sel)}” vào đó?`)) return;
+    if ((other || branch) && !confirm(`Đã có “${prettyTopic(other || branch)}”.\nGộp ${countOf(sel)} ghi chú của “${prettyTopic(sel)}” vào đó?`)) return;
     const to = q ? (other || want) : (branch || name);
     closeTopicMgr();
     retopic(t => t === sel ? to : t, to, other || branch ? 'Đã gộp' : 'Đã chuyển');
@@ -1304,21 +1338,21 @@
   const mgrScope = () => active().filter(n => inTopic(n, $('tmSel').value));
   $('tmEnroll').onclick = () => {
     const targets = mgrScope().filter(n => isApproved(n) && !inReview(n));
-    if (!targets.length || !confirm(`Đưa ${targets.length} bài vào lịch ôn?\nLần ôn đầu tiên là ngày mai (rồi 3, 7, 30 ngày).`)) return;
+    if (!targets.length || !confirm(`Bật rèn luyện cho ${targets.length} bài?\nLần đầu là ngày mai (rồi sau 3, 7, 30 ngày).`)) return;
     closeTopicMgr();
-    setEnroll(targets, true, 'Đã đưa vào lịch ôn');
+    setEnroll(targets, true, 'Đã bật rèn luyện');
   };
   $('tmStop').onclick = () => {
     const targets = mgrScope().filter(inReview);
     if (!targets.length) return;
     closeTopicMgr();
-    setEnroll(targets, false, 'Đã ngừng ôn');
+    setEnroll(targets, false, 'Đã tắt rèn luyện');
   };
   $('tmStopAll').onclick = () => {
     const targets = active().filter(inReview);
-    if (!targets.length || !confirm(`Ngừng ôn ${targets.length} bài đang ôn và đưa tất cả về kho tra cứu?\nGhi chú và số lượt ôn vẫn giữ. Có thể Hoàn tác ngay sau đó.`)) return;
+    if (!targets.length || !confirm(`Tắt rèn luyện cho ${targets.length} bài và đưa tất cả về mục Tra cứu?\nGhi chú và số lượt rèn luyện vẫn giữ. Có thể Hoàn tác ngay sau đó.`)) return;
     closeTopicMgr();
-    setEnroll(targets, false, 'Đã ngừng ôn toàn bộ');
+    setEnroll(targets, false, 'Đã tắt rèn luyện toàn bộ');
   };
 
   function greetHtml() {
@@ -1329,10 +1363,10 @@
     return `<div class="doc greet"><h2>Chào bạn!</h2>
       <p>Kho của bạn có <b>${active().length}</b> tài liệu trong <b>${topicCount}</b> chuyên đề.</p>
       ${drafts ? `<p><b>${drafts}</b> ghi chú chưa duyệt đang chờ bạn.</p>` : ''}
-      ${due ? `<p><b>${due}</b> bài đang ôn đến hạn hôm nay.</p>` : ''}
+      ${due ? `<p><b>${due}</b> bài đến hạn rèn luyện hôm nay.</p>` : ''}
       ${reviewing && sk ? `<p>Chuỗi ngày học: ${sk} ngày.</p>` : ''}
       <div class="go">
-        ${due ? `<button type="button" class="btn primary" data-act="greet-review">Bắt đầu ôn ngay <kbd>Space</kbd></button>` : ''}
+        ${due ? `<button type="button" class="btn primary" data-act="greet-review">Bắt đầu rèn luyện <kbd>Space</kbd></button>` : ''}
         ${drafts ? `<button type="button" class="btn${primary === 'draft' ? ' primary' : ''}" data-act="greet-draft">Duyệt bài mới${primary === 'draft' ? ' <kbd>Space</kbd>' : ''}</button>` : ''}
       </div>
       <p class="hint">Hoặc chọn một ghi chú ở danh sách để xem.</p></div>`;
@@ -1379,7 +1413,7 @@
     render();
     const el = document.querySelector('.item.sel');
     if (el) el.scrollIntoView({ block: 'nearest' });
-    toast(remembered ? `Đã nhớ. Ôn lại sau ${days} ngày.` : 'Chưa nhớ. Ôn lại ngày mai.', 'Hoàn tác', () => {
+    toast(remembered ? `Đã nhớ. Gặp lại sau ${days} ngày.` : 'Chưa nhớ. Gặp lại ngày mai.', 'Hoàn tác', () => {
       if (prev) review[id] = prev; else delete review[id];
       rcount[id] = prevCount;
       saveReview();
@@ -1406,6 +1440,51 @@
     updateBar();
   }
 
+  // ---------- Danh sách cột giữa: gom nhóm theo chuyên đề (xem Tất cả) hoặc theo chủ đề con (xem một chuyên đề có chủ đề con) ----------
+  const GROUP_PAGE = 40;
+  function groupMode(list) {
+    if (state.review) return '';
+    if (state.topic === 'all') return 'parent';
+    if (state.topic.includes('/')) return '';   // đã vào một chủ đề con hoặc mục Tổng quan
+    return list.some(n => n.topic !== state.topic) ? 'child' : '';
+  }
+  function listGroups(list, mode) {
+    const map = new Map();
+    list.forEach(n => { const k = mode === 'parent' ? splitTopic(n.topic).parent : splitTopic(n.topic).child; if (!map.has(k)) map.set(k, []); map.get(k).push(n); });
+    const keys = [...map.keys()].sort((a, b) => a === '' ? -1 : b === '' ? 1 : a.localeCompare(b, 'vi'));   // A→Z như cột trái; Tổng quan đứng đầu
+    return keys.map(k => ({ id: state.topic + '|' + k, label: k || 'Tổng quan', items: map.get(k) }));
+  }
+  // Tìm kiếm / lọc thẻ: mở hết các nhóm để thấy kết quả. Còn lại: theo trạng thái đã nhớ, mặc định chỉ nhóm đầu tiên mở.
+  function listModel() {
+    const list = filtered();
+    const mode = groupMode(list);
+    if (!mode) return { mode, list, groups: null, ordered: list, visible: list.slice(0, state.limit) };
+    const force = !!(state.q || state.tag);
+    const groups = listGroups(list, mode);
+    groups.forEach((g, i) => {
+      g.open = force || (ui.groups && ui.groups[g.id] !== undefined ? ui.groups[g.id] : i === 0);
+      g.limit = state.glimit[g.id] || GROUP_PAGE;
+      g.shown = g.open ? g.items.slice(0, g.limit) : [];
+    });
+    return { mode, list, groups, force, ordered: groups.flatMap(g => g.items), visible: groups.flatMap(g => g.shown) };
+  }
+  // Mở nhóm chứa ghi chú này (dùng khi chọn ghi chú bằng cách khác ngoài bấm vào thẻ)
+  function revealNote(id) {
+    const m = listModel();
+    const g = m.groups && m.groups.find(x => x.items.some(n => n.id === id));
+    if (!g) return;
+    ui.groups = ui.groups || {};
+    ui.groups[g.id] = true;
+    lsSet(LS_UI, ui);
+  }
+  function groupHtml(g, mode, force) {
+    const head = force
+      ? `<div class="grp-h static"><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length}</span></div>`
+      : `<button type="button" class="grp-h" data-act="grp" data-g="${esc(g.id)}" aria-expanded="${g.open}"><span class="gc">${g.open ? '▾' : '▸'}</span><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length}</span></button>`;
+    const more = g.open && g.items.length > g.shown.length ? `<button type="button" class="btn more" data-act="more" data-g="${esc(g.id)}">Hiện thêm (${g.items.length - g.shown.length})</button>` : '';
+    return `<section class="grp">${head}${g.shown.map(n => itemHtml(n, mode)).join('')}${more}</section>`;
+  }
+
   function selectNote(id, open) {
     state.greet = false;
     if (state.sel !== id) state.flip = false;
@@ -1418,17 +1497,26 @@
 
   function renderNotes() {
     renderTopics();   // cột chủ đề phụ thuộc bộ lọc / chế độ ôn nên luôn vẽ lại cùng danh sách
-    const list = filtered();
+    let model = listModel();
+    const list = model.list;
     const total = active().length;
-    if (!list.some(n => n.id === state.sel)) { state.sel = list[0] ? list[0].id : ''; state.flip = false; state.detailOpen = state.review && !!list[0]; }
+    if (!list.some(n => n.id === state.sel)) {
+      const first = model.visible[0] || list[0];   // ưu tiên ghi chú đang nhìn thấy (không nằm trong nhóm đã gập)
+      state.sel = first ? first.id : ''; state.flip = false; state.detailOpen = state.review && !!first;
+    }
     const idx = list.findIndex(n => n.id === state.sel);
-    if (idx >= state.limit) state.limit = idx + 1;
+    if (!model.groups) {
+      if (idx >= state.limit) state.limit = idx + 1;
+    } else {   // ghi chú đang chọn nằm quá "Hiện thêm" của nhóm thì nới nhóm đó ra
+      const g = model.groups.find(x => x.items.some(n => n.id === state.sel));
+      if (g && g.open && g.items.findIndex(n => n.id === state.sel) >= g.limit) { state.glimit[g.id] = g.items.findIndex(n => n.id === state.sel) + 1; model = listModel(); }
+    }
     const shown = list.slice(0, state.limit);
 
-    $('countText').textContent = state.review ? `${list.length} bài cần ôn hôm nay` : list.length === total ? `${total} ghi chú` : `${list.length} / ${total} ghi chú`;
+    $('countText').textContent = state.review ? `${list.length} bài đến hạn rèn luyện hôm nay` : list.length === total ? `${total} ghi chú` : `${list.length} / ${total} ghi chú`;
     const scopeTok = state.review ? state.reviewTopic : state.topic;
     const scopeName = scopeTok && scopeTok !== 'all' ? topicLabel(scopeTok) : '';
-    $('topicTitle').textContent = state.review ? 'Ôn tập · ' + (scopeName || 'tất cả chủ đề') : (scopeName || 'Tất cả ghi chú');
+    $('topicTitle').textContent = state.review ? 'Rèn luyện · ' + (scopeName || 'toàn bộ kho') : (scopeName || 'Tất cả ghi chú');
     $('topicTitle').title = $('topicTitle').textContent;
     $('tagChip').innerHTML = state.tag ? `<button type="button" class="chip">#${esc(state.tag)} &times;</button>` : '';
     const drafts = active().filter(n => parseTags(n.tags).includes(DRAFT_TAG)).length;
@@ -1436,18 +1524,30 @@
 
     const scope = state.topic === 'all' ? '' : state.topic;   // đang xem một chủ đề thì chip chỉ ôn chủ đề đó
     const due = state.review ? reviewQueue().length : (scope ? dueList().filter(n => inTopic(n, scope)).length : dueList().length);
-    $('reviewChip').innerHTML = state.review ? `<button type="button" class="chip chip-review on">Đang ôn${state.reviewTopic ? ': ' + esc(topicLabel(state.reviewTopic)) : ' tập'} · ${due} &times;</button>`
-      : due ? `<button type="button" class="chip chip-review"${scope ? ` title="Chỉ ôn: ${esc(topicLabel(scope))}"` : ''}>Ôn tập (${due})</button>` : '';
+    $('reviewChip').innerHTML = state.review ? `<button type="button" class="chip chip-review on">Đang rèn luyện${state.reviewTopic ? ': ' + esc(topicLabel(state.reviewTopic)) : ''} · ${due} &times;</button>`
+      : due ? `<button type="button" class="chip chip-review"${scope ? ` title="Chỉ rèn luyện: ${esc(topicLabel(scope))}"` : ''}>Rèn luyện (${due})</button>` : '';
 
     $('notes').innerHTML = !list.length
-      ? `<div class="empty">${state.review ? 'Đã hết bài cần ôn.' : total ? 'Không có ghi chú nào khớp.' : 'Chưa có ghi chú nào.'}</div>`
-      : shown.map(itemHtml).join('') +
+      ? `<div class="empty">${state.review ? 'Đã hết bài đến hạn.' : total ? 'Không có ghi chú nào khớp.' : 'Chưa có ghi chú nào.'}</div>`
+      : model.groups ? model.groups.map(g => groupHtml(g, model.mode, model.force)).join('')
+      : shown.map(n => itemHtml(n)).join('') +
         (list.length > shown.length ? `<button type="button" class="btn more" data-act="more">Hiện thêm (${list.length - shown.length})</button>` : '');
+    const lh = document.querySelector('.list-head');
+    if (lh) document.documentElement.style.setProperty('--lh', lh.offsetHeight + 'px');
     renderDetail();
     applyView();
   }
 
-  function render() { renderNotes(); }
+  // Lịch ôn còn sót của bài đã về "chưa duyệt" hoặc đã ngừng ôn (ví dụ bị ghi đè khi nhập) không được giữ lại,
+  // kẻo duyệt lại là bài tự "đang ôn" trở lại. Bài đã xóa mềm thì giữ nguyên để Hoàn tác xóa còn lịch.
+  function pruneReview() {
+    const byId = new Map(notes.map(n => [n.id, n]));
+    let changed = false;
+    Object.keys(review).forEach(id => { const n = byId.get(id); if (n && !n.deleted && !canReview(n)) { delete review[id]; changed = true; } });
+    if (changed) writeReview();
+  }
+
+  function render() { pruneReview(); renderNotes(); }
 
   window.pkv = { dueList, streak, gradeReview, get review() { return review; }, get rcount() { return rcount; }, get activity() { return activity; }, shareHtml: buildReadHtml, shareText };   // để kiểm tra bằng Console (F12)
 
@@ -1481,8 +1581,8 @@
     const cur = id ? notes.find(n => n.id === id) : null;
     if (canon === typed || !cur || cur.topic !== canon) return canon;
     const same = active().filter(n => n.topic === canon);
-    if (!confirm(`Chủ đề đang viết là “${canon}” (${same.length} ghi chú).
-Đổi thành “${typed}” cho tất cả ghi chú của chủ đề này?
+    if (!confirm(`Cách viết hiện có là “${canon}” (${same.length} ghi chú).
+Đổi thành “${typed}” cho tất cả ghi chú cùng mục này?
 
 OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     same.forEach(n => { n.topic = typed; n.updated_at = now; dirty.add(n.id); hayCache.delete(n); });
@@ -1520,6 +1620,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     if (!filtered().some(n => n.id === savedId)) {   // ghi chú vừa lưu bị bộ lọc ẩn -> bỏ bộ lọc để thấy nó
       state.topic = 'all'; state.tag = ''; state.q = ''; $('searchInput').value = '';
     }
+    revealNote(savedId);
     render();
     scheduleSync();
   }
@@ -1577,11 +1678,11 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   function deleteNote(id) {
     const n = notes.find(x => x.id === id);
     if (!n) return;
-    const list = filtered();
+    const list = listModel().ordered;
     const i = list.findIndex(x => x.id === id);
     const next = list[i + 1] || list[i - 1];
     n.deleted = true; n.updated_at = new Date().toISOString();
-    if (state.sel === id) { state.sel = next ? next.id : ''; state.detailOpen = false; }
+    if (state.sel === id) { state.sel = next ? next.id : ''; state.detailOpen = false; if (next) revealNote(next.id); }
     dirty.add(id); persist(); render(); scheduleSync();
     toast('Đã xóa ghi chú.', 'Hoàn tác', () => {
       const cur = notes.find(x => x.id === id);   // tra lại theo id: đồng bộ có thể đã thay đối tượng cũ
@@ -1602,20 +1703,20 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     if (!isDraft(n)) return toast('Ghi chú này đã được duyệt.');
     if (!skipWarn && parseTags(n.tags).includes(MISSING_TAG)) {
       warnId = id;
-      $('warnText').textContent = `“${n.title}” đang có tag “${MISSING_TAG}”: nguồn không có nguyên văn nên phần trích dẫn có thể chưa đúng. Bạn muốn bổ sung nguồn trước, hay vẫn duyệt?`;
+      $('warnText').textContent = `“${n.title}” đang có thẻ “${MISSING_TAG}”: nguồn không có nguyên văn nên phần trích dẫn có thể chưa đúng. Bạn muốn bổ sung nguồn trước, hay vẫn duyệt?`;
       $('warnModal').hidden = false;
       $('warnEdit').focus();
       return;
     }
     // chọn ghi chú chưa duyệt kế tiếp (trong danh sách đang hiển thị) trước khi đổi tag
-    const list = filtered();
+    const list = listModel().ordered;
     const i = list.findIndex(x => x.id === id);
     const next = list.slice(i + 1).find(isDraft) || list.slice(0, Math.max(i, 0)).find(isDraft);
     const oldTags = n.tags;
     n.tags = parseTags(n.tags).filter(t => t !== DRAFT_TAG).join(', ');
     n.updated_at = new Date().toISOString();
     dirty.add(id); persist(); logActivity();
-    if (next) state.sel = next.id;
+    if (next) { state.sel = next.id; revealNote(next.id); }
     else if (state.tag === DRAFT_TAG) state.tag = '';   // hết ghi chú chưa duyệt: thoát bộ lọc rỗng
     render(); scheduleSync();
     const el = document.querySelector('.item.sel');
@@ -1681,8 +1782,8 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   function toggleEnroll(id) {
     const n = notes.find(x => x.id === id && !x.deleted);
     if (!n) return;
-    if (!isApproved(n)) return toast('Hãy duyệt ghi chú trước, rồi mới đưa vào lịch ôn.');
-    if (inReview(n)) setEnroll([n], false, 'Đã ngừng ôn'); else setEnroll([n], true, 'Đã đưa vào lịch ôn');
+    if (!isApproved(n)) return toast('Hãy duyệt ghi chú trước, rồi mới bật rèn luyện.');
+    if (inReview(n)) setEnroll([n], false, 'Đã tắt rèn luyện'); else setEnroll([n], true, 'Đã bật rèn luyện');
   }
 
   $('warnCancel').onclick = () => { $('warnModal').hidden = true; };
@@ -2091,7 +2192,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     a.download = `pkv_backup_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}.json`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    toast(`Đã xuất ${data.length} ghi chú kèm lịch ôn và nhật ký ngày học.`);
+    toast(`Đã xuất ${data.length} ghi chú kèm lịch rèn luyện và nhật ký ngày học.`);
   }
 
   // Nhận JSON dán từ Gemini (có thể kèm khung ```json) hoặc file sao lưu của chính app.
@@ -2217,12 +2318,12 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
       if (plan.update.length) parts.push(`cập nhật ${plan.update.length}`);
       if (plan.same) parts.push(`${plan.same} không đổi`);
       if (plan.dup) parts.push(`bỏ qua ${plan.dup} trùng`);
-      if (plan.bad) parts.push(`loại ${plan.bad} mục thiếu tiêu đề hoặc ý hiểu`);
+      if (plan.bad) parts.push(`loại ${plan.bad} mục thiếu tiêu đề hoặc nội dung cốt lõi`);
       const titles = changes.slice(0, 6).map(n => `<li>${esc(n.title)}</li>`).join('');
       el.innerHTML = `<strong>${esc(parts.join(' · '))}.</strong>` +
-        (plan.drafts ? ` ${plan.drafts} ghi chú sẽ được gắn tag “${DRAFT_TAG}”.` : '') +
+        (plan.drafts ? ` ${plan.drafts} ghi chú sẽ được gắn thẻ “${DRAFT_TAG}”.` : '') +
         (plan.cites ? ` Đã tự bỏ ${plan.cites} số trích dẫn kiểu [1].` : '') +
-        (plan.nested ? ` ${plan.nested} ghi chú chỉ có tên chủ đề con nên đã tự xếp vào chủ đề mẹ có sẵn.` : '') +
+        (plan.nested ? ` ${plan.nested} ghi chú chỉ có tên chủ đề con nên đã tự xếp vào chuyên đề có sẵn.` : '') +
         (titles ? `<ul>${titles}${total > 6 ? `<li>… và ${total - 6} ghi chú khác</li>` : ''}</ul>` : '');
       btn.disabled = total === 0;
       if (total) btn.textContent = `Nhập ${total} ghi chú`;
@@ -2256,7 +2357,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     state.limit = PAGE;
     render();
     scheduleSync();
-    toast(`Đã nhập ${changes.length} ghi chú` + (restored.n || restored.days || restored.reps ? `, khôi phục ${restored.n} lịch ôn, ${restored.reps} lượt ôn và ${restored.days} ngày học.` : '.'));
+    toast(`Đã nhập ${changes.length} ghi chú` + (restored.n || restored.days || restored.reps ? `, khôi phục ${restored.n} lịch rèn luyện, ${restored.reps} lượt rèn luyện và ${restored.days} ngày học.` : '.'));
   }
 
   async function readImportFile(file) {
@@ -2336,7 +2437,18 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   $('detail').addEventListener('scroll', updateBar, { passive: true });
 
   $('notes').onclick = e => {
-    if (e.target.closest('[data-act="more"]')) { state.limit += PAGE; return renderNotes(); }
+    const mo = e.target.closest('[data-act="more"]');
+    if (mo) {
+      if (mo.dataset.g) state.glimit[mo.dataset.g] = (state.glimit[mo.dataset.g] || GROUP_PAGE) + GROUP_PAGE; else state.limit += PAGE;
+      return renderNotes();
+    }
+    const gh = e.target.closest('[data-act="grp"]');
+    if (gh) {   // gập / mở một nhóm và nhớ lại cho lần sau
+      ui.groups = ui.groups || {};
+      ui.groups[gh.dataset.g] = gh.getAttribute('aria-expanded') !== 'true';
+      lsSet(LS_UI, ui);
+      return renderNotes();
+    }
     const it = e.target.closest('.item');
     if (it) selectNote(it.dataset.id, true);
   };
@@ -2426,12 +2538,13 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     } else if (e.altKey && e.key.toLowerCase() === 'n') {
       e.preventDefault(); openNote();
     } else if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && (ae === document.body || ae.classList.contains('item'))) {
-      const list = filtered();
+      const model = listModel();
+      const list = model.groups ? model.visible : model.list;   // mũi tên bỏ qua các nhóm đã gập
       const i = list.findIndex(n => n.id === state.sel);
-      const next = state.greet ? list[0] : list[i + (e.key === 'ArrowDown' ? 1 : -1)];   // đang ở màn chào: mũi tên chọn bài đầu tiên
+      const next = state.greet ? list[0] : list[i < 0 ? 0 : i + (e.key === 'ArrowDown' ? 1 : -1)];   // đang ở màn chào: mũi tên chọn bài đầu tiên
       if (next) {
         e.preventDefault();
-        if (list.indexOf(next) >= state.limit) { state.limit = list.indexOf(next) + 1; state.sel = next.id; renderNotes(); } else selectNote(next.id, false);
+        if (!model.groups && list.indexOf(next) >= state.limit) { state.limit = list.indexOf(next) + 1; state.sel = next.id; renderNotes(); } else selectNote(next.id, false);
         const el = document.querySelector('.item.sel');
         if (el) el.scrollIntoView({ block: 'nearest' });
       }
@@ -2447,6 +2560,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') sync(false); });
   window.addEventListener('online', () => sync(false));
   window.addEventListener('offline', updateIdleStatus);
+  window.addEventListener('resize', () => { const lh = document.querySelector('.list-head'); if (lh) document.documentElement.style.setProperty('--lh', lh.offsetHeight + 'px'); });
 
   // ---------- Khóa ứng dụng (chỉ khóa giao diện, dữ liệu trên máy không mã hóa) ----------
   const LS_GATE = 'pkv_gate', SS_OPEN = 'pkv_unlocked', GATE_ITER = 150000;
