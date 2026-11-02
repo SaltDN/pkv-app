@@ -76,7 +76,7 @@
   code { font: 12px ui-monospace, Consolas, monospace; background: var(--soft); border-radius: 4px; padding: 1px 4px; }
 
   /* ---------- Bố cục 3 cột: trang cố định, từng cột cuộn riêng ---------- */
-  .app { flex: 1; min-height: 0; display: grid; grid-template-columns: 268px 350px minmax(0, 1fr); }
+  .app { flex: 1; min-height: 0; display: grid; grid-template-columns: 292px 350px minmax(0, 1fr); }
   .col-topics, .col-list, .col-detail { min-height: 0; overflow-y: auto; }
   .col-topics { padding: 14px 10px; background: #f1f5f9; border-right: 1px solid var(--border); }
   .col-list { background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
@@ -112,20 +112,38 @@
   }
   .topic-btn:hover { background: var(--hover); }
   .topic-btn.on { background: var(--surface); color: var(--text); font-weight: 600; box-shadow: 0 1px 2px rgba(15,23,42,.08); }
-  .topic-btn span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .topic-btn span:first-child { min-width: 0; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow-wrap: anywhere; line-height: 1.3; }
+  .topic-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .count { font-size: 12px; color: var(--faint); font-weight: 400; }
   .topic-btn .r { display: inline-flex; align-items: center; gap: 10px; flex: none; }
   .topic-btn .r .count { min-width: 20px; text-align: right; }
-  .due-badge { font-size: 11px; font-weight: 600; color: #047857; background: #d1fae5; border-radius: 99px; padding: 1px 8px; white-space: nowrap; }
-  .tray { margin: 2px 2px 6px; padding: 8px; background: rgba(255,251,235,.6); border: 1px solid rgba(253,230,138,.8); border-radius: 10px; }
-  .tray .sub-h { margin: 0 4px 6px; color: #b45309; }
-  .tray .topic-btn { color: #78350f; font-weight: 500; }
-  .tray .topic-btn:hover { background: #fef3c7; }
-  .tray .topic-btn.on { background: #fff; box-shadow: 0 0 0 1px #fcd34d; }
-  .tray .count { min-width: 22px; text-align: center; padding: 1px 7px; border-radius: 99px; background: #f97316; color: #fff; font-weight: 700; font-size: 12px; }
+  .due-badge { font-size: 11px; font-weight: 500; color: var(--accent); background: var(--accent-soft); border-radius: 99px; padding: 0 7px; white-space: nowrap; }
   .sub-h { margin: 12px 10px 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 600; }
-  .due-tag { font-size: 11px; font-weight: 600; color: #047857; background: #d1fae5; border-radius: 99px; padding: 0 7px; flex: none; }
+  .due-tag { font-size: 11px; font-weight: 500; color: var(--accent); background: var(--accent-soft); border-radius: 99px; padding: 0 7px; flex: none; }
 
+  .tp-row { display: flex; align-items: center; gap: 2px; position: relative; }
+  .edit-btn { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: 0; border-radius: 6px; background: var(--surface); color: var(--muted); font-size: 13px; opacity: 0; cursor: pointer; box-shadow: 0 0 0 1px var(--border); padding: 0; }
+  .tp-row:hover .edit-btn, .edit-btn:focus-visible { opacity: 1; }
+  @media (hover: none) { .edit-btn { opacity: .55; } }
+  .mg-sec { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .mg-sec h4 { margin: 0 0 8px; font-size: 13px; }
+  .mg-row { display: flex; gap: 8px; }
+  .mg-row input, .mg-row select, .mg-sel, .mg-new { min-width: 0; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; font-size: 15px; background: var(--surface); }
+  .mg-row input, .mg-row select { flex: 1; }
+  .mg-row.split .btn { flex: 1; }
+  .mg-sel, .mg-new { width: 100%; }
+  .mg-new { margin-top: 8px; }
+  .tp-row .topic-btn { flex: 1; min-width: 0; }
+  .tp-kids { margin-left: 16px; }
+  .caret { width: 18px; height: 28px; flex: none; background: none; border: 0; border-radius: 6px; color: var(--faint); font-size: 11px; padding: 0; cursor: pointer; }
+  .caret:hover { background: var(--hover); color: var(--text); }
+  .caret-sp { width: 18px; flex: none; }
+  .kid-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .kid-chip { font-size: 12px; border: 1px solid var(--border); background: var(--surface); border-radius: 99px; padding: 2px 9px; color: var(--text); cursor: pointer; }
+  .kid-chip:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); }
+  .kid-chip.off { color: var(--faint); cursor: default; }
+  .st-topic.plain { grid-template-columns: 1fr; }
+  .kid-chip b { font-weight: 600; }
   .list-head { position: sticky; top: 0; z-index: 2; background: var(--panel); padding: 10px 14px; border-bottom: 1px solid var(--border); }
   .topic-select { display: none; width: 100%; margin-bottom: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 7px 10px; font-size: 15px; }
   .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 13px; color: var(--muted); min-height: 24px; }
@@ -202,7 +220,7 @@
   .st-day.on i { background: var(--accent); }
   .st-day.today { color: var(--accent); font-weight: 700; }
   .st-day.today i { box-shadow: 0 0 0 2px #eef2ff, 0 0 0 4px var(--accent); }
-  .st-nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px; }
+  .st-nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 10px; margin-top: 12px; }
   .st-num { padding: 12px; border: 1px solid var(--border); border-radius: 12px; text-align: center; }
   .st-num b { display: block; font-size: 26px; line-height: 1.2; }
   .st-num span { font-size: 12px; color: var(--muted); }
@@ -213,7 +231,6 @@
   .st-bar span { display: block; height: 100%; background: #c7d2fe; border-radius: 99px; }
   .st-bar span i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
   @media (max-width: 640px) {
-    .st-nums { grid-template-columns: repeat(2, 1fr); }
     .st-topic { grid-template-columns: 1fr; gap: 8px; }
     .st-topic .btn { justify-self: start; }
     .st-streak { flex-wrap: wrap; }
@@ -278,6 +295,11 @@
   .note { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
 
   /* ---------- Màn khóa ---------- */
+  .quick-text { width: 100%; min-height: 150px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font: inherit; font-size: 16px; line-height: 1.5; resize: vertical; }
+  .quick-text:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+  .fab { display: none; position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 52px; height: 52px; border-radius: 50%; background: var(--accent); border: 0; box-shadow: 0 4px 14px rgba(79,70,229,.4); z-index: 40; align-items: center; justify-content: center; padding: 0; }
+  .fab svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  @media (max-width: 767px) { .fab { display: flex; } }
   .gate { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: grid; place-items: center; padding: 16px; }
   .gate-card { width: 100%; max-width: 360px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px 24px; text-align: center; box-shadow: 0 8px 30px rgba(15,23,42,.08); }
   .gate-card .logo { margin: 0 auto 12px; width: 44px; height: 44px; border-radius: 12px; }
@@ -317,6 +339,7 @@
     .app { grid-template-columns: 340px minmax(0, 1fr); }
     .col-topics { display: none; }
     .topic-select { display: block; }
+    .topic-title { display: none; }
   }
   @media (max-width: 767px) {
     .brand h1 { display: none; }
@@ -350,7 +373,8 @@
 
   <div class="head-actions">
     <button class="btn" id="syncTopBtn" title="Đồng bộ GitHub"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.5 6.4M3 12a9 9 0 0 1 15.5-6.4M18.5 2v4h-4M5.5 22v-4h4"/></svg><span>Đồng bộ</span></button>
-    <button class="btn" id="statsBtn" title="Thống kê học tập"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Thống kê</span></button>
+    <button class="btn" id="statsBtn" title="Thống kê kho tri thức"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Thống kê</span></button>
+    <button class="btn" id="quickBtn" title="Ghi nhanh (Alt+Q)"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Ghi nhanh</span></button>
     <button class="btn primary" id="addBtn" title="Thêm ghi chú (Alt+N)">
       <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Thu thập</span>
     </button>
@@ -359,6 +383,7 @@
       <div class="menu-pop">
         <button id="exportBtn">Xuất sao lưu (JSON)</button>
         <button id="importBtn">Nhập ghi chú (dán / file JSON)</button>
+        <button id="topicMgrBtn">Quản lý chủ đề</button>
         <hr>
         <div class="menu-label">Khóa ứng dụng</div>
         <button id="lockSetBtn">Đặt mật khẩu</button>
@@ -370,7 +395,7 @@
         <button id="syncBtn">Đồng bộ ngay</button>
         <button id="settingsBtn">Cài đặt kết nối</button>
         <hr>
-        <div class="note" style="padding:2px 10px 4px">Phím tắt: <kbd>/</kbd> tìm · <kbd>Alt+N</kbd> thêm · <kbd>↑</kbd><kbd>↓</kbd> chọn · <kbd>Ctrl+Enter</kbd> lưu<br><kbd>D</kbd> duyệt · <kbd>E</kbd> sửa · <kbd>C</kbd> chép · <kbd>Space</kbd> trích dẫn · <kbd>F</kbd> tập trung · <kbd>Esc</kbd> thoát/bỏ lọc thẻ</div>
+        <div class="note" style="padding:2px 10px 4px">Phím tắt: <kbd>/</kbd> tìm · <kbd>Alt+N</kbd> thêm · <kbd>Alt+Q</kbd> ghi nhanh · <kbd>↑</kbd><kbd>↓</kbd> chọn · <kbd>Ctrl+Enter</kbd> lưu<br><kbd>D</kbd> duyệt · <kbd>R</kbd> bắt đầu/ngừng ôn · <kbd>E</kbd> sửa · <kbd>C</kbd> chép · <kbd>Space</kbd> trích dẫn · <kbd>F</kbd> tập trung · <kbd>Esc</kbd> thoát/bỏ lọc thẻ</div>
       </div>
     </details>
   </div>
@@ -388,6 +413,7 @@
   <section class="col-list">
     <div class="list-head">
       <select id="mobileTopic" class="topic-select" aria-label="Chủ đề"></select>
+      <div class="topic-title" id="topicTitle"></div>
       <div class="meta">
         <button type="button" class="icon-btn" id="showTopics" title="Hiện cột chủ đề" aria-label="Hiện cột chủ đề"><svg viewBox="0 0 24 24"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"/></svg></button>
         <span id="countText"></span>
@@ -413,7 +439,7 @@
       <input type="hidden" id="formId">
       <div class="field">
         <label for="formTopic">Chủ đề</label>
-        <input id="formTopic" list="topicOptions" required placeholder="Ví dụ: Dân sự, Quản trị, Kỹ năng…">
+        <input id="formTopic" list="topicOptions" required placeholder="Ví dụ: Dân sự — hoặc Pháp luật/Dân sự (chủ đề con)">
         <datalist id="topicOptions"></datalist>
       </div>
       <div class="field">
@@ -525,10 +551,72 @@
   </form>
 </div>
 
+<!-- Xuất bài đọc / sao chép -->
+<div class="modal" id="shareModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shareHead" style="max-width:480px">
+    <div class="sheet-head"><h3 id="shareHead">Xuất bài đọc</h3><button type="button" class="x" id="shareClose" aria-label="Đóng">&times;</button></div>
+    <p class="note"><b id="shareTitle"></b></p>
+    <p class="note">Mặc định chỉ gồm Tiêu đề và Ý hiểu. Chỉ bài bạn chọn được xuất; không kèm gì khác trong kho.</p>
+    <label class="check"><input type="checkbox" id="shExcerpt"><span>Kèm trích dẫn nguyên văn<br><span id="shExcerptHint" style="font-size:12px;color:var(--faint)"></span></span></label>
+    <label class="check"><input type="checkbox" id="shSource"><span>Kèm nguồn</span></label>
+    <div class="form-actions" style="flex-wrap:wrap">
+      <button type="button" class="btn" id="shMd" title="Dán vào ứng dụng ghi chú hỗ trợ Markdown">Sao chép Markdown</button>
+      <button type="button" class="btn" id="shText" title="Dán vào Zalo, Word, Email">Sao chép văn bản</button>
+      <button type="button" class="btn primary" id="shHtml" title="Một file .html mở được trên điện thoại và máy tính, không cần mạng">Tải file HTML</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ghi nhanh -->
+<button type="button" class="fab" id="quickFab" title="Ghi nhanh" aria-label="Ghi nhanh"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+<div class="modal" id="quickModal" hidden>
+  <form class="sheet" id="quickForm" role="dialog" aria-modal="true" aria-labelledby="quickHead" style="max-width:520px" autocomplete="off">
+    <div class="sheet-head"><h3 id="quickHead">Ghi nhanh</h3><button type="button" class="x" id="quickClose" aria-label="Đóng">&times;</button></div>
+    <textarea id="quickText" class="quick-text" rows="7" placeholder="Gõ ý tưởng, từ khóa, đoạn cần nhớ… Dòng đầu tiên sẽ làm tiêu đề." aria-label="Nội dung ghi nhanh"></textarea>
+    <p class="note">Lưu vào “Hộp thư đến”, trạng thái chưa duyệt; chủ đề, thẻ, nguồn bổ sung sau cũng được. Đóng hộp mà chưa lưu thì nội dung được giữ lại cho lần mở sau.</p>
+    <div class="form-actions"><button type="button" class="btn" id="quickCancel" title="Bỏ nội dung đang gõ">Hủy bỏ</button><button type="button" class="btn" id="quickMore">Lưu &amp; ghi tiếp</button><button type="submit" class="btn primary" title="Ctrl+Enter">Lưu</button></div>
+  </form>
+</div>
+
+<!-- Quản lý chủ đề -->
+<div class="modal" id="topicModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="topicHead" style="max-width:520px">
+    <div class="sheet-head"><h3 id="topicHead">Quản lý chủ đề</h3><button type="button" class="x" id="tmClose" aria-label="Đóng">&times;</button></div>
+    <div class="field">
+      <label for="tmSel">Chủ đề cần sửa</label>
+      <select id="tmSel" class="mg-sel"></select>
+      <div class="note" id="tmInfo"></div>
+    </div>
+    <div class="mg-sec">
+      <h4>Đổi tên</h4>
+      <div class="mg-row"><input id="tmName" type="text" aria-label="Tên mới" autocomplete="off"><button type="button" class="btn primary" id="tmRename">Đổi tên</button></div>
+      <div class="note">Đổi tên chủ đề mẹ thì mọi chủ đề con đi theo. Đổi thành tên đã có thì hai chủ đề được gộp (có hỏi lại). Gõ <b>Mẹ/Con</b> (ví dụ Kiến thức pháp luật/Bí mật nhà nước) để vừa đổi tên vừa lồng vào chủ đề mẹ; chỉ dùng được với chủ đề chưa có con.</div>
+    </div>
+    <div class="mg-sec">
+      <h4>Chuyển vào chủ đề…</h4>
+      <div class="mg-row"><select id="tmTarget" aria-label="Chủ đề mẹ"></select><button type="button" class="btn" id="tmMove">Chuyển</button></div>
+      <input id="tmNewParent" class="mg-new" type="text" placeholder="Tên chủ đề mẹ mới" autocomplete="off" hidden>
+      <div class="note" id="tmMoveNote"></div>
+    </div>
+    <div class="mg-sec">
+      <h4>Lịch ôn của chủ đề này</h4>
+      <div class="note" id="tmRevInfo"></div>
+      <div class="mg-row split" style="margin-top:8px"><button type="button" class="btn" id="tmEnroll">Đưa vào lịch ôn</button><button type="button" class="btn" id="tmStop">Ngừng ôn</button></div>
+    </div>
+    <div class="mg-sec">
+      <h4>Dọn dẹp toàn kho</h4>
+      <div class="note" id="tmAllInfo"></div>
+      <div class="mg-row" style="margin-top:8px"><button type="button" class="btn" id="tmStopAll">Ngừng ôn toàn bộ</button></div>
+    </div>
+    <div class="gate-err" id="tmErr" role="alert"></div>
+    <div class="form-actions"><button type="button" class="btn" id="tmDone">Đóng</button></div>
+  </div>
+</div>
+
 <!-- Thống kê -->
 <div class="modal" id="statsModal" hidden>
   <div class="sheet" style="max-width:860px">
-    <div class="sheet-head"><h3>Thống kê học tập</h3><button type="button" class="x" id="closeStats" aria-label="Đóng">&times;</button></div>
+    <div class="sheet-head"><h3>Thống kê kho tri thức</h3><button type="button" class="x" id="closeStats" aria-label="Đóng">&times;</button></div>
     <div id="statsBody"></div>
   </div>
 </div>
@@ -577,11 +665,12 @@
   'use strict';
 
   const LS_NOTES = 'pkv_notes', LS_DIRTY = 'pkv_dirty', LS_GH = 'pkv_gh', LS_UI = 'pkv_ui';
-  const LS_REVIEW = 'pkv_review', LS_ACT = 'pkv_activity', LS_RMETA = 'pkv_review_meta', LS_RCOUNT = 'pkv_review_count';   // lịch ôn tập: chỉ lưu trên máy, chưa đồng bộ
+  const LS_REVIEW = 'pkv_review', LS_ACT = 'pkv_activity', LS_RCOUNT = 'pkv_review_count';   // lịch ôn tập: chỉ lưu trên máy, chưa đồng bộ
   const PAGE = 100;
   const DRAFT_TAG = 'chưa duyệt';
   const MISSING_TAG = 'thiếu nguyên văn';
-  const SYSTEM_TAGS = [DRAFT_TAG, MISSING_TAG];   // thẻ nội bộ, không hiện ở dòng Thẻ
+  const STOP_TAG = 'đã ngừng ôn';   // thẻ ẩn: đã bấm Ngừng ôn. Nằm trên chính ghi chú nên đồng bộ theo updated_at
+  const SYSTEM_TAGS = [DRAFT_TAG, MISSING_TAG, STOP_TAG];   // thẻ nội bộ, không hiện ở dòng Thẻ
 
   // ---------- Lưu trữ cục bộ ----------
   const lsGet = (k, def) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch (e) { return def; } };
@@ -615,48 +704,36 @@
   // ---------- Lịch ôn tập (chỉ trên máy) ----------
   // review[id] = { stage, due }: stage là chỉ số trong INTERVALS, due là ngày hẹn ôn (YYYY-MM-DD, giờ địa phương).
   const INTERVALS = [1, 3, 7, 30];   // ngày
-  const DAILY_NEW = 20;              // ghi chú cũ (đã duyệt, chưa có lịch) được đưa vào ôn mỗi ngày
   let review = lsGet(LS_REVIEW, {});
   let rcount = lsGet(LS_RCOUNT, {});   // review_count: số lần đã chấm bài của từng ghi chú (tính từ khi có tính năng này, không mất khi Bỏ duyệt)
   let activity = new Set(lsGet(LS_ACT, []));
-  let rmeta = lsGet(LS_RMETA, { day: '', intake: 0 });
 
   const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   const today = () => ymd(new Date());
   const addDays = (day, n) => { const d = new Date(day + 'T12:00:00'); d.setDate(d.getDate() + n); return ymd(d); };
-  const writeReview = () => { lsSet(LS_REVIEW, review); lsSet(LS_RMETA, rmeta); lsSet(LS_ACT, [...activity].sort()); lsSet(LS_RCOUNT, rcount); };
+  const writeReview = () => { lsSet(LS_REVIEW, review); lsSet(LS_ACT, [...activity].sort()); lsSet(LS_RCOUNT, rcount); };
   const saveReview = () => { writeReview(); dirty.add('__review'); lsSet(LS_DIRTY, [...dirty]); scheduleSync(); };
   const isApproved = n => !parseTags(n.tags).includes(DRAFT_TAG);
+  const hasTag = (n, t) => parseTags(n.tags).includes(t);
+  // Ôn tập là tùy chọn: ghi chú đã duyệt nằm trong "kho tra cứu"; chỉ bài đã bấm Bắt đầu ôn mới có lịch.
+  const canReview = n => isApproved(n) && !hasTag(n, STOP_TAG);
+  const inReview = n => canReview(n) && !!review[n.id];
+  const fmtDay = d => d.split('-').reverse().join('/');
 
   function logActivity() { activity.add(today()); saveReview(); }
 
-  // Ghi chú vừa được duyệt / vừa thêm tay: ôn lần đầu sau 1 ngày
-  function scheduleNew(id) { review[id] = { stage: 0, due: addDays(today(), INTERVALS[0]) }; saveReview(); }
   function unschedule(id) { delete review[id]; saveReview(); }
-
-  // Ghi chú cũ đã duyệt mà chưa có lịch: mỗi ngày đưa tối đa DAILY_NEW bài (cũ nhất trước) vào ôn ngay hôm nay
-  function ensureIntake() {
-    const day = today();
-    if (rmeta.day !== day) rmeta = { day, intake: 0 };
-    const room = DAILY_NEW - rmeta.intake;
-    if (room <= 0) return;
-    const legacy = active().filter(n => isApproved(n) && !review[n.id]).sort((a, b) => time(a.created_at) - time(b.created_at)).slice(0, room);
-    if (!legacy.length) return;
-    legacy.forEach(n => { review[n.id] = { stage: 0, due: day }; });
-    rmeta.intake += legacy.length;
-    saveReview();
-  }
 
   // Ghi chú đến hạn ôn hôm nay (kể cả quá hạn), hạn cũ nhất trước
   function dueList() {
     const day = today();
     return active()
-      .filter(n => isApproved(n) && review[n.id] && review[n.id].due <= day)
+      .filter(n => inReview(n) && review[n.id].due <= day)
       .sort((a, b) => review[a.id].due.localeCompare(review[b.id].due) || time(a.created_at) - time(b.created_at));
   }
 
   // Hàng đợi của lượt ôn đang chạy: toàn bộ bài đến hạn, hoặc chỉ bài của một chủ đề khi ôn theo chủ đề
-  const reviewQueue = () => state.reviewTopic ? dueList().filter(n => n.topic === state.reviewTopic) : dueList();
+  const reviewQueue = () => state.reviewTopic ? dueList().filter(n => inTopic(n, state.reviewTopic)) : dueList();
 
   // Chấm một bài ôn: nhớ -> lên mốc kế (tối đa 30 ngày); chưa nhớ -> về mốc 1 ngày
   function gradeReview(id, remembered) {
@@ -679,11 +756,60 @@
   }
 
 
+  // ---------- Chủ đề phân cấp: "Mẹ/Con" (tối đa 2 cấp, chỉ dấu / đầu tiên có nghĩa) ----------
+  function normTopicPath(t) {
+    const s = String(t || '').trim().replace(/\s+/g, ' ');
+    const i = s.indexOf('/');
+    if (i < 0) return s;
+    const parent = s.slice(0, i).trim(), child = s.slice(i + 1).trim();
+    return parent && child ? parent + '/' + child : (parent || child);
+  }
+  function splitTopic(t) {
+    const i = t.indexOf('/');
+    return i < 0 ? { parent: t, child: '' } : { parent: t.slice(0, i), child: t.slice(i + 1) };
+  }
+  // Mã chủ đề đang chọn: 'all' | 'Mẹ' (cả nhánh) | 'Mẹ/Con' | 'Mẹ/' (chỉ ghi chú nằm thẳng ở Mẹ)
+  function inTopic(n, sel) {
+    if (!sel || sel === 'all') return true;
+    if (sel.endsWith('/')) return n.topic === sel.slice(0, -1);
+    if (sel.includes('/')) return n.topic === sel;
+    return n.topic === sel || n.topic.startsWith(sel + '/');
+  }
+  const prettyTopic = t => t.replace('/', ' › ');
+  const topicLabel = sel => sel.endsWith('/') ? sel.slice(0, -1) + ' (chung)' : prettyTopic(sel);
+  // Dùng đúng cách viết đã có cho cả đường dẫn lẫn phần Mẹ ("kien thuc/Con" -> "Kiến thức/Con")
+  // childMatch (khi nhập từ AI): chỉ có tên con thì xếp vào đường dẫn đầy đủ nếu có đúng MỘT chủ đề con trùng tên
+  function matchTopic(t, known, childMatch = false) {
+    const hit = known.find(k => norm(k) === norm(t));
+    if (hit) return hit;
+    const { parent, child } = splitTopic(t);
+    if (!child) {
+      if (!childMatch) return t;
+      const under = known.filter(k => { const c = splitTopic(k).child; return c && norm(c) === norm(t); });
+      return under.length === 1 ? under[0] : t;
+    }
+    const p = known.map(k => splitTopic(k).parent).find(x => norm(x) === norm(parent));
+    return (p || parent) + '/' + child;
+  }
+
+  // Gom danh sách chủ đề phẳng thành nhóm: chủ đề mẹ -> các con. counts: { 'Mẹ/Con': số bài }
+  function buildGroups(counts, dueBy = {}) {
+    const groups = new Map();
+    Object.keys(counts).sort((a, b) => a.localeCompare(b, 'vi')).forEach(t => {
+      const { parent, child } = splitTopic(t);
+      const g = groups.get(parent) || { name: parent, own: 0, total: 0, due: 0, kids: [] };
+      groups.set(parent, g);
+      g.total += counts[t]; g.due += dueBy[t] || 0;
+      if (child) g.kids.push({ path: t, name: child, n: counts[t], due: dueBy[t] || 0 }); else g.own = counts[t];
+    });
+    return groups;
+  }
+
   function normalizeNote(r) {
     const now = new Date().toISOString();
     return {
       id: String(r.id || ''),
-      topic: String(r.topic || '').trim(),
+      topic: normTopicPath(r.topic),
       title: String(r.title || ''),
       takeaway: String(r.takeaway || ''),
       raw_excerpt: String(r.raw_excerpt || ''),
@@ -697,9 +823,7 @@
 
   // Dùng lại đúng cách viết chủ đề đã có ("quan tri" -> "Quản trị") để không sinh chủ đề trùng.
   function canonicalTopic(input) {
-    const t = input.trim().replace(/\s+/g, ' ');
-    const hit = active().find(n => norm(n.topic) === norm(t));
-    return hit ? hit.topic : t;
+    return matchTopic(normTopicPath(input), active().map(n => n.topic));
   }
 
   let toastTimer;
@@ -738,7 +862,7 @@
     if (state.review) return reviewQueue();   // chế độ ôn tập: chỉ các bài đến hạn
     const words = norm(state.q).split(/\s+/).filter(Boolean);
     return active()
-      .filter(n => state.topic === 'all' || n.topic === state.topic)
+      .filter(n => inTopic(n, state.topic))
       .filter(n => !state.tag || parseTags(n.tags).includes(state.tag))
       .filter(n => { const h = haystack(n); return words.every(w => h.includes(w)); })
       .sort((a, b) => (state.topic !== 'all' ? Number(!!isDue(b)) - Number(!!isDue(a)) : 0) || time(b.created_at) - time(a.created_at));   // xem theo chủ đề: bài cần ôn lên đầu
@@ -750,7 +874,7 @@
     const counts = {};
     list.forEach(n => { counts[n.topic] = (counts[n.topic] || 0) + 1; });
     const topics = Object.keys(counts).sort((a, b) => a.localeCompare(b, 'vi'));
-    if (state.topic !== 'all' && !counts[state.topic]) state.topic = 'all';
+    if (state.topic !== 'all' && !list.some(n => inTopic(n, state.topic))) state.topic = 'all';
 
     const dueBy = {};
     dueList().forEach(n => { dueBy[n.topic] = (dueBy[n.topic] || 0) + 1; });
@@ -758,20 +882,39 @@
     const draftN = list.filter(n => !isApproved(n)).length;
     const plain = !state.review && state.tag !== DRAFT_TAG;   // đang xem theo chủ đề, không phải chế độ hành động
 
-    const btn = (value, label, count) =>
-      `<button class="topic-btn ${plain && state.topic === value ? 'on' : ''}" data-topic="${esc(value)}"><span title="${esc(label)}">${esc(label)}</span><span class="r">${dueBy[value] ? `<span class="due-badge" title="Bài đến hạn ôn hôm nay">• ${dueBy[value]} cần ôn</span>` : ''}<span class="count">${count}</span></span></button>`;
+    // Cây: chủ đề mẹ -> các chủ đề con (chủ đề không có "/" là chủ đề lớn đứng một mình)
+    const groups = buildGroups(counts, dueBy);
+    const sorted = [...groups.values()].sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+    const folded = new Set(ui.collapsed || []);
+
+    const badge = d => d ? `<span class="due-badge" title="Bài đến hạn ôn hôm nay">${d} ôn</span>` : '';
+    const btn = (value, icon, label, count, due) =>
+      `<button class="topic-btn ${plain && state.topic === value ? 'on' : ''}" data-topic="${esc(value)}"><span title="${esc(label)}">${icon ? icon + ' ' : ''}${esc(label)}</span><span class="r">${badge(due)}<span class="count">${count}</span></span></button>`;
+    const pen = tok => `<button type="button" class="edit-btn" data-edit="${esc(tok)}" title="Đổi tên / chuyển chủ đề" aria-label="Sửa chủ đề ${esc(tok)}">✎</button>`;
+    const row = (lead, inner, extra = '') => `<div class="tp-row">${lead}${inner}${extra}</div>`;
     const act = (kind, icon, label, count, on) =>
       `<button class="topic-btn act-btn ${on ? 'on' : ''}" data-action="${kind}"><span>${icon} ${label}</span><span class="count">${count}</span></button>`;
-    const actions = (dueN ? act('review', '🔥', 'Cần ôn hôm nay', dueN, state.review) : '') +
-      (draftN ? act('draft', '⏳', 'Chưa duyệt', draftN, !state.review && state.tag === DRAFT_TAG) : '');
-    $('topicList').innerHTML = (actions ? `<div class="tray"><div class="sub-h">Hành động hôm nay</div>${actions}</div><div class="sub-h">Danh mục</div>` : '') +
-      btn('all', 'Tất cả ghi chú', list.length) + topics.map(t => btn(t, t, counts[t])).join('');
+    // Bộ lọc nhanh nằm cùng hàng với "Tất cả ghi chú": chỉ hiện khi có việc (chưa duyệt / bài đang ôn đến hạn), không có khung nổi bật
+    const quick = (draftN ? row('<span class="caret-sp"></span>', act('draft', '⏳', 'Chưa duyệt', draftN, !state.review && state.tag === DRAFT_TAG)) : '') +
+      (dueN ? row('<span class="caret-sp"></span>', act('review', '🔁', 'Cần ôn', dueN, state.review)) : '');
 
-    $('mobileTopic').innerHTML = `<option value="all">Tất cả (${list.length})</option>` +
-      topics.map(t => `<option value="${esc(t)}">${esc(t)} (${counts[t]})</option>`).join('');
+    const tree = sorted.map(g => {
+      if (!g.kids.length) return row('<span class="caret-sp"></span>', btn(g.name, '📁', g.name, g.total, g.due), pen(g.name));
+      const open = !folded.has(g.name);
+      const caret = `<button type="button" class="caret" data-fold="${esc(g.name)}" aria-expanded="${open}" aria-label="${open ? 'Thu gọn' : 'Mở rộng'} ${esc(g.name)}">${open ? '▾' : '▸'}</button>`;
+      const kids = (g.own ? row('', btn(g.name + '/', '📄', '(chung)', g.own, dueBy[g.name] || 0)) : '') +
+        g.kids.sort((a, b) => a.name.localeCompare(b.name, 'vi')).map(k => row('', btn(k.path, '📄', k.name, k.n, k.due), pen(k.path))).join('');
+      return row(caret, btn(g.name, '📁', g.name, g.total, g.due), pen(g.name)) + (open ? `<div class="tp-kids">${kids}</div>` : '');
+    }).join('');
+
+    $('topicList').innerHTML = row('<span class="caret-sp"></span>', btn('all', '', 'Tất cả ghi chú', list.length, 0)) + quick + tree;
+
+    $('mobileTopic').innerHTML = `<option value="all">Tất cả (${list.length})</option>` + sorted.map(g => !g.kids.length
+      ? `<option value="${esc(g.name)}">${esc(g.name)} (${g.total})</option>`
+      : `<optgroup label="${esc(g.name)}"><option value="${esc(g.name)}">Cả nhánh ${esc(g.name)} (${g.total})</option>${g.own ? `<option value="${esc(g.name + '/')}">(chung) (${g.own})</option>` : ''}${g.kids.map(k => `<option value="${esc(k.path)}">${esc(k.name)} (${k.n})</option>`).join('')}</optgroup>`).join('');
     $('mobileTopic').value = state.topic;
 
-    $('topicOptions').innerHTML = topics.map(t => `<option value="${esc(t)}">`).join('');
+    $('topicOptions').innerHTML = [...new Set([...groups.keys(), ...topics])].map(t => `<option value="${esc(t)}">`).join('');
   }
 
   // Ý hiểu có cấu trúc "- TỔNG QUAN: ..." -> in đậm phần nhãn viết hoa. Chuỗi đã escape trước khi thêm thẻ.
@@ -783,13 +926,13 @@
     }).join('\n');
   }
 
-  const isDue = n => isApproved(n) && review[n.id] && review[n.id].due <= today();
+  const isDue = n => inReview(n) && review[n.id].due <= today();
 
   function itemHtml(n) {
     const draft = parseTags(n.tags).includes(DRAFT_TAG);
     return `<button type="button" class="item${n.id === state.sel && !state.greet ? ' sel' : ''}" data-id="${esc(n.id)}">
       <span class="t">${esc(n.title)}</span>
-      <span class="m">${draft ? '<span class="dot" title="Chưa duyệt"></span>' : ''}<span class="mt">${esc(n.topic)}</span><span>·</span><span>${fmtDate(n.created_at)}</span>${isDue(n) && !state.review ? '<span class="due-tag">Cần ôn</span>' : ''}</span>
+      <span class="m">${draft ? '<span class="dot" title="Chưa duyệt"></span>' : ''}<span class="mt">${esc(prettyTopic(n.topic))}</span><span>·</span><span>${fmtDate(n.created_at)}</span>${isDue(n) && !state.review ? '<span class="due-tag">Cần ôn</span>' : ''}</span>
     </button>`;
   }
 
@@ -819,13 +962,15 @@
         <span class="acts">
           <button type="button" class="focus-btn" data-act="focus" title="Ẩn hai cột bên trái để đọc (Esc để thoát)"><svg viewBox="0 0 24 24">${state.focus ? '<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>' : '<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>'}</svg><span>${state.focus ? 'Thoát tập trung' : 'Tập trung'}</span></button>
           <button type="button" data-act="copy" title="Sao chép ghi chú"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><span>Sao chép</span></button>
+          <button type="button" data-act="share" title="Xuất bài đọc (file HTML) hoặc sao chép Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span>Xuất bài đọc</span></button>
+          ${draft ? '' : inReview(n) ? '<button type="button" data-act="unenroll" title="Ngừng ôn, giữ trong kho tra cứu (phím R)"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg><span>Ngừng ôn</span></button>' : '<button type="button" class="ok-btn" data-act="enroll" title="Đưa vào lịch ôn 1-3-7-30 ngày (phím R)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Bắt đầu ôn</span></button>'}
           ${draft ? '' : '<button type="button" data-act="unapprove" title="Đưa về hàng đợi chưa duyệt"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg><span>Bỏ duyệt</span></button>'}
           ${draft ? '<button type="button" class="ok-btn" data-act="approve" title="Duyệt ghi chú này (phím D)"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>Duyệt</span></button>' : ''}
           <button type="button" data-act="edit" title="Sửa ghi chú (phím E)"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Sửa</span></button>
           <button type="button" data-act="del" class="danger" title="Xóa ghi chú"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg><span>Xóa</span></button>
         </span>
       </div>
-      <div class="doc-meta"><span class="pill">${esc(n.topic)}</span>${draft ? '<button type="button" class="badge" data-act="approve" title="Bấm để duyệt (phím D)">Chưa duyệt ✓</button>' : '<span class="badge ok">Đã duyệt ✓</span>'}${parseTags(n.tags).includes(MISSING_TAG) ? '<span class="badge" title="Nguồn không có nguyên văn điều luật">Thiếu nguyên văn</span>' : ''}<time>${fmtDate(n.created_at)}</time></div>
+      <div class="doc-meta"><span class="pill">${esc(prettyTopic(n.topic))}</span>${draft ? '<button type="button" class="badge" data-act="approve" title="Bấm để duyệt (phím D)">Chưa duyệt ✓</button>' : '<span class="badge ok">Đã duyệt ✓</span>'}${draft ? '' : inReview(n) ? `<span class="badge" title="Đang trong lịch ôn, lần ôn kế tiếp">Đang ôn · ${fmtDay(review[n.id].due)}</span>` : '<span class="badge" title="Chưa đưa vào lịch ôn. Bấm Bắt đầu ôn (phím R) khi muốn ghi nhớ">Kho tra cứu</span>'}${parseTags(n.tags).includes(MISSING_TAG) ? '<span class="badge" title="Nguồn không có nguyên văn điều luật">Thiếu nguyên văn</span>' : ''}<time>${fmtDate(n.created_at)}</time></div>
       <h2>${esc(n.title)}</h2>
       <div class="take">${takeHtml(n.takeaway)}</div>
       ${n.raw_excerpt ? `<h3 class="sec">Trích dẫn</h3>${excerptHtml(n)}` : ''}
@@ -874,16 +1019,16 @@
         <span class="bar-title">${esc(n.title)}</span>
         <span class="sp"></span>
         <span class="rv-count">Còn ${left} bài</span>
-        <span class="acts"><button type="button" data-act="exitReview" title="Thoát ôn tập (Esc)"><span>Thoát ôn tập</span></button></span>
+        <span class="acts"><button type="button" data-act="unenroll" title="Đã vững: ngừng ôn, giữ trong kho tra cứu (phím R)"><span>Ngừng ôn</span></button><button type="button" data-act="exitReview" title="Thoát ôn tập (Esc)"><span>Thoát ôn tập</span></button></span>
       </div>
-      <div class="doc-meta"><span class="pill">${esc(n.topic)}</span></div>
+      <div class="doc-meta"><span class="pill">${esc(prettyTopic(n.topic))}</span></div>
       <h2>${esc(n.title)}</h2>
       ${back}
     </div>`;
   }
 
   function doneHtml() {
-    return `<div class="doc rv-done"><h2>${state.reviewTopic ? `Đã ôn xong chủ đề “${esc(state.reviewTopic)}”` : 'Hôm nay đã ôn xong'}</h2>
+    return `<div class="doc rv-done"><h2>${state.reviewTopic ? `Đã ôn xong chủ đề “${esc(topicLabel(state.reviewTopic))}”` : 'Hôm nay đã ôn xong'}</h2>
       <p>${state.revDone ? `Bạn vừa ôn ${state.revDone} bài. ` : ''}Chuỗi ngày học: ${streak()} ngày.</p>
       <button type="button" class="btn primary" data-act="exitReview">Quay lại danh sách</button></div>`;
   }
@@ -902,47 +1047,68 @@
       const d = addDays(day, -i);
       days.push(`<div class="st-day${activity.has(d) ? ' on' : ''}${d === day ? ' today' : ''}" title="${d === day ? 'Hôm nay · ' : ''}${d}"><i></i>${names[new Date(d + 'T12:00:00').getDay()]}</div>`);
     }
+    const reviewing = list.filter(inReview).length;
     const msg = activity.has(day) ? 'Hôm nay bạn đã học.' : sk ? 'Hôm nay chưa học. Làm một việc nhỏ để giữ chuỗi.' : 'Thêm, duyệt hoặc ôn một ghi chú để bắt đầu chuỗi.';
 
-    // Gom theo chủ đề: tổng bài, chặng ôn, lịch hẹn gần nhất, lượt ôn
+    // Gom theo chuyên đề (chủ đề mẹ): số tài liệu, dung lượng; thêm chặng ôn và lịch hẹn nếu có bài đang ôn
+    const enc = new TextEncoder();
+    const fmtSize = b => b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(b < 10240 ? 1 : 0) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
     const by = {};
     list.forEach(n => {
-      const t = by[n.topic] || (by[n.topic] = { all: 0, ok: 0, due: 0, reps: 0, stage: INTERVALS.map(() => 0), none: 0, dates: {} });
-      t.all++; t.reps += rcount[n.id] || 0;
-      if (isApproved(n) && review[n.id]) {
-        t.ok++;
+      const { parent, child } = splitTopic(n.topic);
+      const t = by[parent] || (by[parent] = { all: 0, ok: 0, due: 0, reps: 0, stage: INTERVALS.map(() => 0), none: 0, rev: 0, bytes: 0, dates: {}, kids: {}, own: 0, ownDue: 0 });
+      t.all++; t.reps += rcount[n.id] || 0; t.bytes += enc.encode(JSON.stringify(n)).length;
+      const kid = child ? (t.kids[child] || (t.kids[child] = { n: 0, due: 0 })) : null;
+      if (kid) kid.n++; else t.own++;
+      if (isApproved(n)) t.ok++;
+      if (inReview(n)) {
+        t.rev++;
         t.stage[Math.min(review[n.id].stage || 0, INTERVALS.length - 1)]++;
         const d = review[n.id].due <= day ? day : review[n.id].due;   // bài quá hạn tính vào hôm nay
         t.dates[d] = (t.dates[d] || 0) + 1;
-        if (isDue(n)) t.due++;
-      } else if (isApproved(n)) { t.ok++; t.none++; } else t.none++;
+        if (isDue(n)) { t.due++; if (kid) kid.due++; else t.ownDue++; }
+      } else t.none++;
     });
     const topics = Object.entries(by).sort((a, b) => b[1].all - a[1].all || a[0].localeCompare(b[0], 'vi'));
     const fmt = d => d.split('-').reverse().join('/');
     const cards = topics.map(([name, t]) => {
       const chips = INTERVALS.map((d, i) => t.stage[i] ? `<span class="st-chip">Sau ${d} ngày: ${t.stage[i]}</span>` : '').join('') +
-        (t.none ? `<span class="st-chip none">Chưa vào lịch: ${t.none}</span>` : '');
+        (t.none ? `<span class="st-chip none" title="Trong kho tra cứu, chưa có lịch ôn">Chưa ôn: ${t.none}</span>` : '');
+      // Chủ đề con: mỗi con (và mục chung) là một nút ôn riêng kèm số bài đến hạn
+      const kidBtn = (token, label, c, d) => d
+        ? `<button type="button" class="kid-chip" data-review-topic="${esc(token)}" title="Ôn riêng ${esc(label)}: ${d} bài đến hạn">📄 ${esc(label)} <b>${c}</b> · ôn ${d}</button>`
+        : `<span class="kid-chip off">📄 ${esc(label)} <b>${c}</b></span>`;
+      const kidList = Object.entries(t.kids).sort((x, y) => y[1].n - x[1].n || x[0].localeCompare(y[0], 'vi'));
+      const kidsHtml = kidList.length ? `<div class="kid-chips">${t.own ? kidBtn(name + '/', '(chung)', t.own, t.ownDue) : ''}${kidList.map(([k, v]) => kidBtn(name + '/' + k, k, v.n, v.due)).join('')}</div>` : '';
       const first = Object.keys(t.dates).sort()[0];
       const next = !first ? '–' : first === day ? `Hôm nay: ${t.dates[first]} bài` : first === tomorrow ? `Ngày mai: ${t.dates[first]} bài` : `${fmt(first)}: ${t.dates[first]} bài`;
-      return `<div class="st-topic">
-        <div><div class="nm" title="${esc(name)}">${esc(name)}</div>
-          <div class="tm"><b>${t.all}</b> bài (${Math.round(t.all / list.length * 100)}%) · ${approvedNotes.filter(n => n.topic === name).length} đã duyệt · ${t.reps} lượt ôn</div></div>
+      const info = `<div><div class="nm" title="${esc(name)}">${esc(name)}</div>
+          <div class="tm"><b>${t.all}</b> tài liệu (${Math.round(t.all / list.length * 100)}%) · ${t.ok} đã duyệt · ${fmtSize(t.bytes)}${t.rev ? ` · ${t.rev} đang ôn` : ''}${t.reps ? ` · ${t.reps} lượt ôn` : ''}</div>${kidsHtml}</div>`;
+      if (!t.rev) return `<div class="st-topic plain">${info}</div>`;   // chưa có bài đang ôn: chỉ thông tin kho, không có lịch ôn
+      return `<div class="st-topic">${info}
         <div><div class="lb">Chặng ôn</div><div class="st-chips">${chips || '<span class="st-chip none">–</span>'}</div></div>
         <div><div class="lb">Lịch hẹn gần nhất</div><div class="st-next${first === day ? ' today' : ''}">${next}</div></div>
         ${t.due ? `<button type="button" class="btn primary" data-review-topic="${esc(name)}">Ôn theo chủ đề này (${t.due})</button>` : '<button type="button" class="btn" disabled>Chưa đến hạn</button>'}
       </div>`;
     }).join('');
 
-    return `<div class="st-streak"><b>${sk}</b><div>ngày học liên tiếp<small>${msg}</small></div><div class="st-days">${days.join('')}</div></div>
+    // Ôn tập là tùy chọn: chuỗi ngày học, số liệu ôn và lịch hẹn chỉ hiện khi bạn có bài đang ôn
+    const kidTotal = topics.reduce((sum, [, t]) => sum + Object.keys(t.kids).length, 0);
+    const notesBytes = enc.encode(JSON.stringify(list)).length;
+    const usesReview = reviewing > 0 || totalReps > 0;
+    const streakHtml = reviewing ? `<div class="st-streak"><b>${sk}</b><div>ngày học liên tiếp<small>${msg}</small></div><div class="st-days">${days.join('')}</div></div>` : '';
+    return `${streakHtml}
       <div class="st-nums">
-        <div class="st-num"><b>${topics.length}</b><span>Chủ đề</span><small>chứa ${list.length} ghi chú</small></div>
-        <div class="st-num"><b>${list.length}</b><span>Tổng ghi chú</span><small>(${approvedNotes.length} đã duyệt)</small></div>
+        <div class="st-num"><b>${list.length}</b><span>Tài liệu đã lưu</span><small>${approvedNotes.length} đã duyệt${list.length > approvedNotes.length ? ` · ${list.length - approvedNotes.length} chưa duyệt` : ''}</small></div>
+        <div class="st-num"><b>${topics.length}</b><span>Chuyên đề</span><small>${kidTotal ? `gồm ${kidTotal} chủ đề con` : 'chủ đề lớn'}</small></div>
+        <div class="st-num"><b>${fmtSize(notesBytes)}</b><span>Dung lượng ghi chú</span><small>≈ ${Math.max(1, Math.round(notesBytes / 5242880 * 100))}% của 5 MB trên máy này</small></div>
+        ${usesReview ? `<div class="st-num"><b>${reviewing}</b><span>Đang ôn</span><small>${reviewing ? 'có lịch 1-3-7-30 ngày' : 'chưa bài nào'}</small></div>
         <div class="st-num due"><b>${due}</b><span>Cần ôn hôm nay</span></div>
-        <div class="st-num"><b>${totalReps}</b><span>Tổng lượt ôn</span></div>
+        <div class="st-num"><b>${totalReps}</b><span>Tổng lượt ôn</span></div>` : ''}
       </div>
-      <h4 class="st-h">Tiến độ theo chủ đề</h4>
+      <h4 class="st-h">Theo chuyên đề</h4>
       ${cards || '<p class="note">Chưa có ghi chú nào.</p>'}
-      ${cards ? '<p class="st-note">Chặng là khoảng cách hẹn ôn kế tiếp: “Sau 1 ngày” gồm cả bài mới duyệt lẫn bài vừa bấm Chưa nhớ. Bài chưa duyệt chưa vào lịch ôn. Số lượt ôn chỉ tính từ khi app bắt đầu ghi lại.</p>' : ''}`;
+      ${reviewing ? '<p class="st-note">Chặng là khoảng cách hẹn ôn kế tiếp: “Sau 1 ngày” gồm cả bài mới đưa vào ôn lẫn bài vừa bấm Chưa nhớ. Chỉ những bài bạn đã bấm Bắt đầu ôn mới có lịch. Số lượt ôn chỉ tính từ khi app bắt đầu ghi lại.</p>' : ''}`;
   }
 
   function openStats() {
@@ -958,12 +1124,191 @@
     enterReview('', b.dataset.reviewTopic);
   };
 
+  // ---------- Quản lý chủ đề: đổi tên / chuyển cấp / gộp (cập nhật hàng loạt ghi chú) ----------
+  const cleanName = x => String(x || '').trim().replace(/\s+/g, ' ');
+  const allTopics = () => [...new Set(active().map(n => n.topic))];
+  const countOf = t => active().filter(n => n.topic === t).length;
+  const topicCounts = () => { const c = {}; active().forEach(n => { c[n.topic] = (c[n.topic] || 0) + 1; }); return c; };
+  const byViName = (a, b) => a.name.localeCompare(b.name, 'vi');
+
+  // Đổi chủ đề của mọi ghi chú theo fn(chủ đề cũ) -> chủ đề mới; cập nhật updated_at nên tự đồng bộ; có Hoàn tác
+  function retopic(fn, nextToken, msg) {
+    const now = new Date().toISOString();
+    const changed = [];
+    active().forEach(n => {
+      const t = fn(n.topic);
+      if (t === n.topic) return;
+      changed.push({ id: n.id, from: n.topic });
+      n.topic = t; n.updated_at = now; dirty.add(n.id); hayCache.delete(n);
+    });
+    if (!changed.length) return;
+    persist();
+    leaveReview(); state.topic = nextToken || 'all'; state.limit = PAGE;
+    render(); scheduleSync();
+    toast(`${msg}: ${changed.length} ghi chú.`, 'Hoàn tác', () => {
+      const t2 = new Date().toISOString();
+      changed.forEach(c => { const cur = notes.find(x => x.id === c.id); if (cur && !cur.deleted) { cur.topic = c.from; cur.updated_at = t2; dirty.add(cur.id); hayCache.delete(cur); } });
+      persist(); leaveReview(); state.topic = 'all'; render(); scheduleSync();
+      toast('Đã hoàn tác.');
+    });
+  }
+
+  function refreshMgr() {
+    const sel = $('tmSel').value;
+    const counts = topicCounts();
+    const groups = buildGroups(counts);
+    const isKid = sel.includes('/');
+    const { parent, child } = splitTopic(sel);
+    const g = groups.get(parent);
+    if (!g) return;
+    $('tmName').value = isKid ? child : sel;
+    $('tmInfo').textContent = isKid ? `${counts[sel]} ghi chú.`
+      : `${g.total} ghi chú` + (g.kids.length ? ` (${g.own} nằm thẳng ở mục chung, ${g.kids.length} chủ đề con).` : '.');
+    const canMove = isKid || !g.kids.length;
+    const parents = [...groups.keys()].filter(x => x !== (isKid ? parent : sel)).sort((a, b) => a.localeCompare(b, 'vi'));
+    $('tmTarget').innerHTML = (isKid ? '<option value="">— Đưa ra ngoài (thành chủ đề lớn) —</option>' : '') +
+      parents.map(x => `<option value="${esc(x)}">📁 ${esc(x)}</option>`).join('') + '<option value="__new">+ Chủ đề mẹ mới…</option>';
+    $('tmTarget').disabled = $('tmMove').disabled = !canMove;
+    $('tmMoveNote').textContent = !canMove ? 'Chủ đề này đang có chủ đề con. App chỉ có 2 cấp nên hãy chuyển từng chủ đề con trước, hoặc đổi tên cho cả nhánh.'
+      : isKid ? 'Chủ đề con sẽ chuyển sang chủ đề mẹ bạn chọn.' : 'Chủ đề này sẽ trở thành chủ đề con của chủ đề mẹ bạn chọn.';
+    $('tmNewParent').hidden = true; $('tmNewParent').value = '';
+    $('tmErr').textContent = '';
+    const scope = active().filter(n => inTopic(n, sel));
+    const can = scope.filter(n => isApproved(n) && !inReview(n)).length;
+    const now = scope.filter(inReview).length;
+    const drafts = scope.filter(n => !isApproved(n)).length;
+    $('tmRevInfo').textContent = `${scope.length} bài trong kho · ${now} đang ôn.` + (drafts ? ` ${drafts} bài chưa duyệt nên chưa đưa vào ôn được.` : '');
+    $('tmEnroll').textContent = `Đưa vào lịch ôn (${can} bài)`; $('tmEnroll').disabled = !can;
+    $('tmStop').textContent = `Ngừng ôn (${now} bài)`; $('tmStop').disabled = !now;
+    const all = active().filter(inReview).length;
+    $('tmAllInfo').textContent = `Toàn kho đang có ${all} bài trong lịch ôn. Ngừng ôn chỉ đưa bài về kho tra cứu: ghi chú và số lượt ôn vẫn giữ nguyên.`;
+    $('tmStopAll').textContent = `Ngừng ôn toàn bộ (${all} bài)`; $('tmStopAll').disabled = !all;
+  }
+
+  function openTopicMgr(sel) {
+    $('menu').open = false;
+    const counts = topicCounts();
+    const groups = buildGroups(counts);
+    if (!groups.size) { toast('Chưa có chủ đề nào.'); return; }
+    const opts = [];
+    [...groups.values()].sort(byViName).forEach(g => {
+      opts.push(`<option value="${esc(g.name)}">📁 ${esc(g.name)} (${g.total})</option>`);
+      g.kids.sort(byViName).forEach(k => opts.push(`<option value="${esc(k.path)}">&nbsp;&nbsp;&nbsp;&nbsp;📄 ${esc(k.name)} (${k.n})</option>`));
+    });
+    $('tmSel').innerHTML = opts.join('');
+    const want = sel || state.topic.replace(/\/$/, '');
+    const ok = [...$('tmSel').options].some(o => o.value === want);
+    $('tmSel').value = ok ? want : $('tmSel').options[0].value;
+    refreshMgr();
+    $('topicModal').hidden = false;
+  }
+  const closeTopicMgr = () => { $('topicModal').hidden = true; };
+
+  $('tmSel').onchange = refreshMgr;
+  $('tmTarget').onchange = () => { $('tmNewParent').hidden = $('tmTarget').value !== '__new'; if (!$('tmNewParent').hidden) $('tmNewParent').focus(); };
+  $('tmClose').onclick = $('tmDone').onclick = closeTopicMgr;
+  $('topicMgrBtn').onclick = () => openTopicMgr('');
+
+  $('tmRename').onclick = () => {
+    const sel = $('tmSel').value, raw = cleanName($('tmName').value);
+    const err = m => { $('tmErr').textContent = m; };
+    if (!raw) return err('Tên không được để trống.');
+    const all = allTopics();
+    if (raw.includes('/')) {
+      // Gõ đường dẫn Mẹ/Con: vừa đổi tên vừa lồng cấp (chỉ cho chủ đề chưa có con)
+      if (!sel.includes('/') && all.some(t => t.startsWith(sel + '/'))) return err('Chủ đề này đang có chủ đề con nên chỉ đổi phần tên, không dùng dấu /. Muốn lồng, hãy chuyển từng chủ đề con.');
+      const path = normTopicPath(raw);
+      if (!path.includes('/')) return err('Cần có cả tên mẹ và tên con, ví dụ: Kiến thức pháp luật/Bí mật nhà nước.');
+      if (path.indexOf('/') !== path.lastIndexOf('/')) return err('Chỉ có 2 cấp: Mẹ/Con.');
+      const aligned = matchTopic(path, all.filter(t => t !== sel));
+      if (aligned === sel) return err('Tên chưa thay đổi.');
+      const other = all.find(t => t !== sel && t === aligned);
+      const msg = other ? `Đã có chủ đề “${prettyTopic(other)}” (${countOf(other)} ghi chú).\nGộp ${countOf(sel)} ghi chú của “${prettyTopic(sel)}” vào đó?`
+        : `Đổi “${prettyTopic(sel)}” thành “${prettyTopic(aligned)}” (${countOf(sel)} ghi chú)?`;
+      if (!confirm(msg)) return;
+      closeTopicMgr();
+      retopic(t => t === sel ? aligned : t, aligned, other ? 'Đã gộp' : 'Đã chuyển');
+      return;
+    }
+    const name = raw;
+    if (sel.includes('/')) {
+      const { parent, child } = splitTopic(sel);
+      if (name === child) return err('Tên chưa thay đổi.');
+      const want = parent + '/' + name;
+      const other = all.find(t => t !== sel && norm(t) === norm(want));
+      if (other && !confirm(`Đã có chủ đề “${prettyTopic(other)}” (${countOf(other)} ghi chú).\nGộp ${countOf(sel)} ghi chú của “${prettyTopic(sel)}” vào đó?`)) return;
+      const to = other || want;
+      closeTopicMgr();
+      retopic(t => t === sel ? to : t, to, other ? 'Đã gộp' : 'Đã đổi tên');
+      return;
+    }
+    if (name === sel) return err('Tên chưa thay đổi.');
+    const parents = [...new Set(all.map(t => splitTopic(t).parent))];
+    const other = parents.find(x => x !== sel && norm(x) === norm(name));
+    const mine = active().filter(n => inTopic(n, sel)).length;
+    if (other && !confirm(`Đã có chủ đề “${other}” (${active().filter(n => inTopic(n, other)).length} ghi chú).\nGộp ${mine} ghi chú của “${sel}” vào đó? Chủ đề con trùng tên sẽ nhập chung.`)) return;
+    const to = other || name;
+    ui.collapsed = (ui.collapsed || []).map(x => x === sel ? to : x); lsSet(LS_UI, ui);
+    closeTopicMgr();
+    retopic(t => t === sel ? to : t.startsWith(sel + '/') ? to + t.slice(sel.length) : t, to, other ? 'Đã gộp' : 'Đã đổi tên');
+  };
+
+  $('tmMove').onclick = () => {
+    const sel = $('tmSel').value, target = $('tmTarget').value;
+    const err = m => { $('tmErr').textContent = m; };
+    const all = allTopics();
+    const parents = [...new Set(all.map(t => splitTopic(t).parent))];
+    const isKid = sel.includes('/');
+    if (!isKid && all.some(t => t.startsWith(sel + '/'))) return err('Chủ đề này đang có chủ đề con, hãy chuyển từng con.');
+    let q = target;
+    if (target === '__new') {
+      q = cleanName($('tmNewParent').value);
+      if (!q || q.includes('/')) return err('Tên chủ đề mẹ không được để trống và không dùng dấu /.');
+      q = parents.find(x => norm(x) === norm(q)) || q;
+    }
+    const { parent: from, child } = splitTopic(sel);
+    const name = isKid ? child : sel;
+    if (q === (isKid ? from : sel)) return err(isKid ? 'Chủ đề này đã nằm trong chủ đề mẹ đó.' : 'Không thể chuyển chủ đề vào chính nó.');
+    if (!q && !isKid) return err('Hãy chọn chủ đề mẹ.');
+    const want = q ? q + '/' + name : name;
+    const other = all.find(t => t !== sel && norm(t) === norm(want));
+    const branch = !q ? parents.find(x => norm(x) === norm(name)) : '';
+    if ((other || branch) && !confirm(`Đã có chủ đề “${prettyTopic(other || branch)}”.\nGộp ${countOf(sel)} ghi chú của “${prettyTopic(sel)}” vào đó?`)) return;
+    const to = q ? (other || want) : (branch || name);
+    closeTopicMgr();
+    retopic(t => t === sel ? to : t, to, other || branch ? 'Đã gộp' : 'Đã chuyển');
+  };
+
+  const mgrScope = () => active().filter(n => inTopic(n, $('tmSel').value));
+  $('tmEnroll').onclick = () => {
+    const targets = mgrScope().filter(n => isApproved(n) && !inReview(n));
+    if (!targets.length || !confirm(`Đưa ${targets.length} bài vào lịch ôn?\nLần ôn đầu tiên là ngày mai (rồi 3, 7, 30 ngày).`)) return;
+    closeTopicMgr();
+    setEnroll(targets, true, 'Đã đưa vào lịch ôn');
+  };
+  $('tmStop').onclick = () => {
+    const targets = mgrScope().filter(inReview);
+    if (!targets.length) return;
+    closeTopicMgr();
+    setEnroll(targets, false, 'Đã ngừng ôn');
+  };
+  $('tmStopAll').onclick = () => {
+    const targets = active().filter(inReview);
+    if (!targets.length || !confirm(`Ngừng ôn ${targets.length} bài đang ôn và đưa tất cả về kho tra cứu?\nGhi chú và số lượt ôn vẫn giữ. Có thể Hoàn tác ngay sau đó.`)) return;
+    closeTopicMgr();
+    setEnroll(targets, false, 'Đã ngừng ôn toàn bộ');
+  };
+
   function greetHtml() {
     const due = dueList().length, drafts = active().filter(n => !isApproved(n)).length, sk = streak();
+    const reviewing = active().filter(inReview).length;
     const primary = due ? 'review' : 'draft';
+    const topicCount = new Set(active().map(n => splitTopic(n.topic).parent)).size;
     return `<div class="doc greet"><h2>Chào bạn!</h2>
-      <p>Hôm nay bạn có <b>${due}</b> bài cần ôn tập và <b>${drafts}</b> bài chưa duyệt.</p>
-      ${sk ? `<p>Chuỗi ngày học: ${sk} ngày.</p>` : ''}
+      <p>Kho của bạn có <b>${active().length}</b> tài liệu trong <b>${topicCount}</b> chuyên đề.</p>
+      ${drafts ? `<p><b>${drafts}</b> ghi chú chưa duyệt đang chờ bạn.</p>` : ''}
+      ${due ? `<p><b>${due}</b> bài đang ôn đến hạn hôm nay.</p>` : ''}
+      ${reviewing && sk ? `<p>Chuỗi ngày học: ${sk} ngày.</p>` : ''}
       <div class="go">
         ${due ? `<button type="button" class="btn primary" data-act="greet-review">Bắt đầu ôn ngay <kbd>Space</kbd></button>` : ''}
         ${drafts ? `<button type="button" class="btn${primary === 'draft' ? ' primary' : ''}" data-act="greet-draft">Duyệt bài mới${primary === 'draft' ? ' <kbd>Space</kbd>' : ''}</button>` : ''}
@@ -973,7 +1318,6 @@
 
   // Chỉ hiện màn chào lúc mở app, khi có việc cần làm (trên điện thoại cột đọc đang ẩn nên chưa thấy, chạm vào ghi chú là tắt)
   function startGreeting() {
-    ensureIntake();
     state.greet = dueList().length > 0 || active().some(n => !isApproved(n));
   }
 
@@ -1060,13 +1404,18 @@
     const shown = list.slice(0, state.limit);
 
     $('countText').textContent = state.review ? `${list.length} bài cần ôn hôm nay` : list.length === total ? `${total} ghi chú` : `${list.length} / ${total} ghi chú`;
+    const scopeTok = state.review ? state.reviewTopic : state.topic;
+    const scopeName = scopeTok && scopeTok !== 'all' ? topicLabel(scopeTok) : '';
+    $('topicTitle').textContent = state.review ? 'Ôn tập · ' + (scopeName || 'tất cả chủ đề') : (scopeName || 'Tất cả ghi chú');
+    $('topicTitle').title = $('topicTitle').textContent;
     $('tagChip').innerHTML = state.tag ? `<button type="button" class="chip">#${esc(state.tag)} &times;</button>` : '';
     const drafts = active().filter(n => parseTags(n.tags).includes(DRAFT_TAG)).length;
     $('draftChip').innerHTML = drafts && state.tag !== DRAFT_TAG ? `<button type="button" class="chip">Chưa duyệt (${drafts})</button>` : '';
 
-    const due = state.review ? reviewQueue().length : dueList().length;
-    $('reviewChip').innerHTML = state.review ? `<button type="button" class="chip chip-review on">Đang ôn${state.reviewTopic ? ': ' + esc(state.reviewTopic) : ' tập'} · ${due} &times;</button>`
-      : due ? `<button type="button" class="chip chip-review">Ôn tập (${due})</button>` : '';
+    const scope = state.topic === 'all' ? '' : state.topic;   // đang xem một chủ đề thì chip chỉ ôn chủ đề đó
+    const due = state.review ? reviewQueue().length : (scope ? dueList().filter(n => inTopic(n, scope)).length : dueList().length);
+    $('reviewChip').innerHTML = state.review ? `<button type="button" class="chip chip-review on">Đang ôn${state.reviewTopic ? ': ' + esc(topicLabel(state.reviewTopic)) : ' tập'} · ${due} &times;</button>`
+      : due ? `<button type="button" class="chip chip-review"${scope ? ` title="Chỉ ôn: ${esc(topicLabel(scope))}"` : ''}>Ôn tập (${due})</button>` : '';
 
     $('notes').innerHTML = !list.length
       ? `<div class="empty">${state.review ? 'Đã hết bài cần ôn.' : total ? 'Không có ghi chú nào khớp.' : 'Chưa có ghi chú nào.'}</div>`
@@ -1076,16 +1425,16 @@
     applyView();
   }
 
-  function render() { ensureIntake(); renderNotes(); }
+  function render() { renderNotes(); }
 
-  window.pkv = { dueList, streak, gradeReview, get review() { return review; }, get rcount() { return rcount; }, get activity() { return activity; } };   // để kiểm tra bằng Console (F12)
+  window.pkv = { dueList, streak, gradeReview, get review() { return review; }, get rcount() { return rcount; }, get activity() { return activity; }, shareHtml: buildReadHtml, shareText };   // để kiểm tra bằng Console (F12)
 
   // ---------- Thêm / sửa / xóa ----------
   function openNote(id) {
     const n = id ? notes.find(x => x.id === id) : null;
     $('formTitleHead').textContent = n ? 'Sửa ghi chú' : 'Ghi nhận kiến thức mới';
     $('formId').value = n ? n.id : '';
-    $('formTopic').value = n ? n.topic : (state.topic !== 'all' ? state.topic : '');
+    $('formTopic').value = n ? n.topic : (state.topic !== 'all' ? state.topic.replace(/\/$/, '') : '');
     $('formTitle').value = n ? n.title : '';
     $('formTakeaway').value = n ? n.takeaway : '';
     $('formExcerpt').value = n ? n.raw_excerpt : '';
@@ -1105,7 +1454,7 @@
   // Chủ đề gõ khác hoa/thường hoặc dấu với chủ đề đang có thì mặc định theo cách viết đang có (tránh trùng lặp).
   // Riêng khi sửa chính ghi chú đang mang chủ đề đó, hỏi có muốn đổi cách viết cho cả chủ đề không.
   function resolveTopic(id, input, now) {
-    const typed = input.trim().replace(/\s+/g, ' ');
+    const typed = normTopicPath(input);
     const canon = canonicalTopic(typed);
     const cur = id ? notes.find(n => n.id === id) : null;
     if (canon === typed || !cur || cur.topic !== canon) return canon;
@@ -1114,7 +1463,7 @@
 Đổi thành “${typed}” cho tất cả ghi chú của chủ đề này?
 
 OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
-    same.forEach(n => { n.topic = typed; n.updated_at = now; dirty.add(n.id); });
+    same.forEach(n => { n.topic = typed; n.updated_at = now; dirty.add(n.id); hayCache.delete(n); });
     return typed;
   }
 
@@ -1139,7 +1488,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     } else {
       savedId = newId();
       notes.unshift({ id: savedId, ...fields, created_at: now, updated_at: now, deleted: false });
-      if (!parseTags(fields.tags).includes(DRAFT_TAG)) { scheduleNew(savedId); logActivity(); }
+      if (!parseTags(fields.tags).includes(DRAFT_TAG)) logActivity();
     }
     dirty.add(savedId);
     persist();
@@ -1152,6 +1501,56 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     render();
     scheduleSync();
   }
+
+  // ---------- Ghi nhanh: gõ tự do, lưu thẳng vào "Hộp thư đến" ở trạng thái chưa duyệt ----------
+  const INBOX_TOPIC = 'Hộp thư đến', LS_QUICK = 'pkv_quick';
+  const quickDraft = v => { try { if (v) localStorage.setItem(LS_QUICK, v); else localStorage.removeItem(LS_QUICK); } catch (e) { /* bỏ qua */ } };
+
+  function openQuick() {
+    $('menu').open = false;
+    try { $('quickText').value = localStorage.getItem(LS_QUICK) || ''; } catch (e) { $('quickText').value = ''; }
+    $('quickModal').hidden = false;
+    setTimeout(() => $('quickText').focus(), 0);
+  }
+  const closeQuick = () => { $('quickModal').hidden = true; };   // nội dung chưa lưu vẫn nằm trong bản nháp
+
+  function saveQuick(more) {
+    const raw = $('quickText').value.replace(/\r\n/g, '\n').trim();
+    if (!raw) { $('quickText').focus(); return; }
+    const lines = raw.split('\n');
+    const first = lines[0].trim();
+    const rest = lines.slice(1).join('\n').trim();
+    const now = new Date().toISOString();
+    const id = newId();
+    const topic = canonicalTopic(INBOX_TOPIC);
+    notes.unshift({
+      id, topic,
+      title: first.length > 80 ? first.slice(0, 79).trim() + '…' : first,
+      takeaway: rest || raw,   // ghi chú một dòng: ý hiểu chính là dòng đó (nhập lại từ sao lưu cần ý hiểu không rỗng)
+      raw_excerpt: '', source: '', tags: DRAFT_TAG,
+      created_at: now, updated_at: now, deleted: false
+    });
+    dirty.add(id); persist();
+    quickDraft('');
+    $('quickText').value = '';
+    if (more) $('quickText').focus(); else closeQuick();
+    render(); scheduleSync();
+    toast(`Đã lưu vào “${topic}”.`, 'Hoàn tác', () => {
+      const cur = notes.find(x => x.id === id);
+      if (!cur) return;
+      cur.deleted = true; cur.updated_at = new Date().toISOString();
+      if (state.sel === id) { state.sel = ''; state.detailOpen = false; }
+      dirty.add(id); persist(); render(); scheduleSync();
+      toast('Đã hoàn tác.');
+    });
+  }
+
+  $('quickBtn').onclick = $('quickFab').onclick = openQuick;
+  $('quickClose').onclick = closeQuick;
+  $('quickCancel').onclick = () => { quickDraft(''); $('quickText').value = ''; closeQuick(); };
+  $('quickMore').onclick = () => saveQuick(true);
+  $('quickForm').onsubmit = e => { e.preventDefault(); saveQuick(false); };
+  $('quickText').oninput = () => quickDraft($('quickText').value);
 
   function deleteNote(id) {
     const n = notes.find(x => x.id === id);
@@ -1190,10 +1589,10 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     const list = filtered();
     const i = list.findIndex(x => x.id === id);
     const next = list.slice(i + 1).find(isDraft) || list.slice(0, Math.max(i, 0)).find(isDraft);
-    const oldTags = n.tags, oldReview = review[id];
+    const oldTags = n.tags;
     n.tags = parseTags(n.tags).filter(t => t !== DRAFT_TAG).join(', ');
     n.updated_at = new Date().toISOString();
-    dirty.add(id); persist(); scheduleNew(id); logActivity();
+    dirty.add(id); persist(); logActivity();
     if (next) state.sel = next.id;
     else if (state.tag === DRAFT_TAG) state.tag = '';   // hết ghi chú chưa duyệt: thoát bộ lọc rỗng
     render(); scheduleSync();
@@ -1204,7 +1603,6 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
       const cur = notes.find(x => x.id === id);
       if (!cur) return;
       cur.tags = oldTags; cur.updated_at = new Date().toISOString();
-      if (oldReview) { review[id] = oldReview; saveReview(); } else unschedule(id);
       state.sel = id; dirty.add(id); persist(); render(); scheduleSync();
     });
   }
@@ -1226,14 +1624,90 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     });
   }
 
+  // Bắt đầu ôn: bỏ thẻ ẩn và lên lịch lần đầu sau 1 ngày. Ngừng ôn: gắn thẻ ẩn và xóa lịch (số lượt ôn vẫn giữ).
+  // Thẻ nằm trên chính ghi chú nên đồng bộ theo updated_at, máy kia không khôi phục lại lịch đã ngừng.
+  function setEnroll(targets, on, label) {
+    const now = new Date().toISOString();
+    const snap = [];
+    targets.forEach(n => {
+      if (on ? (!isApproved(n) || inReview(n)) : !inReview(n)) return;
+      snap.push({ id: n.id, tags: n.tags, entry: review[n.id] });
+      const rest = parseTags(n.tags).filter(t => t !== STOP_TAG);
+      if (on) { n.tags = rest.join(', '); review[n.id] = { stage: 0, due: addDays(today(), INTERVALS[0]) }; }
+      else { n.tags = [...rest, STOP_TAG].join(', '); delete review[n.id]; }
+      n.updated_at = now; dirty.add(n.id); hayCache.delete(n);
+    });
+    if (!snap.length) return 0;
+    if (on) activity.add(today());
+    persist(); saveReview();
+    state.flip = false;
+    render();
+    toast(`${label}: ${snap.length} bài.`, 'Hoàn tác', () => {
+      const t2 = new Date().toISOString();
+      snap.forEach(x => {
+        const cur = notes.find(y => y.id === x.id);
+        if (!cur) return;
+        cur.tags = x.tags; cur.updated_at = t2; dirty.add(cur.id); hayCache.delete(cur);
+        if (x.entry) review[cur.id] = x.entry; else delete review[cur.id];
+      });
+      persist(); saveReview(); state.flip = false; render();
+      toast('Đã hoàn tác.');
+    });
+    return snap.length;
+  }
+
+  function toggleEnroll(id) {
+    const n = notes.find(x => x.id === id && !x.deleted);
+    if (!n) return;
+    if (!isApproved(n)) return toast('Hãy duyệt ghi chú trước, rồi mới đưa vào lịch ôn.');
+    if (inReview(n)) setEnroll([n], false, 'Đã ngừng ôn'); else setEnroll([n], true, 'Đã đưa vào lịch ôn');
+  }
+
   $('warnCancel').onclick = () => { $('warnModal').hidden = true; };
   $('warnGo').onclick = () => { $('warnModal').hidden = true; approveNote(warnId, true); };
   $('warnEdit').onclick = () => { $('warnModal').hidden = true; openNote(warnId); };
 
-  async function copyNote(id) {
-    const n = notes.find(x => x.id === id);
-    if (!n) return;
-    const text = `${n.title}\n${n.takeaway}` + (n.source ? `\n— ${n.source}` : '');
+  // ---------- Chia sẻ: sao chép văn bản / Markdown, xuất bài đọc thành một file HTML ----------
+  const LS_SHARE = 'pkv_share';
+  // Trích dẫn nguyên văn luôn tắt mặc định (sách, báo có bản quyền); chỉ nhớ lựa chọn "kèm nguồn"
+  const shareOpts = () => ({ excerpt: false, source: !!lsGet(LS_SHARE, {}).source });
+
+  function shareText(n, opt, md) {
+    const out = [md ? '# ' + n.title : n.title, ''];
+    out.push(md
+      ? n.takeaway.split('\n').map(l => { const m = l.match(LABEL_RE); return m ? (m[1] || '') + '**' + m[2] + ':**' + l.slice(m[0].length) : l; }).join('\n')
+      : n.takeaway);
+    if (opt.excerpt && n.raw_excerpt) out.push('', md ? '## Trích dẫn' : 'Trích dẫn:', '', md ? n.raw_excerpt.split('\n').map(l => '> ' + l).join('\n') : n.raw_excerpt);
+    if (opt.source && n.source) out.push('', md ? '*Nguồn: ' + n.source + '*' : 'Nguồn: ' + n.source);
+    return out.join('\n');
+  }
+
+  // Trang đọc độc lập: một file, CSS nằm trong file, không có script, không gọi mạng; tự theo chế độ sáng/tối của máy
+  function buildReadHtml(n, opt) {
+    const css = ':root{color-scheme:light dark;--bg:#faf8f4;--text:#1f2937;--muted:#6b7280;--accent:#4f46e5;--soft:#e0e7ff;--line:#e5e7eb}'
+      + '@media (prefers-color-scheme:dark){:root{--bg:#14161b;--text:#e5e7eb;--muted:#9ca3af;--accent:#a5b4fc;--soft:#272b4a;--line:#2f3340}}'
+      + '*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:18px/1.75 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}'
+      + 'main{max-width:720px;margin:0 auto;padding:28px 18px 56px}'
+      + '.topic{margin:0 0 8px;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}'
+      + 'h1{margin:0 0 20px;font-size:28px;line-height:1.3}'
+      + '.take{white-space:pre-wrap;background:var(--soft);border-left:4px solid var(--accent);border-radius:10px;padding:16px 18px}'
+      + 'h2{margin:30px 0 8px;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}'
+      + 'blockquote{margin:0;padding:4px 0 4px 16px;border-left:3px solid var(--line);white-space:pre-wrap}'
+      + '.src{margin-top:26px;font-size:15px;color:var(--muted)}.src a{color:var(--accent);word-break:break-all}'
+      + 'footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}'
+      + '@media (max-width:480px){body{font-size:17px}h1{font-size:24px}}@media print{body{background:#fff;color:#000}.take{background:#f3f4f6}}';
+    const srcTxt = n.source.trim();
+    const src = !opt.source || !srcTxt ? '' : '<p class="src">Nguồn: ' + (URL_RE.test(srcTxt) ? `<a href="${esc(srcTxt)}" target="_blank" rel="noopener noreferrer">${esc(srcTxt)}</a>` : esc(srcTxt)) + '</p>';
+    return '<!doctype html>\n<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">'
+      + `<title>${esc(n.title)}</title><style>${css}</style></head><body><main>`
+      + `<p class="topic">${esc(prettyTopic(n.topic))}</p><h1>${esc(n.title)}</h1>`
+      + `<div class="take">${takeHtml(n.takeaway)}</div>`
+      + (opt.excerpt && n.raw_excerpt ? `<h2>Trích dẫn</h2><blockquote>${esc(n.raw_excerpt)}</blockquote>` : '')
+      + src
+      + `<footer>Xuất từ Tủ Sách Cá Nhân · ${new Date().toLocaleDateString('vi-VN')}</footer></main></body></html>`;
+  }
+
+  async function copyText(text) {
     try {
       await navigator.clipboard.writeText(text);
     } catch (e) {
@@ -1243,8 +1717,54 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
       try { document.execCommand('copy'); } catch (e2) { /* bỏ qua */ }
       ta.remove();
     }
+  }
+
+  function downloadFile(name, text, type) {
+    const blob = new Blob([text], { type });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  // Phím C và nút Sao chép: văn bản thuần (tiêu đề + ý hiểu, kèm nguồn nếu đã chọn trong hộp Xuất bài đọc)
+  async function copyNote(id) {
+    const n = notes.find(x => x.id === id);
+    if (!n) return;
+    await copyText(shareText(n, shareOpts(), false));
     toast('Đã sao chép.');
   }
+
+  let shareId = '';
+  const shareCur = () => ({ excerpt: $('shExcerpt').checked && !$('shExcerpt').disabled, source: $('shSource').checked });
+  const closeShare = () => { $('shareModal').hidden = true; };
+
+  function openShare(id) {
+    const n = notes.find(x => x.id === id && !x.deleted);
+    if (!n) return;
+    shareId = id;
+    $('shareTitle').textContent = n.title;
+    $('shExcerpt').checked = false;
+    $('shExcerpt').disabled = !n.raw_excerpt;
+    $('shExcerptHint').textContent = n.raw_excerpt ? 'Sách và báo có bản quyền: chỉ kèm khi là văn bản pháp luật hoặc nội dung bạn được phép chia sẻ.' : 'Ghi chú này không có trích dẫn.';
+    $('shSource').checked = shareOpts().source;
+    $('shareModal').hidden = false;
+  }
+
+  $('shareClose').onclick = closeShare;
+  $('shSource').onchange = () => lsSet(LS_SHARE, { source: $('shSource').checked });
+  const shareNote = () => notes.find(x => x.id === shareId && !x.deleted);
+  $('shText').onclick = async () => { const n = shareNote(); if (!n) return; await copyText(shareText(n, shareCur(), false)); closeShare(); toast('Đã sao chép văn bản.'); };
+  $('shMd').onclick = async () => { const n = shareNote(); if (!n) return; await copyText(shareText(n, shareCur(), true)); closeShare(); toast('Đã sao chép Markdown.'); };
+  $('shHtml').onclick = () => {
+    const n = shareNote();
+    if (!n) return;
+    const name = (norm(n.title).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60).replace(/-+$/, '') || 'bai-doc') + '.html';
+    downloadFile(name, buildReadHtml(n, shareCur()), 'text/html;charset=utf-8');
+    closeShare();
+    toast(`Đã tải “${name}”.`);
+  };
 
   // ---------- Đồng bộ qua GitHub ----------
   // Một file JSON trong kho riêng. Mỗi lượt: tải về -> gộp (bản có updated_at mới hơn thắng) -> đẩy lên nếu có khác biệt.
@@ -1413,13 +1933,13 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     const cnt = id => Math.max(0, Math.floor(Number(rc[id])) || 0);
     Object.entries(p.review && typeof p.review === 'object' ? p.review : {}).forEach(([id, r]) => {
       const n = live.get(id);
-      if (!n || !isApproved(n) || !r || !DAY.test(r.due || '')) return;
+      if (!n || !canReview(n) || !r || !DAY.test(r.due || '')) return;
       const stage = Math.min(Math.max(parseInt(r.stage, 10) || 0, 0), INTERVALS.length - 1);
       const cur = review[id], mine = rcount[id] || 0, theirs = cnt(id);
       // Nhiều lượt ôn hơn thắng; bằng nhau thì hạn muộn hơn, rồi chặng cao hơn (để hai máy hội tụ về cùng một kết quả)
       if (!cur || theirs > mine || (theirs === mine && (r.due > cur.due || (r.due === cur.due && stage > cur.stage)))) review[id] = { stage, due: r.due };
     });
-    Object.keys(review).forEach(id => { const n = live.get(id); if (!n || !isApproved(n)) delete review[id]; });
+    Object.keys(review).forEach(id => { const n = live.get(id); if (!n || !canReview(n)) delete review[id]; });
     Object.keys(rc).forEach(id => { const k = cnt(id); if (live.has(id) && k > (rcount[id] || 0) && k < 1e6) rcount[id] = k; });
     (Array.isArray(p.activity) ? p.activity : []).forEach(d => { if (typeof d === 'string' && DAY.test(d)) activity.add(d); });
   }
@@ -1575,7 +2095,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
       const byId = new Map(notes.filter(x => !x.deleted).map(x => [x.id, x]));
       Object.entries(extra.review).forEach(([id, r]) => {
         const note = byId.get(id);
-        if (!note || !isApproved(note) || review[id] || !r || !DAY.test(r.due || '')) return;
+        if (!note || !canReview(note) || review[id] || !r || !DAY.test(r.due || '')) return;
         review[id] = { stage: Math.min(Math.max(parseInt(r.stage, 10) || 0, 0), INTERVALS.length - 1), due: r.due };
         n++;
       });
@@ -1609,7 +2129,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
       if (!existing.has(keyOf(n))) existing.set(keyOf(n), n);
       if (n.topic && !topicOf.has(norm(n.topic))) topicOf.set(norm(n.topic), n.topic);
     });
-    const plan = { add: [], update: [], replace: [], dup: 0, same: 0, bad: 0, drafts: 0, cites: 0 };
+    const plan = { add: [], update: [], replace: [], dup: 0, same: 0, bad: 0, drafts: 0, cites: 0, nested: 0 };
     const base = Date.now();
     arr.forEach((r, i) => {
       if (!r || typeof r !== 'object' || !String(r.title || '').trim() || !String(r.takeaway || '').trim()) { plan.bad++; return; }
@@ -1625,7 +2145,9 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
         });
       }
       const n = normalizeNote({ ...src, id: hasId ? r.id : 'tmp', created_at: r.created_at || new Date(base - i).toISOString() });
-      n.topic = topicOf.get(norm(n.topic)) || n.topic || 'Chưa phân loại';
+      const typed = n.topic;
+      n.topic = typed ? matchTopic(typed, [...topicOf.values()], true) : 'Chưa phân loại';
+      if (typed && !typed.includes('/') && n.topic.includes('/')) plan.nested++;   // AI chỉ trả tên con: đã xếp vào chủ đề con có sẵn
       if (!topicOf.has(norm(n.topic))) topicOf.set(norm(n.topic), n.topic);
       if (hasId) {                                   // file sao lưu: gộp theo id
         const cur = byId.get(n.id);
@@ -1676,6 +2198,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
       el.innerHTML = `<strong>${esc(parts.join(' · '))}.</strong>` +
         (plan.drafts ? ` ${plan.drafts} ghi chú sẽ được gắn tag “${DRAFT_TAG}”.` : '') +
         (plan.cites ? ` Đã tự bỏ ${plan.cites} số trích dẫn kiểu [1].` : '') +
+        (plan.nested ? ` ${plan.nested} ghi chú chỉ có tên chủ đề con nên đã tự xếp vào chủ đề mẹ có sẵn.` : '') +
         (titles ? `<ul>${titles}${total > 6 ? `<li>… và ${total - 6} ghi chú khác</li>` : ''}</ul>` : '');
       btn.disabled = total === 0;
       if (total) btn.textContent = `Nhập ${total} ghi chú`;
@@ -1735,7 +2258,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   $('doImport').onclick = applyImport;
   $('statsBtn').onclick = openStats;
   $('closeStats').onclick = () => { $('statsModal').hidden = true; };
-  $('reviewChip').onclick = () => { if (state.review) exitReview(); else enterReview(); };
+  $('reviewChip').onclick = () => { if (state.review) exitReview(); else enterReview('', state.topic === 'all' ? '' : state.topic); };
   $('draftChip').onclick = () => { leaveReview(); state.tag = DRAFT_TAG; state.limit = PAGE; renderNotes(); };
   $('closeSettings').onclick = $('cancelSettings').onclick = () => { $('settingsModal').hidden = true; };
   $('settingsForm').onsubmit = e => {
@@ -1770,6 +2293,15 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     if (a) {
       if (a.dataset.action === 'review') { if (state.review) exitReview(); else enterReview(); return; }
       startDrafts();
+      return;
+    }
+    const ed = e.target.closest('[data-edit]');
+    if (ed) { openTopicMgr(ed.dataset.edit); return; }
+    const f = e.target.closest('[data-fold]');
+    if (f) {
+      const c = new Set(ui.collapsed || []);
+      if (c.has(f.dataset.fold)) c.delete(f.dataset.fold); else c.add(f.dataset.fold);
+      ui.collapsed = [...c]; lsSet(LS_UI, ui); renderTopics();
       return;
     }
     const b = e.target.closest('[data-topic]');
@@ -1815,13 +2347,18 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     else if (act === 'edit') openNote(id);
     else if (act === 'del') deleteNote(id);
     else if (act === 'copy') copyNote(id);
+    else if (act === 'enroll' || act === 'unenroll') toggleEnroll(id);
+    else if (act === 'share') openShare(id);
   };
 
   document.addEventListener('keydown', e => {
     if (locked) return;
     if (e.key === 'Escape' && !$('pwAskModal').hidden) { $('pwAskCancel').click(); return; }
+    if (e.key === 'Escape' && !$('shareModal').hidden) { closeShare(); return; }
+    if (e.key === 'Escape' && !$('quickModal').hidden) { closeQuick(); return; }
+    if (e.key === 'Escape' && !$('topicModal').hidden) { closeTopicMgr(); return; }
     if (e.key === 'Escape' && !$('lockModal').hidden) { closeLock(); return; }
-    const modalOpen = !$('statsModal').hidden || !$('warnModal').hidden || !$('noteModal').hidden || !$('settingsModal').hidden || !$('importModal').hidden;
+    const modalOpen = !$('statsModal').hidden || !$('warnModal').hidden || !$('noteModal').hidden || !$('settingsModal').hidden || !$('importModal').hidden || !$('lockModal').hidden || !$('pwAskModal').hidden || !$('topicModal').hidden || !$('quickModal').hidden || !$('shareModal').hidden;
     if (e.key === 'Escape') {
       if (!$('statsModal').hidden) $('statsModal').hidden = true;
       else if (!$('warnModal').hidden) $('warnModal').hidden = true;
@@ -1837,6 +2374,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     }
     if (modalOpen) {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !$('noteModal').hidden) $('noteForm').requestSubmit();
+      else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !$('quickModal').hidden) $('quickForm').requestSubmit();
       return;
     }
     const ae = document.activeElement;
@@ -1849,15 +2387,18 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     } else if (state.review && !typing && !e.ctrlKey && !e.metaKey && !e.altKey && (e.key === '1' || e.key === '2')) {
       e.preventDefault();
       if (state.flip) gradeCurrent(e.key === '1'); else if (state.sel) toast('Bấm Space để lật trước, rồi mới chấm.');
-    } else if (!typing && !state.greet && !e.ctrlKey && !e.metaKey && !e.altKey && state.sel && ['d', 'e', 'c', 'f', ' '].includes(e.key.toLowerCase())) {
+    } else if (!typing && !state.greet && !e.ctrlKey && !e.metaKey && !e.altKey && state.sel && ['d', 'e', 'c', 'f', 'r', ' '].includes(e.key.toLowerCase())) {
       e.preventDefault();
       const k = e.key.toLowerCase();
       if (k === 'd') approveNote(state.sel);
+      else if (k === 'r') toggleEnroll(state.sel);
       else if (k === 'e') openNote(state.sel);
       else if (k === 'c') copyNote(state.sel);
       else if (k === 'f') { state.focus = !state.focus; renderDetail(); applyView(); }
       else if (state.review && !state.flip) flipCard();
       else toggleExcerpt();
+    } else if (e.altKey && e.key.toLowerCase() === 'q') {
+      e.preventDefault(); openQuick();
     } else if (e.altKey && e.key.toLowerCase() === 'n') {
       e.preventDefault(); openNote();
     } else if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && (ae === document.body || ae.classList.contains('item'))) {
