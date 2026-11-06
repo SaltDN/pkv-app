@@ -69,16 +69,34 @@
   .menu > summary { list-style: none; }
   .menu > summary::-webkit-details-marker { display: none; }
   .menu-pop {
-    position: absolute; right: 0; top: calc(100% + 6px); width: 270px; background: var(--surface);
-    border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,.14);
+    position: absolute; right: 0; top: calc(100% + 6px); width: 264px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 14px; padding: 6px; box-shadow: 0 12px 32px rgba(15,23,42,.16);
+    max-height: calc(100vh - 76px); overflow-y: auto;
   }
-  .menu-pop button { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 9px 10px; border-radius: 8px; }
-  .menu-pop button:hover { background: var(--soft); }
-  .menu-pop hr { border: 0; border-top: 1px solid var(--border); margin: 6px 0; }
-  .menu-label { padding: 4px 10px 0; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
-  #syncStatus { padding: 2px 10px 6px; font-size: 12px; color: var(--muted); }
-  #syncStatus.ok { color: var(--ok); } #syncStatus.warn { color: var(--warn); } #syncStatus.err { color: var(--danger); }
+  .menu-pop > button, .menu-pop .mk > summary {
+    display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: 0; padding: 5px 8px; border-radius: 9px;
+    font-size: 14px; font-weight: 500; list-style: none; cursor: pointer;
+  }
+  .menu-pop > button:hover, .menu-pop .mk > summary:hover { background: var(--accent-soft); }
+  .menu-pop .mk > summary::-webkit-details-marker { display: none; }
+  /* Biểu tượng nằm trong ô vuông bo góc, màu theo nhóm như thanh trên */
+  .mi { width: 26px; height: 26px; border-radius: 8px; flex: none; display: grid; place-items: center; background: #eef2ff; color: #4338ca; }
+  .mi svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .mi.sky { background: #e0f2fe; color: #0369a1; }
+  .mi.amber { background: #fef3c7; color: #92400e; }
+  .mi.green { background: #dcfce7; color: #15803d; }
+  .mi.red { background: #fee2e2; color: #991b1b; }
+  .mi.gray { background: var(--soft); color: var(--muted); }
+  .menu-pop .danger { color: #991b1b; }
+  .menu-pop .danger:hover { background: #fef2f2; }
+  .menu-pop hr { border: 0; border-top: 1px solid var(--border); margin: 5px 4px; }
+  .menu-label { padding: 4px 8px 2px; font-size: 10.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+  #syncStatus { margin: 2px 4px 4px; padding: 4px 8px; border-radius: 8px; font-size: 12px; color: var(--muted); background: var(--soft); display: flex; align-items: center; gap: 6px; }
+  #syncStatus::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
+  #syncStatus.ok { color: #047857; background: #ecfdf5; } #syncStatus.warn { color: #92400e; background: #fffbeb; } #syncStatus.err { color: #991b1b; background: #fef2f2; }
   #syncStatus.link { cursor: pointer; text-decoration: underline; }
+  .keys { display: grid; grid-template-columns: auto 1fr; gap: 5px 10px; align-items: center; padding: 4px 8px 6px 44px; font-size: 12px; color: var(--muted); }
+  .keys kbd { justify-self: start; white-space: nowrap; }
   kbd { font: 11px ui-monospace, Consolas, monospace; background: var(--soft); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; color: var(--muted); }
   code { font: 12px ui-monospace, Consolas, monospace; background: var(--soft); border-radius: 4px; padding: 1px 4px; }
 
@@ -277,6 +295,73 @@
   .st-next.today { color: #047857; font-weight: 600; }
   .st-topic .btn { padding: 5px 12px; font-size: 13px; white-space: nowrap; }
   .st-note { margin: 8px 0 0; font-size: 12px; color: var(--faint); }
+  /* Thống kê: nhịp học (hôm nay, chuỗi, lịch 12 tuần, thời gian, mốc) */
+  .pl-hero { display: flex; align-items: center; gap: 18px; padding: 16px 18px; margin-top: 4px; border-radius: 16px; border: 1px solid #c7d2fe; background: linear-gradient(135deg, #eef2ff 0%, #e0f2fe 100%); }
+  .pl-ring { position: relative; width: 84px; height: 84px; flex: none; }
+  .pl-ring > svg { width: 84px; height: 84px; transform: rotate(-90deg); fill: none; stroke-width: 9; stroke-linecap: round; }
+  .pl-ring .trk { stroke: #fff; }
+  .pl-ring .bar { stroke: #4f46e5; }
+  .pl-ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 18px; color: #3730a3; }
+  .pl-ring b svg { width: 30px; height: 30px; stroke: currentColor; fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .pl-ring.done .bar { stroke: #059669; }
+  .pl-ring.done b { color: #047857; }
+  .pl-main { flex: 1; min-width: 0; }
+  .pl-streak { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--body); }
+  .pl-streak svg { width: 26px; height: 26px; stroke: #ea580c; fill: #fed7aa; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .pl-streak.zero svg { stroke: #94a3b8; fill: #e2e8f0; }
+  .pl-streak b { font-size: 30px; line-height: 1; color: #9a3412; }
+  .pl-streak.zero b { color: #64748b; }
+  .pl-msg { margin: 4px 0 0; font-size: 13px; color: var(--body); }
+  .pl-today { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .pl-chip { font-size: 12px; background: #fff; border: 1px solid #c7d2fe; border-radius: 99px; padding: 2px 9px; color: #3730a3; white-space: nowrap; }
+  .pl-goal { margin-top: 8px; font-size: 12px; color: var(--muted); }
+  .pl-goal select { font: inherit; font-size: 12px; border: 1px solid var(--border); border-radius: 6px; padding: 1px 2px; background: #fff; }
+  .pl-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 10px; margin-top: 12px; }
+  .pl-k { --kbg: #eef2ff; --kb: #c7d2fe; --kc: #3730a3; background: var(--kbg); border: 1px solid var(--kb); border-radius: 12px; padding: 11px 13px; }
+  .pl-k.green { --kbg: #ecfdf5; --kb: #a7f3d0; --kc: #047857; }
+  .pl-k.amber { --kbg: #fffbeb; --kb: #fde68a; --kc: #92400e; }
+  .pl-k.sky { --kbg: #e0f2fe; --kb: #bae6fd; --kc: #0369a1; }
+  .pl-k.violet { --kbg: #f5f3ff; --kb: #ddd6fe; --kc: #5b21b6; }
+  .pl-k b { display: block; font-size: 26px; line-height: 1.2; color: var(--kc); }
+  .pl-k span { font-size: 12px; font-weight: 600; color: var(--kc); }
+  .pl-k small { display: block; font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .pl-card { margin-top: 12px; border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; background: #fff; }
+  .pl-ct { margin: 0 0 8px; font-size: 12px; font-weight: 600; color: var(--body); display: flex; justify-content: space-between; gap: 8px; }
+  .pl-ct small { font-weight: 400; color: var(--faint); }
+  .pl-cmp { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .pl-cmp div { min-width: 0; }
+  .pl-cmp b { font-size: 20px; }
+  .pl-cmp > div > span:not(.dl) { display: block; font-size: 12px; color: var(--muted); }
+  .dl { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 600; border-radius: 99px; padding: 0 7px; vertical-align: 3px; background: var(--soft); color: var(--muted); }
+  .dl.up { background: #dcfce7; color: #15803d; }
+  .pl-charts { display: grid; grid-template-columns: auto 1fr; gap: 12px; margin-top: 12px; }
+  .pl-charts .pl-card { margin-top: 0; }
+  .pl-heat { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 15px); grid-auto-columns: 15px; gap: 3px; }
+  .pl-cell { border-radius: 4px; background: #eceff4; }
+  .pl-cell.l1 { background: #c7d2fe; } .pl-cell.l2 { background: #a5b4fc; } .pl-cell.l3 { background: #6366f1; } .pl-cell.l4 { background: #4338ca; }
+  .pl-cell.ph { background: transparent; }
+  .pl-cell.today { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--accent); }
+  .pl-leg { display: flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 11px; color: var(--faint); }
+  .pl-leg i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+  .pl-bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; height: 138px; }
+  .pl-b { display: flex; flex-direction: column; align-items: center; min-width: 0; font-size: 11px; color: var(--muted); gap: 3px; }
+  .pl-bw { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+  .pl-bw i { display: block; width: 70%; max-width: 34px; min-height: 3px; border-radius: 6px 6px 3px 3px; background: #7dd3fc; }
+  .pl-b.today i { background: #4f46e5; }
+  .pl-b.today .d { color: var(--accent); font-weight: 700; }
+  .pl-b .n { color: var(--faint); min-height: 14px; }
+  .pl-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pl-bd { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 4px 10px; border-radius: 99px; border: 1px solid #fde68a; background: #fffbeb; color: #92400e; }
+  .pl-bd svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .pl-bd.off { background: var(--soft); border-color: var(--border); color: var(--faint); }
+  .st-topic { --tc: #4f46e5; border-left: 4px solid var(--tc); background: color-mix(in srgb, var(--tc) 5%, #fff); }
+  .st-share { height: 5px; border-radius: 99px; margin-top: 6px; overflow: hidden; background: color-mix(in srgb, var(--tc) 15%, #fff); }
+  .st-share i { display: block; height: 100%; border-radius: 99px; background: var(--tc); }
+  @media (max-width: 700px) {
+    .pl-hero { flex-wrap: wrap; }
+    .pl-charts { grid-template-columns: 1fr; }
+    .pl-cmp { grid-template-columns: 1fr; }
+  }
   .doc-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--faint); flex-wrap: wrap; }
   .doc-meta time { margin-left: auto; }
   .pill { display: inline-block; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--soft); border-radius: 99px; padding: 2px 10px; }
@@ -335,6 +420,13 @@
   .field textarea.mono { font: 13px/1.45 ui-monospace, Consolas, monospace; }
   .form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
   .note { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+  /* Hướng dẫn nhanh */
+  .help h4 { margin: 16px 0 6px; font-size: 14px; }
+  .help ol.steps { margin: 0; padding-left: 22px; font-size: 14px; line-height: 1.55; }
+  .help ol.steps li { margin: 4px 0; }
+  .help .seg { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+  .help textarea { width: 100%; background: var(--soft); border: 1px solid var(--border); border-radius: 10px; padding: 9px 11px; font: 12.5px/1.45 ui-monospace, Consolas, monospace; resize: vertical; }
+  .linkbtn { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font: inherit; font-size: 13px; }
 
   /* ---------- Màn khóa ---------- */
   .quick-text { width: 100%; min-height: 150px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font: inherit; font-size: 16px; line-height: 1.5; resize: vertical; }
@@ -426,21 +518,27 @@
     <details class="menu" id="menu">
       <summary class="btn" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3"/></svg></summary>
       <div class="menu-pop">
-        <button id="exportBtn">Xuất sao lưu (JSON)</button>
-        <button id="importBtn">Nhập ghi chú (dán / file JSON)</button>
-        <button id="topicMgrBtn">Quản lý chuyên đề</button>
+        <button id="helpBtn"><span class="mi "><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg></span><span>Hướng dẫn &amp; prompt mẫu</span></button>
+        <hr>
+        <div class="menu-label">Dữ liệu</div>
+        <button id="importBtn"><span class="mi sky"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span><span>Nhập ghi chú</span></button>
+        <button id="exportBtn"><span class="mi sky"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></span><span>Xuất sao lưu (JSON)</span></button>
+        <button id="topicMgrBtn"><span class="mi sky"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9l-.8-1.2A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/></svg></span><span>Quản lý chuyên đề</span></button>
         <hr>
         <div class="menu-label">Khóa ứng dụng</div>
-        <button id="lockSetBtn">Đặt mật khẩu</button>
-        <button id="lockNowBtn" hidden>Khóa ngay</button>
-        <button id="lockOffBtn" hidden>Tắt khóa</button>
+        <button id="lockSetBtn"><span class="mi amber"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg></span><span>Đặt mật khẩu</span></button>
+        <button id="lockNowBtn" hidden><span class="mi amber"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span>Khóa ngay</span></button>
+        <button id="lockOffBtn" class="danger" hidden><span class="mi red"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></span><span>Tắt khóa</span></button>
         <hr>
         <div class="menu-label">GitHub</div>
         <div id="syncStatus"></div>
-        <button id="syncBtn">Đồng bộ ngay</button>
-        <button id="settingsBtn">Cài đặt kết nối</button>
+        <button id="syncBtn"><span class="mi green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.4M3 12a9 9 0 0 1 15.5-6.4M18.5 2v4h-4M5.5 22v-4h4"/></svg></span><span>Đồng bộ ngay</span></button>
+        <button id="settingsBtn"><span class="mi green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></span><span>Cài đặt kết nối</span></button>
         <hr>
-        <div class="note" style="padding:2px 10px 4px">Phím tắt: <kbd>/</kbd> tìm · <kbd>Alt+N</kbd> thêm · <kbd>Alt+Q</kbd> ghi nhanh · <kbd>↑</kbd><kbd>↓</kbd> chọn · <kbd>Ctrl+Enter</kbd> lưu<br><kbd>D</kbd> duyệt · <kbd>R</kbd> bật/tắt rèn luyện · <kbd>E</kbd> sửa · <kbd>C</kbd> sao chép · <kbd>Space</kbd> trích dẫn · <kbd>F</kbd> tập trung · <kbd>Esc</kbd> thoát/bỏ lọc thẻ</div>
+        <details class="mk">
+          <summary><span class="mi gray"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg></span><span>Phím tắt</span></summary>
+          <div class="keys"><kbd>/</kbd><span>Tìm kiếm</span><kbd>Alt+N</kbd><span>Thu thập</span><kbd>Alt+Q</kbd><span>Ghi nhanh</span><kbd>↑ ↓</kbd><span>Chọn ghi chú</span><kbd>Ctrl+Enter</kbd><span>Lưu</span><kbd>D</kbd><span>Duyệt</span><kbd>R</kbd><span>Bật/tắt rèn luyện</span><kbd>E</kbd><span>Sửa</span><kbd>C</kbd><span>Sao chép</span><kbd>Space</kbd><span>Trích dẫn</span><kbd>F</kbd><span>Tập trung</span><kbd>Esc</kbd><span>Thoát / bỏ lọc thẻ</span></div>
+        </details>
       </div>
     </details>
   </div>
@@ -686,7 +784,7 @@
       <h3 id="importHead">Nhập ghi chú</h3>
       <button class="x" type="button" id="closeImport" aria-label="Đóng">&times;</button>
     </div>
-    <p class="note">Dán JSON từ Gemini hoặc chọn file sao lưu. App tự bỏ khung <code>```json</code>, loại ghi chú trùng và cho xem trước trước khi nhập.</p>
+    <p class="note">Dán JSON từ Gemini hoặc chọn file sao lưu. App tự bỏ khung <code>```json</code>, loại ghi chú trùng và cho xem trước trước khi nhập. <button type="button" class="linkbtn" id="importHelp">Chưa có JSON? Xem hướng dẫn và prompt mẫu</button></p>
     <div class="field">
       <textarea id="importText" class="mono" rows="9" placeholder='[ { "topic": "...", "title": "...", "takeaway": "- ...", "raw_excerpt": "...", "source": "...", "tags": "..." } ]'></textarea>
     </div>
@@ -702,6 +800,34 @@
   </div>
 </div>
 
+<div class="modal" id="helpModal" hidden>
+  <div class="sheet help" role="dialog" aria-modal="true" aria-labelledby="helpHead" style="max-width:660px">
+    <div class="sheet-head"><h3 id="helpHead">Hướng dẫn nhanh</h3><button type="button" class="x" id="helpClose" aria-label="Đóng">&times;</button></div>
+    <h4 style="margin-top:4px">Nạp ghi chú từ NotebookLM, từng bước</h4>
+    <ol class="steps">
+      <li>Trong NotebookLM, tạo một notebook và thêm nguồn (văn bản luật, sách, bài báo).</li>
+      <li>Chọn loại prompt bên dưới, bấm <b>Sao chép prompt</b>, dán vào khung chat của NotebookLM, rồi sửa dòng <b>PHẠM VI</b> (ví dụ: Điều 5 đến Điều 7).</li>
+      <li>NotebookLM trả về một mảng JSON. Bấm <b>Copy</b> để lấy toàn bộ.</li>
+      <li>Quay lại đây: menu <b>⋯ → Nhập ghi chú</b>, dán vào ô. Xem trước dòng “Sẽ thêm N”, đúng thì bấm <b>Nhập</b>.</li>
+      <li>Mở mục <b>Chưa duyệt</b>, đọc và đối chiếu nguyên văn, bấm <b>Sửa</b> nếu cần, rồi <b>Duyệt</b> (phím <kbd>D</kbd>).</li>
+      <li>Bài nào muốn nhớ lâu thì bấm <b>Bật rèn luyện</b> (phím <kbd>R</kbd>).</li>
+    </ol>
+    <p class="note">Văn bản dài thì làm từng đợt 3 đến 5 mục. Đợt sau chỉ cần nhắn: “Tiếp tục với Điều 8, 9, 10, giữ nguyên quy tắc và định dạng JSON”.</p>
+    <h4>Prompt mẫu cho NotebookLM</h4>
+    <div class="seg" id="helpSeg">
+      <button type="button" class="btn primary" data-k="law">Pháp luật</button>
+      <button type="button" class="btn" data-k="book">Sách</button>
+      <button type="button" class="btn" data-k="news">Báo chí</button>
+    </div>
+    <p class="note" id="helpNote" style="margin:0 0 6px"></p>
+    <textarea id="helpPrompt" rows="9" readonly aria-label="Prompt mẫu"></textarea>
+    <div class="form-actions">
+      <button type="button" class="btn" id="helpToImport">Mở Nhập ghi chú</button>
+      <button type="button" class="btn primary" id="helpCopy">Sao chép prompt</button>
+    </div>
+  </div>
+</div>
+
 <input type="file" id="importFile" accept="application/json,.json" hidden>
 <div id="toast" hidden></div>
 
@@ -710,7 +836,7 @@
   'use strict';
 
   const LS_NOTES = 'pkv_notes', LS_DIRTY = 'pkv_dirty', LS_GH = 'pkv_gh', LS_UI = 'pkv_ui';
-  const LS_REVIEW = 'pkv_review', LS_ACT = 'pkv_activity', LS_RCOUNT = 'pkv_review_count';   // lịch ôn tập: chỉ lưu trên máy, chưa đồng bộ
+  const LS_REVIEW = 'pkv_review', LS_ACT = 'pkv_activity', LS_RCOUNT = 'pkv_review_count', LS_DAILY = 'pkv_daily', LS_DEV = 'pkv_dev';   // lịch ôn tập: chỉ lưu trên máy, chưa đồng bộ
   const PAGE = 100;
   const DRAFT_TAG = 'chưa duyệt';
   const MISSING_TAG = 'thiếu nguyên văn';
@@ -752,11 +878,12 @@
   let review = lsGet(LS_REVIEW, {});
   let rcount = lsGet(LS_RCOUNT, {});   // review_count: số lần đã chấm bài của từng ghi chú (tính từ khi có tính năng này, không mất khi Bỏ duyệt)
   let activity = new Set(lsGet(LS_ACT, []));
+  let daily = lsGet(LS_DAILY, {});   // { 'YYYY-MM-DD': { <mã máy>: { s: giây tương tác, v: lượt duyệt, r: lượt rèn luyện } } }
 
   const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   const today = () => ymd(new Date());
   const addDays = (day, n) => { const d = new Date(day + 'T12:00:00'); d.setDate(d.getDate() + n); return ymd(d); };
-  const writeReview = () => { lsSet(LS_REVIEW, review); lsSet(LS_ACT, [...activity].sort()); lsSet(LS_RCOUNT, rcount); };
+  const writeReview = () => { lsSet(LS_REVIEW, review); lsSet(LS_ACT, [...activity].sort()); lsSet(LS_RCOUNT, rcount); lsSet(LS_DAILY, daily); };
   const saveReview = () => { writeReview(); dirty.add('__review'); lsSet(LS_DIRTY, [...dirty]); scheduleSync(); };
   const isApproved = n => !parseTags(n.tags).includes(DRAFT_TAG);
   const hasTag = (n, t) => parseTags(n.tags).includes(t);
@@ -787,19 +914,129 @@
     review[id] = { stage, due: addDays(today(), INTERVALS[stage]) };
     rcount[id] = (rcount[id] || 0) + 1;
     activity.add(today());
+    bump('r', 1);
     saveReview();
+    checkBadges();
     return review[id];
   }
 
-  // Chuỗi ngày học liên tiếp. Hôm nay chưa học thì chuỗi vẫn còn (tính đến hôm qua) cho tới hết ngày.
+  // ---------- Nhịp học: nhật ký theo ngày, đo thời gian tương tác, chuỗi ngày, mốc ----------
+  // Mỗi máy ghi riêng số của mình (theo mã máy) và khi gộp lấy số lớn nhất của từng máy, nên cộng được số của nhiều máy mà không đếm trùng.
+  let DEV = lsGet(LS_DEV, '');
+  if (!/^[a-z0-9]{4,16}$/.test(DEV)) { DEV = Math.random().toString(36).slice(2, 8).padEnd(6, '0'); lsSet(LS_DEV, DEV); }
+  Object.keys(daily).forEach(d => { if (d < addDays(today(), -400)) delete daily[d]; });
+  if (!ui.since) { ui.since = today(); lsSet(LS_UI, ui); }   // từ ngày này trở đi tính ngày học theo mục tiêu; trước đó chỉ cần có hoạt động
+
+  function bump(field, n) {
+    const day = today();
+    const e = ((daily[day] = daily[day] || {})[DEV] = daily[day][DEV] || { s: 0, v: 0, r: 0 });
+    e[field] = (e[field] || 0) + n;
+  }
+  function mergeDaily(src) {
+    if (!src || typeof src !== 'object') return 0;
+    const DAY = /^\d{4}-\d{2}-\d{2}$/;
+    let changed = 0;
+    Object.entries(src).forEach(([day, devs]) => {
+      if (!DAY.test(day) || !devs || typeof devs !== 'object') return;
+      Object.entries(devs).forEach(([dev, e]) => {
+        if (!/^[a-z0-9]{4,16}$/.test(dev) || !e || typeof e !== 'object') return;
+        const val = k => { const x = Math.floor(Number(e[k])); return x > 0 && x <= (k === 's' ? 86400 : 100000) ? x : 0; };
+        const inc = { s: val('s'), v: val('v'), r: val('r') };
+        if (!inc.s && !inc.v && !inc.r) return;
+        const cur = ((daily[day] = daily[day] || {})[dev] = daily[day][dev] || { s: 0, v: 0, r: 0 });
+        ['s', 'v', 'r'].forEach(k => { if (inc[k] > (cur[k] || 0)) { cur[k] = inc[k]; changed++; } });
+      });
+    });
+    return changed;
+  }
+  const dayTotals = day => { const o = { s: 0, v: 0, r: 0 }; Object.values(daily[day] || {}).forEach(e => { o.s += e.s || 0; o.v += e.v || 0; o.r += e.r || 0; }); return o; };
+  const addsByDay = () => { const m = {}; active().filter(isApproved).forEach(n => { const d = ymd(new Date(n.created_at)); m[d] = (m[d] || 0) + 1; }); return m; };
+  const goal = () => ({ tasks: ui.goalTasks || 1, min: ui.goalMin || 5 });
+  // Một ngày: số việc (thêm + duyệt + rèn luyện), giây tương tác, tiến độ so với mục tiêu và đã đạt hay chưa
+  function dayInfo(day, adds) {
+    const t = dayTotals(day), a = adds[day] || 0, g = goal();
+    const work = a + t.v + t.r;
+    let prog = Math.min(1, Math.max(work / g.tasks, t.s / (g.min * 60)));
+    const done = prog >= 1 || (day < ui.since && activity.has(day));
+    return { a, v: t.v, r: t.r, s: t.s, work, prog: done ? 1 : prog, done };
+  }
+  // Chuỗi ngày đạt mục tiêu liên tiếp. Hôm nay chưa đạt thì chuỗi vẫn còn (tính đến hôm qua) cho tới hết ngày.
   function streak() {
+    const adds = addsByDay();
     let day = today();
-    if (!activity.has(day)) day = addDays(day, -1);
+    if (!dayInfo(day, adds).done) day = addDays(day, -1);
     let n = 0;
-    while (activity.has(day)) { n++; day = addDays(day, -1); }
+    while (dayInfo(day, adds).done) { n++; day = addDays(day, -1); }
     return n;
   }
+  function bestStreak(adds) {
+    const days = new Set([...activity, ...Object.keys(daily), ...Object.keys(adds)]);
+    const list = [...days].filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort();
+    let best = 0, run = 0, prev = '';
+    list.forEach(d => {
+      if (!dayInfo(d, adds).done) return;
+      run = prev && addDays(prev, 1) === d ? run + 1 : 1;
+      prev = d; if (run > best) best = run;
+    });
+    return best;
+  }
 
+  const ICON = {
+    flame: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.4 1-3 0 1.4 1 2.5 2.5 2.5z"/>',
+    file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zM14 2v6h6M8 13h8M8 17h6"/>',
+    repeat: '<path d="m17 2 4 4-4 4M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v1a4 4 0 0 1-4 4H3"/>',
+    clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>'
+  };
+  const BADGES = [
+    { id: 'streak7', icon: 'flame', name: 'Chuỗi 7 ngày', need: c => c.best >= 7, hint: c => `còn ${7 - c.best} ngày` },
+    { id: 'streak30', icon: 'flame', name: 'Chuỗi 30 ngày', need: c => c.best >= 30, hint: c => `còn ${30 - c.best} ngày` },
+    { id: 'notes50', icon: 'file', name: '50 ghi chú', need: c => c.notes >= 50, hint: c => `còn ${50 - c.notes} ghi chú` },
+    { id: 'notes100', icon: 'file', name: '100 ghi chú', need: c => c.notes >= 100, hint: c => `còn ${100 - c.notes} ghi chú` },
+    { id: 'rev1', icon: 'repeat', name: 'Lần rèn luyện đầu tiên', need: c => c.reps >= 1, hint: () => 'bật rèn luyện cho một bài' },
+    { id: 'time10', icon: 'clock', name: '10 giờ học', need: c => c.secs >= 36000, hint: c => `còn ${fmtDur(36000 - c.secs)}` }
+  ];
+  const fmtDur = sec => { sec = Math.round(sec); const m = Math.round(sec / 60); return sec < 60 ? (sec ? '<1 phút' : '0 phút') : m < 60 ? m + ' phút' : Math.floor(m / 60) + ' giờ' + (m % 60 ? ' ' + (m % 60) + ' phút' : ''); };
+  function badgeCtx(adds) {
+    adds = adds || addsByDay();
+    let secs = 0; Object.keys(daily).forEach(d => { secs += dayTotals(d).s; });
+    return { best: bestStreak(adds), notes: active().length, reps: Object.values(rcount).reduce((a, b) => a + b, 0), secs };
+  }
+  // Mốc mới đạt: nhắc một lần. Lần đầu chạy bản này thì chỉ ghi nhận những mốc đã đạt từ trước, không nhắc dồn.
+  function checkBadges() {
+    const first = !ui.badges;
+    ui.badges = ui.badges || {};
+    const c = badgeCtx();
+    let changed = first;
+    BADGES.forEach(b => {
+      if (!b.need(c) || ui.badges[b.id]) return;
+      ui.badges[b.id] = today(); changed = true;
+      if (!first) setTimeout(() => toast(`Mốc mới: ${b.name}. Chúc mừng bạn!`), 3500);
+    });
+    if (changed) lsSet(LS_UI, ui);
+  }
+
+  // Đo thời gian tương tác: chỉ tính khi tab đang hiện, ứng dụng không bị khóa và có thao tác trong 60 giây gần nhất
+  let lastInput = Date.now(), lastTick = Date.now(), acc = 0, timeDirty = false, lastMark = Date.now();
+  ['pointerdown', 'keydown', 'wheel', 'scroll', 'touchstart', 'mousemove'].forEach(ev => addEventListener(ev, () => { lastInput = Date.now(); }, { capture: true, passive: true }));
+  function flushTime(mark) {
+    if (!timeDirty) return;
+    lsSet(LS_DAILY, daily); timeDirty = false;
+    if (mark) { dirty.add('__review'); lsSet(LS_DIRTY, [...dirty]); lastMark = Date.now(); }   // chỉ đánh dấu, đi cùng lần đồng bộ kế tiếp
+  }
+  setInterval(() => {
+    const now = Date.now(), dt = Math.min((now - lastTick) / 1000, 10);
+    lastTick = now;
+    if (document.visibilityState === 'visible' && !locked && now - lastInput < 60000) {
+      acc += dt;
+      const whole = Math.floor(acc);
+      if (whole > 0) { acc -= whole; bump('s', whole); timeDirty = true; }
+    }
+    if (timeDirty && now - lastMark > 300000) { flushTime(true); checkBadges(); } else if (timeDirty && Math.round(now / 1000) % 30 < 5) flushTime(false);
+  }, 5000);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { const had = timeDirty; flushTime(true); if (had) scheduleSync(); } });
+  addEventListener('pagehide', () => flushTime(true));
+  checkBadges();
 
   // ---------- Chủ đề phân cấp: "Mẹ/Con" (tối đa 2 cấp, chỉ dấu / đầu tiên có nghĩa) ----------
   function normTopicPath(t) {
@@ -1096,16 +1333,10 @@
     const tomorrow = addDays(day, 1);
     const approvedNotes = list.filter(isApproved);
     const due = dueList().length;
-    const sk = streak();
     const totalReps = list.reduce((sum, n) => sum + (rcount[n.id] || 0), 0);
-    const names = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-    const days = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = addDays(day, -i);
-      days.push(`<div class="st-day${activity.has(d) ? ' on' : ''}${d === day ? ' today' : ''}" title="${d === day ? 'Hôm nay · ' : ''}${d}"><i></i>${names[new Date(d + 'T12:00:00').getDay()]}</div>`);
-    }
     const reviewing = list.filter(inReview).length;
-    const msg = activity.has(day) ? 'Hôm nay bạn đã học.' : sk ? 'Hôm nay chưa học. Làm một việc nhỏ để giữ chuỗi.' : 'Thêm, duyệt hoặc rèn luyện một ghi chú để bắt đầu chuỗi.';
+    const adds = addsByDay();
+    const drafts = list.length - approvedNotes.length;
 
     // Gom theo chuyên đề (chủ đề mẹ): số tài liệu, dung lượng; thêm chặng ôn và lịch hẹn nếu có bài đang ôn
     const enc = new TextEncoder();
@@ -1128,7 +1359,9 @@
     });
     const topics = Object.entries(by).sort((a, b) => b[1].all - a[1].all || a[0].localeCompare(b[0], 'vi'));
     const fmt = d => d.split('-').reverse().join('/');
-    const cards = topics.map(([name, t]) => {
+    const maxAll = topics.length ? topics[0][1].all : 1;
+    const TC = ['#4f46e5', '#0369a1', '#15803d', '#b45309', '#be185d', '#6d28d9'];
+    const cards = topics.map(([name, t], ci) => {
       const chips = INTERVALS.map((d, i) => t.stage[i] ? `<span class="st-chip">Sau ${d} ngày: ${t.stage[i]}</span>` : '').join('') +
         (t.none ? `<span class="st-chip none" title="Chỉ lưu để tra cứu, chưa bật rèn luyện">Tra cứu: ${t.none}</span>` : '');
       // Chủ đề con: mỗi con (và mục chung) là một nút ôn riêng kèm số bài đến hạn
@@ -1140,40 +1373,110 @@
       const first = Object.keys(t.dates).sort()[0];
       const next = !first ? '–' : first === day ? `Hôm nay: ${t.dates[first]} bài` : first === tomorrow ? `Ngày mai: ${t.dates[first]} bài` : `${fmt(first)}: ${t.dates[first]} bài`;
       const info = `<div><div class="nm" title="${esc(name)}">${esc(name)}</div>
+          <div class="st-share" title="${t.all} / ${maxAll} so với chuyên đề lớn nhất"><i style="width:${Math.max(4, Math.round(t.all / maxAll * 100))}%"></i></div>
           <div class="tm"><b>${t.all}</b> tài liệu (${Math.round(t.all / list.length * 100)}%) · ${t.ok} đã duyệt · ${fmtSize(t.bytes)}${t.rev ? ` · ${t.rev} đang rèn luyện` : ''}${t.reps ? ` · ${t.reps} lượt rèn luyện` : ''}</div>${kidsHtml}</div>`;
-      if (!t.rev) return `<div class="st-topic plain">${info}</div>`;   // chưa có bài đang ôn: chỉ thông tin kho, không có lịch ôn
-      return `<div class="st-topic">${info}
+      const tcs = `style="--tc:${TC[ci % TC.length]}"`;
+      if (!t.rev) return `<div class="st-topic plain" ${tcs}>${info}</div>`;   // chưa có bài đang ôn: chỉ thông tin kho, không có lịch ôn
+      return `<div class="st-topic" ${tcs}>${info}
         <div><div class="lb">Chặng rèn luyện</div><div class="st-chips">${chips || '<span class="st-chip none">–</span>'}</div></div>
         <div><div class="lb">Lịch hẹn gần nhất</div><div class="st-next${first === day ? ' today' : ''}">${next}</div></div>
         ${t.due ? `<button type="button" class="btn primary" data-review-topic="${esc(name)}">Rèn luyện chuyên đề này (${t.due})</button>` : '<button type="button" class="btn" disabled>Chưa đến hạn</button>'}
       </div>`;
     }).join('');
 
-    // Ôn tập là tùy chọn: chuỗi ngày học, số liệu ôn và lịch hẹn chỉ hiện khi bạn có bài đang ôn
+    // Ôn tập là tùy chọn: ba ô rèn luyện chỉ hiện khi bạn có bài đang ôn
     const kidTotal = topics.reduce((sum, [, t]) => sum + Object.keys(t.kids).length, 0);
     const notesBytes = enc.encode(JSON.stringify(list)).length;
     const usesReview = reviewing > 0 || totalReps > 0;
-    const streakHtml = reviewing ? `<div class="st-streak"><b>${sk}</b><div>ngày học liên tiếp<small>${msg}</small></div><div class="st-days">${days.join('')}</div></div>` : '';
-    return `${streakHtml}
-      <div class="st-nums">
-        <div class="st-num"><b>${list.length}</b><span>Tài liệu đã lưu</span><small>${approvedNotes.length} đã duyệt${list.length > approvedNotes.length ? ` · ${list.length - approvedNotes.length} chưa duyệt` : ''}</small></div>
-        <div class="st-num"><b>${topics.length}</b><span>Chuyên đề</span><small>${kidTotal ? `gồm ${kidTotal} chủ đề con` : 'chưa có chủ đề con'}</small></div>
-        <div class="st-num"><b>${fmtSize(notesBytes)}</b><span>Dung lượng ghi chú</span><small>≈ ${Math.max(1, Math.round(notesBytes / 5242880 * 100))}% của 5 MB trên máy này</small></div>
-        ${usesReview ? `<div class="st-num"><b>${reviewing}</b><span>Đang rèn luyện</span><small>${reviewing ? 'có lịch 1-3-7-30 ngày' : 'chưa bài nào'}</small></div>
-        <div class="st-num due"><b>${due}</b><span>Đến hạn hôm nay</span></div>
-        <div class="st-num"><b>${totalReps}</b><span>Lượt rèn luyện</span></div>` : ''}
+
+    // --- Hôm nay ---
+    const g = goal(), td = dayInfo(day, adds), sk = streak();
+    const C = 2 * Math.PI * 34;
+    const svgi = (k, extra = '') => `<svg viewBox="0 0 24 24" aria-hidden="true"${extra}>${ICON[k]}</svg>`;
+    const msg = td.done ? 'Hôm nay bạn đã hoàn thành mục tiêu. Tuyệt vời!' : sk ? `Còn chút nữa để giữ chuỗi ${sk} ngày.` : 'Thêm, duyệt hoặc đọc ghi chú vài phút là bắt đầu chuỗi mới.';
+    const opts = (arr, cur) => arr.map(v => `<option value="${v}"${v === cur ? ' selected' : ''}>${v}</option>`).join('');
+    const hero = `<div class="pl-hero">
+      <div class="pl-ring${td.done ? ' done' : ''}" title="Tiến độ mục tiêu hôm nay">
+        <svg viewBox="0 0 84 84"><circle class="trk" cx="42" cy="42" r="34"/><circle class="bar" cx="42" cy="42" r="34" stroke-dasharray="${(td.prog * C).toFixed(1)} ${C.toFixed(1)}"/></svg>
+        <b>${td.done ? svgi('check') : Math.round(td.prog * 100) + '%'}</b>
       </div>
+      <div class="pl-main">
+        <div class="pl-streak${sk ? '' : ' zero'}">${svgi('flame')}<b>${sk}</b> ngày liên tiếp</div>
+        <p class="pl-msg">${msg}</p>
+        <div class="pl-today"><span class="pl-chip">Thêm ${td.a}</span><span class="pl-chip">Duyệt ${td.v}</span><span class="pl-chip">Rèn luyện ${td.r}</span><span class="pl-chip">${fmtDur(td.s)}</span></div>
+        <div class="pl-goal">Mục tiêu ngày: <select data-goal="tasks" aria-label="Số việc mỗi ngày">${opts([1, 2, 3, 5, 10], g.tasks)}</select> việc (thêm, duyệt, rèn luyện) hoặc <select data-goal="min" aria-label="Số phút mỗi ngày">${opts([5, 10, 15, 30, 60], g.min)}</select> phút</div>
+      </div></div>`;
+
+    // --- Bốn ô số ---
+    const wk = (from, to) => { let a = 0, w = 0, sec = 0; for (let i = from; i < to; i++) { const d = dayInfo(addDays(day, -i), adds); a += d.a; w += d.v + d.r; sec += d.s; } return { a, w, sec }; };
+    const cur7 = wk(0, 7), prev7 = wk(7, 14);
+    const pct = approvedNotes.length && list.length ? Math.round(approvedNotes.length / list.length * 100) : 0;
+    const kpis = `<div class="pl-kpis">
+      <div class="pl-k"><b>${list.length}</b><span>Tài liệu đã lưu</span><small>trong ${topics.length} chuyên đề${kidTotal ? `, ${kidTotal} chủ đề con` : ''}</small></div>
+      <div class="pl-k green"><b>${approvedNotes.length}</b><span>Đã duyệt</span><small>${pct}% kho tri thức</small></div>
+      <div class="pl-k amber"><b>${drafts}</b><span>Chờ duyệt</span><small>${drafts ? 'mở mục Chưa duyệt để đọc' : 'đã duyệt hết'}</small></div>
+      <div class="pl-k sky"><b>${fmtDur(cur7.sec)}</b><span>7 ngày qua</span><small>thời gian tương tác</small></div>
+      ${usesReview ? `<div class="pl-k violet"><b>${reviewing}</b><span>Đang rèn luyện</span><small>lịch 1-3-7-30 ngày</small></div>
+      <div class="pl-k violet"><b>${due}</b><span>Đến hạn hôm nay</span><small>${totalReps} lượt rèn luyện</small></div>` : ''}
+    </div>`;
+
+    // --- So sánh 7 ngày ---
+    const delta = (c, p, unit) => !p && !c ? '' : !p ? '<span class="dl up">mới</span>' : c === p ? '<span class="dl">bằng</span>' : c > p ? `<span class="dl up">▲ ${Math.round((c - p) / p * 100)}%</span>` : `<span class="dl">▼ ${Math.round((p - c) / p * 100)}%</span>`;
+    const cmp = `<div class="pl-card"><p class="pl-ct">7 ngày qua so với 7 ngày trước</p><div class="pl-cmp">
+      <div><b>${cur7.a}</b>${delta(cur7.a, prev7.a)}<span>ghi chú thêm</span></div>
+      <div><b>${cur7.w}</b>${delta(cur7.w, prev7.w)}<span>lượt duyệt và rèn luyện</span></div>
+      <div><b>${fmtDur(cur7.sec)}</b>${delta(cur7.sec, prev7.sec)}<span>thời gian tương tác</span></div></div></div>`;
+
+    // --- Lịch 12 tuần + cột 7 ngày ---
+    const dow = (new Date(day + 'T12:00:00').getDay() + 6) % 7;   // 0 = thứ hai
+    const cells = [];
+    for (let i = dow + 77; i >= 0; i--) {   // 12 cột tuần, mỗi cột thứ hai đến chủ nhật; tuần này dừng ở hôm nay
+      const d = addDays(day, -i);
+      const inf = dayInfo(d, adds);
+      const score = inf.work + (inf.done && !inf.work ? 1 : 0);
+      const lv = score >= 6 ? 4 : score >= 3 ? 3 : score >= 2 ? 2 : score >= 1 || inf.s >= 60 ? 1 : 0;
+      cells.push(`<i class="pl-cell${lv > 0 ? ' l' + lv : ''}${d === day ? ' today' : ''}" title="${fmtDay(d)}: ${inf.a} thêm · ${inf.v} duyệt · ${inf.r} rèn luyện · ${fmtDur(inf.s)}"></i>`);
+    }
+    // ngày tương lai của tuần hiện tại không vẽ
+    const heatCells = cells.slice(0, cells.length).join('');
+    const names = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+    const bars = [];
+    let maxMin = 15, anyTime = false;
+    const week = [];
+    for (let i = 6; i >= 0; i--) { const d = addDays(day, -i), inf = dayInfo(d, adds); week.push([d, inf]); maxMin = Math.max(maxMin, inf.s / 60); if (inf.s) anyTime = true; }
+    week.forEach(([d, inf]) => bars.push(`<div class="pl-b${d === day ? ' today' : ''}" title="${fmtDay(d)}: ${fmtDur(inf.s)}"><span>${inf.s >= 30 ? Math.round(inf.s / 60) || '<1' : ''}</span><div class="pl-bw"><i style="height:${Math.max(2, Math.round(inf.s / 60 / maxMin * 100))}%"></i></div><span class="d">${names[new Date(d + 'T12:00:00').getDay()]}</span><span class="n">${inf.a ? '+' + inf.a : ''}</span></div>`));
+    const charts = `<div class="pl-charts">
+      <div class="pl-card"><p class="pl-ct">12 tuần gần đây</p><div class="pl-heat">${heatCells}</div>
+        <div class="pl-leg">Ít <i class="pl-cell" style="background:#eceff4"></i><i style="background:#c7d2fe"></i><i style="background:#a5b4fc"></i><i style="background:#6366f1"></i><i style="background:#4338ca"></i> Nhiều</div></div>
+      <div class="pl-card"><p class="pl-ct">Số phút mỗi ngày <small>số dưới cột: ghi chú thêm</small></p>
+        <div class="pl-bars">${bars.join('')}</div>
+        ${anyTime ? '' : '<p class="st-note">Thời gian bắt đầu được ghi từ lần mở app này.</p>'}</div></div>`;
+
+    // --- Mốc ---
+    const bc = badgeCtx(adds);
+    const badges = `<div class="pl-card"><p class="pl-ct">Mốc đạt được</p><div class="pl-badges">${BADGES.map(b => b.need(bc) ? `<span class="pl-bd">${svgi(b.icon)}${b.name}</span>` : `<span class="pl-bd off" title="${esc(b.hint(bc))}">${svgi(b.icon)}${b.name} · ${esc(b.hint(bc))}</span>`).join('')}</div></div>`;
+
+    return `${hero}${kpis}${cmp}${charts}${badges}
       <h4 class="st-h">Theo chuyên đề</h4>
       ${cards || '<p class="note">Chưa có ghi chú nào.</p>'}
+      <p class="st-note">Dung lượng ghi chú: ${fmtSize(notesBytes)} (khoảng ${Math.max(1, Math.round(notesBytes / 5242880 * 100))}% của 5 MB trên máy này). Thời gian tương tác chỉ tính lúc tab đang mở và bạn có thao tác (im quá 1 phút thì ngừng đếm); số liệu cũ trước khi có tính năng này không có thời gian. Mục tiêu ngày chỉ lưu trên máy này.</p>
       ${reviewing ? '<p class="st-note">Chặng là khoảng cách đến lần rèn luyện kế tiếp: “Sau 1 ngày” gồm cả bài mới bật rèn luyện lẫn bài vừa chọn Chưa nhớ. Chỉ bài đã bật rèn luyện mới có lịch. Số lượt chỉ tính từ khi ứng dụng bắt đầu ghi lại.</p>' : ''}`;
   }
 
   function openStats() {
     $('menu').open = false;
+    flushTime(false);
     $('statsBody').innerHTML = statsHtml();
     $('statsModal').hidden = false;
   }
 
+  $('statsBody').onchange = e => {
+    const g = e.target.closest('[data-goal]');
+    if (!g) return;
+    ui[g.dataset.goal === 'tasks' ? 'goalTasks' : 'goalMin'] = Number(g.value);
+    lsSet(LS_UI, ui);
+    $('statsBody').innerHTML = statsHtml();
+  };
   $('statsBody').onclick = e => {
     const b = e.target.closest('[data-review-topic]');
     if (!b) return;
@@ -1365,7 +1668,7 @@
       <p>Kho của bạn có <b>${active().length}</b> tài liệu trong <b>${topicCount}</b> chuyên đề.</p>
       ${drafts ? `<p><b>${drafts}</b> ghi chú chưa duyệt đang chờ bạn.</p>` : ''}
       ${due ? `<p><b>${due}</b> bài đến hạn rèn luyện hôm nay.</p>` : ''}
-      ${reviewing && sk ? `<p>Chuỗi ngày học: ${sk} ngày.</p>` : ''}
+      ${sk ? `<p>Chuỗi học: <b>${sk}</b> ngày${dayInfo(today(), addsByDay()).done ? '. Hôm nay bạn đã đạt mục tiêu.' : '. Còn chút nữa để giữ chuỗi hôm nay.'}</p>` : ''}
       <div class="go">
         ${due ? `<button type="button" class="btn primary" data-act="greet-review">Bắt đầu rèn luyện <kbd>Space</kbd></button>` : ''}
         ${drafts ? `<button type="button" class="btn${primary === 'draft' ? ' primary' : ''}" data-act="greet-draft">Duyệt bài mới${primary === 'draft' ? ' <kbd>Space</kbd>' : ''}</button>` : ''}
@@ -1612,6 +1915,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
       savedId = newId();
       notes.unshift({ id: savedId, ...fields, created_at: now, updated_at: now, deleted: false });
       if (!parseTags(fields.tags).includes(DRAFT_TAG)) logActivity();
+      checkBadges();
     }
     dirty.add(savedId);
     persist();
@@ -1716,7 +2020,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     const oldTags = n.tags;
     n.tags = parseTags(n.tags).filter(t => t !== DRAFT_TAG).join(', ');
     n.updated_at = new Date().toISOString();
-    dirty.add(id); persist(); logActivity();
+    dirty.add(id); persist(); bump('v', 1); logActivity(); checkBadges();
     if (next) { state.sel = next.id; revealNote(next.id); }
     else if (state.tag === DRAFT_TAG) state.tag = '';   // hết ghi chú chưa duyệt: thoát bộ lọc rỗng
     render(); scheduleSync();
@@ -2037,9 +2341,9 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   }
 
   // --- gộp ---
-  function buildPayload() { return { pkv: 'sync', version: 1, saved_at: new Date().toISOString(), notes, review, review_counts: rcount, activity: [...activity].sort() }; }
+  function buildPayload() { return { pkv: 'sync', version: 1, saved_at: new Date().toISOString(), notes, review, review_counts: rcount, activity: [...activity].sort(), daily }; }
   const stable = v => Array.isArray(v) ? '[' + v.map(stable).join(',') + ']' : v && typeof v === 'object' ? '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + stable(v[k])).join(',') + '}' : String(JSON.stringify(v));
-  const canon = p => stable({ notes: (p.notes || []).map(normalizeNote).filter(n => n.id).sort((x, y) => x.id < y.id ? -1 : x.id > y.id ? 1 : 0), review: p.review || {}, review_counts: p.review_counts || {}, activity: [...(p.activity || [])].sort() });
+  const canon = p => stable({ notes: (p.notes || []).map(normalizeNote).filter(n => n.id).sort((x, y) => x.id < y.id ? -1 : x.id > y.id ? 1 : 0), review: p.review || {}, review_counts: p.review_counts || {}, activity: [...(p.activity || [])].sort(), daily: p.daily || {} });
 
   function mergeNotes(remote) {
     const local = new Map(notes.map(n => [n.id, n]));
@@ -2068,6 +2372,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     Object.keys(review).forEach(id => { const n = live.get(id); if (!n || !canReview(n)) delete review[id]; });
     Object.keys(rc).forEach(id => { const k = cnt(id); if (live.has(id) && k > (rcount[id] || 0) && k < 1e6) rcount[id] = k; });
     (Array.isArray(p.activity) ? p.activity : []).forEach(d => { if (typeof d === 'string' && DAY.test(d)) activity.add(d); });
+    mergeDaily(p.daily);
   }
 
   async function runSync(interactive) {
@@ -2185,7 +2490,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     Object.keys(review).forEach(id => { if (ids.has(id)) rv[id] = review[id]; });
     const rc = {};
     Object.keys(rcount).forEach(id => { if (ids.has(id) && rcount[id] > 0) rc[id] = rcount[id]; });
-    const backup = { version: 3, exported_at: new Date().toISOString(), notes: data, review: rv, review_counts: rc, activity: [...activity].sort() };
+    const backup = { version: 3, exported_at: new Date().toISOString(), notes: data, review: rv, review_counts: rc, activity: [...activity].sort(), daily };
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     const d = new Date();
@@ -2193,7 +2498,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     a.download = `pkv_backup_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}.json`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    toast(`Đã xuất ${data.length} ghi chú kèm lịch rèn luyện và nhật ký ngày học.`);
+    toast(`Đã xuất ${data.length} ghi chú kèm lịch rèn luyện, nhật ký ngày học và thời gian học.`);
   }
 
   // Nhận JSON dán từ Gemini (có thể kèm khung ```json) hoặc file sao lưu của chính app.
@@ -2209,7 +2514,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     const arr = Array.isArray(v) ? v : (v && v.notes);
     if (!Array.isArray(arr)) throw new Error('Cần một mảng ghi chú dạng JSON.');
     const obj = v && !Array.isArray(v) ? v : {};
-    return { arr, review: obj.review && typeof obj.review === 'object' ? obj.review : null, counts: obj.review_counts && typeof obj.review_counts === 'object' ? obj.review_counts : null, activity: Array.isArray(obj.activity) ? obj.activity : [] };
+    return { arr, review: obj.review && typeof obj.review === 'object' ? obj.review : null, counts: obj.review_counts && typeof obj.review_counts === 'object' ? obj.review_counts : null, activity: Array.isArray(obj.activity) ? obj.activity : [], daily: obj.daily && typeof obj.daily === 'object' ? obj.daily : null };
   }
   const parseImportText = text => parseImportData(text).arr;
 
@@ -2236,7 +2541,8 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     }
     let days = 0;
     extra.activity.forEach(d => { if (typeof d === 'string' && DAY.test(d) && !activity.has(d)) { activity.add(d); days++; } });
-    if (n || days || reps) saveReview();
+    const dd = extra.daily ? mergeDaily(extra.daily) : 0;
+    if (n || days || reps || dd) saveReview();
     return { n, days, reps };
   }
 
@@ -2343,6 +2649,28 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     $('importText').focus();
   }
 
+  // ---------- Hướng dẫn nhanh + prompt mẫu ----------
+  const HELP_PROMPTS = {"law": "Chỉ dựa vào các nguồn đã có trong notebook này, hãy tạo ghi chú pháp luật cho phạm vi sau.\n\nPHẠM VI: [ví dụ: Điều 5, Điều 6, Điều 7 của Luật Bảo vệ bí mật nhà nước]\n\nQUY TẮC\n1. Chỉ dùng nội dung có trong nguồn của notebook. Không dùng kiến thức bên ngoài, không tự thêm điều luật hay ví dụ. Nếu không tìm thấy phạm vi này trong nguồn, trả về mảng rỗng [].\n2. Mỗi ghi chú ứng với MỘT điều (hoặc một khoản quan trọng nếu điều quá dài).\n3. Trả về DUY NHẤT một mảng JSON hợp lệ, không bọc trong ```, không viết thêm chữ nào ngoài mảng. KHÔNG chèn số trích dẫn kiểu [1], [2] vào bất kỳ chỗ nào trong nội dung.\n4. Mỗi phần tử có đúng 6 trường kiểu chuỗi:\n   - \"topic\": dạng \"Chuyên đề/Chủ đề con\" (đúng một dấu /, tối đa 2 cấp, ví dụ \"Kiến thức pháp luật/Bí mật nhà nước\"). Chuyên đề CHỌN TRONG DANH SÁCH: [điền các chuyên đề của bạn, ví dụ: Kiến thức pháp luật, Sách, Tin tức]. Chủ đề con là lĩnh vực pháp luật, ngắn gọn (ví dụ: Bí mật nhà nước, Dân sự, Lao động). Nếu không hợp chuyên đề nào thì chỉ ghi chủ đề con, không dùng dấu /.\n   - \"title\": dạng \"Điều X – Tên điều\" (hoặc \"Điều X khoản Y – ...\" nếu tách khoản).\n   - \"takeaway\": nội dung cốt lõi bằng tiếng Việt, ĐÚNG 3 gạch đầu dòng theo thứ tự từ tổng quan đến chi tiết, mỗi dòng bắt đầu bằng \"- \", ngăn cách bằng ký tự \\n:\n     \"- TỔNG QUAN: mục đích và phạm vi bao trùm của điều luật, trong 1 câu\"\n     \"- CỐT LÕI CẦN NHỚ: hành vi bị cấm / điều kiện bắt buộc / thẩm quyền / mốc thời hạn then chốt (ngắn gọn, ngăn cách bằng dấu chấm phẩy)\"\n     \"- LƯU Ý / HỆ QUẢ: ngoại lệ hoặc chế tài xử lý vi phạm (nếu nguồn không nêu thì ghi: không nêu)\"\n     Chỉ diễn giải nội dung có trong nguồn, không thêm ý kiến. Giữ đúng 3 nhãn viết hoa ở đầu mỗi dòng.\n   - \"raw_excerpt\": CHÉP NGUYÊN VĂN điều/khoản từ nguồn, từng chữ, không tóm tắt, không sửa. Giữ xuống dòng bằng \\n. Chỉ chép từ chính văn bản luật. KHÔNG chép phần bình luận, tóm tắt hay tiêu đề viết tắt của tài liệu khác làm nguyên văn. Nếu các nguồn trong notebook không có toàn văn điều đó (chỉ có tóm tắt hoặc bình luận), ghi đúng chuỗi \"[không có nguyên văn trong nguồn]\" và vẫn viết \"takeaway\" dựa trên những gì nguồn nói.\n   - \"source\": \"Tên văn bản, số hiệu, Điều X, khoản Y, năm ban hành\" (lấy đúng thông tin ghi trong nguồn).\n   - \"tags\": từ khóa viết thường, cách nhau dấu phẩy. TỐI ĐA 3 thẻ thường: \"pháp luật\" và 1–2 từ khóa nội dung khác tên chủ đề. KHÔNG ghi tên chủ đề (giá trị \"topic\") làm thẻ và không ghi \"chưa duyệt\" (app tự gắn). Ngoài ra, thêm \"cần kiểm tra hiệu lực\" nếu nguồn không cho biết văn bản còn hiệu lực hay không, và \"thiếu nguyên văn\" nếu \"raw_excerpt\" là \"[không có nguyên văn trong nguồn]\".\n5. Đảm bảo JSON hợp lệ: dấu nháy kép trong nội dung phải viết \\\" và xuống dòng viết \\n.", "book": "Chỉ dựa vào các nguồn đã có trong notebook này, hãy tạo ghi chú đọc sách cho phạm vi sau.\n\nPHẠM VI: [ví dụ: Chương 3 của cuốn \"Tên sách\" / phần nói về khái niệm X]\nCHỦ ĐỀ GỢI Ý (nếu có): [ví dụ: Quản trị, Kỹ năng, Kinh tế]\n\nQUY TẮC\n1. Chỉ dùng nội dung có trong nguồn của notebook. Không dùng kiến thức bên ngoài và không bịa số trang. Nếu nguồn không cho biết số trang thì ghi \"[trang ?]\" (hoặc tên chương nếu có). Nếu không tìm thấy phạm vi này trong nguồn, trả về mảng rỗng [].\n2. Mỗi ghi chú chứa MỘT ý hoặc khái niệm. Chỉ chọn những ý đáng nhớ nhất của phạm vi, tối đa 5 ghi chú mỗi lượt.\n3. Trả về DUY NHẤT một mảng JSON hợp lệ, không bọc trong ```, không viết thêm chữ nào ngoài mảng. KHÔNG chèn số trích dẫn kiểu [1], [2] vào bất kỳ chỗ nào trong nội dung.\n4. Mỗi phần tử có đúng 6 trường kiểu chuỗi:\n   - \"topic\": dạng \"Chuyên đề/Chủ đề con\" (đúng một dấu /, tối đa 2 cấp, ví dụ \"Sách/Quản trị\"). Chuyên đề CHỌN TRONG DANH SÁCH: [điền các chuyên đề của bạn, ví dụ: Sách, Kiến thức pháp luật, Tin tức]. Chủ đề con là chủ đề chính ngắn gọn. Nếu không hợp chuyên đề nào thì chỉ ghi chủ đề con, không dùng dấu /.\n   - \"title\": ý chính của ghi chú trong một câu ngắn, đừng chỉ chép tên chương.\n   - \"takeaway\": ĐÚNG 3 gạch đầu dòng theo thứ tự từ tổng quan đến chi tiết, mỗi dòng bắt đầu bằng \"- \", ngăn cách bằng \\n:\n     \"- TỔNG QUAN: bản chất ý tưởng cốt lõi của tác giả, trong 1 câu\"\n     \"- ĐIỂM SÁNG CẦN NHỚ: nguyên lý hoặc luận điểm đắt giá nhất\"\n     \"- VẬN DỤNG: cách áp dụng cụ thể vào công việc hoặc cuộc sống, rút ra từ chính nội dung nguồn (nếu nguồn không nêu thì ghi: không nêu)\"\n     Diễn đạt lại bằng lời của bạn, không chép lại đoạn dài. Giữ đúng 3 nhãn viết hoa ở đầu mỗi dòng.\n   - \"raw_excerpt\": MỘT đoạn ngắn (1–3 câu) chép nguyên văn từ nguồn làm bằng chứng cho ghi chú.\n   - \"source\": \"Tên sách, tác giả, tr. [số trang]\" (lấy đúng thông tin có trong nguồn).\n   - \"tags\": từ khóa viết thường, cách nhau dấu phẩy. TỐI ĐA 3 thẻ thường: \"sách\" và 1–2 từ khóa nội dung khác tên chủ đề. KHÔNG ghi tên chủ đề (giá trị \"topic\") làm thẻ và không ghi \"chưa duyệt\" (app tự gắn).\n5. Đảm bảo JSON hợp lệ: dấu nháy kép trong nội dung phải viết \\\" và xuống dòng viết \\n.", "news": "Chỉ dựa vào các nguồn đã có trong notebook này, hãy tạo ghi chú tin tức cho phạm vi sau.\n\nPHẠM VI: [ví dụ: bài \"Tiêu đề bài báo\" / tất cả bài về chủ đề X trong notebook]\n\nQUY TẮC\n1. Chỉ dùng nội dung có trong nguồn của notebook. Không bổ sung bối cảnh, số liệu hay đánh giá từ kiến thức bên ngoài. Con số, tên người, tên tổ chức phải khớp nguồn. Nếu không tìm thấy phạm vi này trong nguồn, trả về mảng rỗng [].\n2. Mỗi bài báo tạo MỘT ghi chú (bài rất dài và có nhiều chủ đề thì tối đa 3 ghi chú). Mỗi lượt xử lý tối đa 5 bài.\n3. Trả về DUY NHẤT một mảng JSON hợp lệ, không bọc trong ```, không viết thêm chữ nào ngoài mảng. KHÔNG chèn số trích dẫn kiểu [1], [2] vào bất kỳ chỗ nào trong nội dung.\n4. Mỗi phần tử có đúng 6 trường kiểu chuỗi:\n   - \"topic\": dạng \"Chuyên đề/Chủ đề con\" (đúng một dấu /, tối đa 2 cấp, ví dụ \"Tin tức/Kinh tế\"). Chuyên đề CHỌN TRONG DANH SÁCH: [điền các chuyên đề của bạn, ví dụ: Kiến thức pháp luật, Sách, Tin tức]. Chủ đề con là lĩnh vực ngắn gọn (ví dụ: Kinh tế, Chính sách, Công nghệ, Xã hội, Quốc tế). Nếu không hợp chuyên đề nào thì chỉ ghi chủ đề con, không dùng dấu /.\n   - \"title\": sự việc chính trong một câu ngắn.\n   - \"takeaway\": ĐÚNG 3 gạch đầu dòng theo thứ tự từ tổng quan đến chi tiết, mỗi dòng bắt đầu bằng \"- \", ngăn cách bằng \\n:\n     \"- TỔNG QUAN: sự kiện chính: ai, làm gì, khi nào, con số then chốt (chỉ nêu dữ kiện có trong bài)\"\n     \"- TÁC ĐỘNG CẦN NHỚ: ý nghĩa chính sách, tác động xã hội / kinh tế mà bài nêu ra\"\n     \"- THEO DÕI: diễn biến tiếp theo mà bài đề cập (nếu bài không nói thì ghi: không nêu)\"\n     Phân biệt rõ dữ kiện với ý kiến của người được trích dẫn hoặc của tác giả bài viết. Giữ đúng 3 nhãn viết hoa ở đầu mỗi dòng.\n   - \"raw_excerpt\": 1–2 câu then chốt chép nguyên văn từ bài.\n   - \"source\": \"Tên báo, ngày đăng (dd/mm/yyyy), link nếu nguồn có\". Ngày đăng rất quan trọng, nếu nguồn không cho biết thì ghi \"[ngày ?]\".\n   - \"tags\": từ khóa viết thường, cách nhau dấu phẩy. TỐI ĐA 3 thẻ thường: \"báo chí\" và năm đăng nếu biết (ví dụ \"2026\"). KHÔNG ghi tên chủ đề (giá trị \"topic\") làm thẻ và không ghi \"chưa duyệt\" (app tự gắn).\n5. Đảm bảo JSON hợp lệ: dấu nháy kép trong nội dung phải viết \\\" và xuống dòng viết \\n."};
+  let helpKind = 'law';
+  // Điền sẵn danh sách chuyên đề thật của bạn vào dòng "[điền các chuyên đề của bạn, ...]"
+  function helpPromptText(kind) {
+    const names = [...buildGroups(topicCounts()).keys()].sort((a, b) => a.localeCompare(b, 'vi'));
+    return HELP_PROMPTS[kind].replace(/\[điền các chuyên đề của bạn[^\]]*\]/, names.length ? names.join(', ') : '[điền các chuyên đề của bạn, ví dụ: Kiến thức pháp luật, Sách, Tin tức]');
+  }
+  function showHelpPrompt(kind) {
+    helpKind = kind;
+    document.querySelectorAll('#helpSeg button').forEach(b => b.classList.toggle('primary', b.dataset.k === kind));
+    $('helpPrompt').value = helpPromptText(kind);
+    const has = active().length > 0;
+    $('helpNote').textContent = has ? 'Danh sách chuyên đề trong prompt đã lấy từ kho của bạn. Chỉ cần sửa dòng PHẠM VI sau khi dán.' : 'Kho còn trống nên dòng chuyên đề là ví dụ; hãy sửa theo ý bạn, rồi sửa dòng PHẠM VI sau khi dán.';
+  }
+  function openHelp() {
+    $('menu').open = false;
+    showHelpPrompt(helpKind);
+    $('helpModal').hidden = false;
+  }
+  function closeHelp() { $('helpModal').hidden = true; }
+
   function applyImport() {
     let plan, extra;
     try { extra = parseImportData($('importText').value); plan = planImport(extra.arr, $('overwrite').checked); } catch (e) { return previewImport(); }
@@ -2375,6 +2703,12 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   $('syncStatus').onclick = () => { if (!ghReady()) openSettings(); };
   $('exportBtn').onclick = exportJson;
   $('importBtn').onclick = openImport;
+  $('helpBtn').onclick = openHelp;
+  $('importHelp').onclick = openHelp;
+  $('helpClose').onclick = closeHelp;
+  $('helpSeg').onclick = e => { const b = e.target.closest('button[data-k]'); if (b) showHelpPrompt(b.dataset.k); };
+  $('helpCopy').onclick = async () => { await copyText($('helpPrompt').value); toast('Đã sao chép prompt. Dán vào NotebookLM và sửa dòng PHẠM VI.'); };
+  $('helpToImport').onclick = () => { closeHelp(); openImport(); };
   $('closeImport').onclick = () => { $('importModal').hidden = true; };
   $('pickFile').onclick = () => $('importFile').click();
   $('importFile').onchange = e => { if (e.target.files[0]) readImportFile(e.target.files[0]); e.target.value = ''; };
@@ -2491,11 +2825,12 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   document.addEventListener('keydown', e => {
     if (locked) return;
     if (e.key === 'Escape' && !$('pwAskModal').hidden) { $('pwAskCancel').click(); return; }
+    if (e.key === 'Escape' && !$('helpModal').hidden) { closeHelp(); return; }
     if (e.key === 'Escape' && !$('shareModal').hidden) { closeShare(); return; }
     if (e.key === 'Escape' && !$('quickModal').hidden) { closeQuick(); return; }
     if (e.key === 'Escape' && !$('topicModal').hidden) { closeTopicMgr(); return; }
     if (e.key === 'Escape' && !$('lockModal').hidden) { closeLock(); return; }
-    const modalOpen = !$('statsModal').hidden || !$('warnModal').hidden || !$('noteModal').hidden || !$('settingsModal').hidden || !$('importModal').hidden || !$('lockModal').hidden || !$('pwAskModal').hidden || !$('topicModal').hidden || !$('quickModal').hidden || !$('shareModal').hidden;
+    const modalOpen = !$('statsModal').hidden || !$('warnModal').hidden || !$('noteModal').hidden || !$('settingsModal').hidden || !$('importModal').hidden || !$('lockModal').hidden || !$('pwAskModal').hidden || !$('topicModal').hidden || !$('quickModal').hidden || !$('shareModal').hidden || !$('helpModal').hidden;
     if (e.key === 'Escape') {
       if (!$('statsModal').hidden) $('statsModal').hidden = true;
       else if (!$('warnModal').hidden) $('warnModal').hidden = true;
@@ -2590,7 +2925,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
 
   function updateLockMenu() {
     const has = !!lsGet(LS_GATE, null);
-    $('lockSetBtn').textContent = has ? 'Đổi mật khẩu' : 'Đặt mật khẩu';
+    $('lockSetBtn').querySelector('span:not(.mi)').textContent = has ? 'Đổi mật khẩu' : 'Đặt mật khẩu';
     $('lockNowBtn').hidden = !has;
     $('lockOffBtn').hidden = !has;
   }
