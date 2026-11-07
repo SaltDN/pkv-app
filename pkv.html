@@ -434,6 +434,8 @@
   .help ol.steps li { margin: 4px 0; }
   .help .seg { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
   .help textarea { width: 100%; background: var(--soft); border: 1px solid var(--border); border-radius: 10px; padding: 9px 11px; font: 12.5px/1.45 ui-monospace, Consolas, monospace; resize: vertical; }
+  .preview .cut { margin: 0 0 8px; padding: 7px 10px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; line-height: 1.45; }
+  .preview .cut .linkbtn { color: #92400e; font-weight: 600; }
   .linkbtn { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font: inherit; font-size: 13px; }
 
   /* ---------- Màn khóa ---------- */
@@ -828,15 +830,20 @@
     <div class="sheet-head"><h3 id="helpHead">Hướng dẫn nhanh</h3><button type="button" class="x" id="helpClose" aria-label="Đóng">&times;</button></div>
     <h4 style="margin-top:4px">Nạp ghi chú từ NotebookLM, từng bước</h4>
     <ol class="steps">
-      <li>Trong NotebookLM, tạo một notebook và thêm nguồn (văn bản luật, sách, bài báo).</li>
-      <li>Chọn loại prompt bên dưới, bấm <b>Sao chép prompt</b>, dán vào khung chat của NotebookLM, rồi sửa dòng <b>PHẠM VI</b> (ví dụ: Điều 5 đến Điều 7).</li>
-      <li>NotebookLM trả về một mảng JSON. Bấm <b>Copy</b> để lấy toàn bộ.</li>
-      <li>Quay lại đây: menu <b>⋯ → Nhập ghi chú</b>, dán vào ô. Xem trước dòng “Sẽ thêm N”, đúng thì bấm <b>Nhập</b>.</li>
+      <li>Trong NotebookLM, tạo notebook và thêm nguồn đầy đủ (văn bản luật, sách, bài báo).</li>
+      <li><b>Pháp luật và Sách:</b> chọn <b>Bước 1 · Khảo sát</b> bên dưới, bấm <b>Sao chép prompt</b>, sửa dòng tên văn bản hoặc tài liệu rồi dán vào NotebookLM. Bạn nhận cấu trúc, trọng tâm và danh mục chia thành các <b>lô</b> (mỗi lô tối đa 5 mục, mỗi lô một dòng <b>PHẠM VI</b>). <b>Báo chí:</b> bỏ qua bước này.</li>
+      <li>Đọc danh mục, bỏ mục không cần. Chọn <b>Bước 2 · Trích xuất JSON</b>, sao chép, thay dòng <b>PHẠM VI</b> bằng dòng của <b>một lô</b>, dán vào NotebookLM, rồi bấm <b>Copy</b> mảng JSON.</li>
+      <li>Quay lại đây: menu <b>⋯ → Nhập ghi chú</b>, dán vào ô, xem trước dòng “Sẽ thêm N”, bấm <b>Nhập</b>. Nếu JSON bị cắt dở, app vẫn nhập các ghi chú hoàn chỉnh và có nút <b>Sao chép câu lệnh tiếp tục</b>.</li>
+      <li>Lặp lại Bước 2 cho các lô còn lại.</li>
       <li>Mở mục <b>Chưa duyệt</b>, đọc và đối chiếu nguyên văn, bấm <b>Sửa</b> nếu cần, rồi <b>Duyệt</b> (phím <kbd>D</kbd>).</li>
       <li>Bài nào muốn nhớ lâu thì bấm <b>Bật rèn luyện</b> (phím <kbd>R</kbd>).</li>
     </ol>
-    <p class="note">Văn bản dài thì làm từng đợt 3 đến 5 mục. Đợt sau chỉ cần nhắn: “Tiếp tục với Điều 8, 9, 10, giữ nguyên quy tắc và định dạng JSON”.</p>
+    <p class="note">Mỗi lượt chỉ một lô nhỏ (3 đến 5 mục) để câu trả lời không bị cắt giữa chừng.</p>
     <h4>Prompt mẫu cho NotebookLM</h4>
+    <div class="seg" id="helpStage">
+      <button type="button" class="btn primary" data-s="1">Bước 1 · Khảo sát</button>
+      <button type="button" class="btn" data-s="2">Bước 2 · Trích xuất JSON</button>
+    </div>
     <div class="seg" id="helpSeg">
       <button type="button" class="btn primary" data-k="law">Pháp luật</button>
       <button type="button" class="btn" data-k="book">Sách</button>
@@ -1920,7 +1927,7 @@
 
   function render() { pruneReview(); renderNotes(); }
 
-  window.pkv = { dueList, streak, gradeReview, get review() { return review; }, get rcount() { return rcount; }, get activity() { return activity; }, shareHtml: buildReadHtml, shareText };   // để kiểm tra bằng Console (F12)
+  window.pkv = { parseImport: parseImportData, dueList, streak, gradeReview, get review() { return review; }, get rcount() { return rcount; }, get activity() { return activity; }, shareHtml: buildReadHtml, shareText };   // để kiểm tra bằng Console (F12)
 
   // ---------- Thêm / sửa / xóa ----------
   function openNote(id) {
@@ -2568,20 +2575,46 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     toast(`Đã xuất ${data.length} ghi chú kèm lịch rèn luyện, nhật ký ngày học và thời gian học.`);
   }
 
+  // JSON bị cắt giữa chừng (AI hết độ dài trả lời): giữ lại các ghi chú hoàn chỉnh ở phía trước, bỏ phần dở dang.
+  // Duyệt từng ký tự (biết đang trong chuỗi hay không) để tìm chỗ kết thúc của từng ghi chú ở tầng ngoài cùng, rồi thử cắt từ ghi chú cuối ngược về.
+  function salvageArray(t) {
+    const m = /\[\s*\{/.exec(t);
+    if (!m) return null;
+    const start = m.index, ends = [];
+    let depth = 0, inStr = false, esc = false;
+    for (let i = start; i < t.length; i++) {
+      const ch = t[i];
+      if (inStr) { if (esc) esc = false; else if (ch === '\\') esc = true; else if (ch === '"') inStr = false; continue; }
+      if (ch === '"') inStr = true;
+      else if (ch === '{' || ch === '[') depth++;
+      else if (ch === '}' || ch === ']') { depth--; if (ch === '}' && depth === 1) ends.push(i); if (depth <= 0) break; }
+    }
+    for (let k = ends.length - 1; k >= 0 && k >= ends.length - 60; k--) {
+      try { const arr = JSON.parse(t.slice(start, ends[k] + 1) + ']'); if (Array.isArray(arr) && arr.length) return arr; } catch (e) { /* thử bớt một ghi chú nữa */ }
+    }
+    return null;
+  }
+
   // Nhận JSON dán từ Gemini (có thể kèm khung ```json) hoặc file sao lưu của chính app.
   function parseImportData(text) {
     const t = text.trim().replace(/^```[a-z]*\s*/i, '').replace(/```\s*$/, '').trim();
-    const broken = new Error('JSON không hợp lệ hoặc bị cắt dở. Thử gửi Gemini ít ảnh hơn mỗi lượt.');
-    let v;
+    const broken = new Error('JSON không hợp lệ hoặc bị cắt dở. Hãy yêu cầu AI trả lời ít mục hơn mỗi lượt (3 đến 5 mục).');
+    let v, cut = null;
     try { v = JSON.parse(t); } catch (e) {
       const a = t.indexOf('['), b = t.lastIndexOf(']');
-      if (a < 0 || b <= a) throw broken;
-      try { v = JSON.parse(t.slice(a, b + 1)); } catch (e2) { throw broken; }
+      let ok = false;
+      if (a >= 0 && b > a) { try { v = JSON.parse(t.slice(a, b + 1)); ok = true; } catch (e2) { /* thử cứu phần hoàn chỉnh */ } }
+      if (!ok) {
+        const part = t.startsWith('{') ? null : salvageArray(t);   // file sao lưu (dạng đối tượng) bị cắt thì không cứu
+        if (!part) throw broken;
+        v = part;
+        cut = { kept: part.length, last: String((part[part.length - 1] || {}).title || '').trim() };
+      }
     }
     const arr = Array.isArray(v) ? v : (v && v.notes);
     if (!Array.isArray(arr)) throw new Error('Cần một mảng ghi chú dạng JSON.');
     const obj = v && !Array.isArray(v) ? v : {};
-    return { arr, review: obj.review && typeof obj.review === 'object' ? obj.review : null, counts: obj.review_counts && typeof obj.review_counts === 'object' ? obj.review_counts : null, activity: Array.isArray(obj.activity) ? obj.activity : [], daily: obj.daily && typeof obj.daily === 'object' ? obj.daily : null };
+    return { arr, review: obj.review && typeof obj.review === 'object' ? obj.review : null, counts: obj.review_counts && typeof obj.review_counts === 'object' ? obj.review_counts : null, activity: Array.isArray(obj.activity) ? obj.activity : [], daily: obj.daily && typeof obj.daily === 'object' ? obj.daily : null, cut };
   }
   const parseImportText = text => parseImportData(text).arr;
 
@@ -2679,12 +2712,16 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     return plan;
   }
 
+  let contText = '';   // câu lệnh "tiếp tục" khi JSON bị cắt
   function previewImport() {
     const el = $('importPreview'), btn = $('doImport');
     btn.disabled = true; btn.textContent = 'Nhập'; el.className = 'preview';
     if (!$('importText').value.trim()) { el.textContent = ''; return; }
+    contText = '';
     try {
-      const plan = planImport(parseImportText($('importText').value), $('overwrite').checked);
+      const extra = parseImportData($('importText').value);
+      const plan = planImport(extra.arr, $('overwrite').checked);
+      if (extra.cut) contText = `Tiếp tục từ sau ghi chú “${extra.cut.last || 'cuối cùng ở trên'}”: giữ nguyên phạm vi, quy tắc và định dạng JSON như trên, chỉ trả về phần còn lại dưới dạng một mảng JSON mới hợp lệ (tối đa 5 ghi chú).`;
       const changes = [...plan.add, ...plan.replace, ...plan.update];
       const total = changes.length;
       const parts = [`Sẽ thêm ${plan.add.length}`];
@@ -2694,7 +2731,8 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
       if (plan.dup) parts.push(`bỏ qua ${plan.dup} trùng`);
       if (plan.bad) parts.push(`loại ${plan.bad} mục thiếu tiêu đề hoặc nội dung cốt lõi`);
       const titles = changes.slice(0, 6).map(n => `<li>${esc(n.title)}</li>`).join('');
-      el.innerHTML = `<strong>${esc(parts.join(' · '))}.</strong>` +
+      el.innerHTML = (extra.cut ? `<p class="cut"><b>JSON bị cắt dở.</b> Nhận được ${extra.cut.kept} ghi chú hoàn chỉnh, đã bỏ phần dở dang sau “${esc(extra.cut.last || '…')}”. Nhập phần này trước, rồi hỏi AI tiếp phần còn lại. <button type="button" class="linkbtn" id="copyCont">Sao chép câu lệnh tiếp tục</button></p>` : '') +
+        `<strong>${esc(parts.join(' · '))}.</strong>` +
         (plan.drafts ? ` ${plan.drafts} ghi chú sẽ được gắn thẻ “${DRAFT_TAG}”.` : '') +
         (plan.cites ? ` Đã tự bỏ ${plan.cites} số trích dẫn kiểu [1].` : '') +
         (plan.nested ? ` ${plan.nested} ghi chú chỉ có tên chủ đề con nên đã tự xếp vào chuyên đề có sẵn.` : '') +
@@ -2717,23 +2755,30 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   }
 
   // ---------- Hướng dẫn nhanh + prompt mẫu ----------
-  const HELP_PROMPTS = {"law": "Chỉ dựa vào các nguồn đã có trong notebook này, hãy tạo ghi chú pháp luật cho phạm vi sau.\n\nPHẠM VI: [ví dụ: Điều 5, Điều 6, Điều 7 của Luật Bảo vệ bí mật nhà nước]\n\nQUY TẮC\n1. Chỉ dùng nội dung có trong nguồn của notebook. Không dùng kiến thức bên ngoài, không tự thêm điều luật hay ví dụ. Nếu không tìm thấy phạm vi này trong nguồn, trả về mảng rỗng [].\n2. Mỗi ghi chú ứng với MỘT điều (hoặc một khoản quan trọng nếu điều quá dài).\n3. Trả về DUY NHẤT một mảng JSON hợp lệ, không bọc trong ```, không viết thêm chữ nào ngoài mảng. KHÔNG chèn số trích dẫn kiểu [1], [2] vào bất kỳ chỗ nào trong nội dung.\n4. Mỗi phần tử có đúng 6 trường kiểu chuỗi:\n   - \"topic\": dạng \"Chuyên đề/Chủ đề con\" (đúng một dấu /, tối đa 2 cấp, ví dụ \"Kiến thức pháp luật/Bí mật nhà nước\"). Chuyên đề CHỌN TRONG DANH SÁCH: [điền các chuyên đề của bạn, ví dụ: Kiến thức pháp luật, Sách, Tin tức]. Chủ đề con là lĩnh vực pháp luật, ngắn gọn (ví dụ: Bí mật nhà nước, Dân sự, Lao động). Nếu không hợp chuyên đề nào thì chỉ ghi chủ đề con, không dùng dấu /.\n   - \"title\": dạng \"Điều X – Tên điều\" (hoặc \"Điều X khoản Y – ...\" nếu tách khoản).\n   - \"takeaway\": nội dung cốt lõi bằng tiếng Việt, ĐÚNG 3 gạch đầu dòng theo thứ tự từ tổng quan đến chi tiết, mỗi dòng bắt đầu bằng \"- \", ngăn cách bằng ký tự \\n:\n     \"- TỔNG QUAN: mục đích và phạm vi bao trùm của điều luật, trong 1 câu\"\n     \"- CỐT LÕI CẦN NHỚ: hành vi bị cấm / điều kiện bắt buộc / thẩm quyền / mốc thời hạn then chốt (ngắn gọn, ngăn cách bằng dấu chấm phẩy)\"\n     \"- LƯU Ý / HỆ QUẢ: ngoại lệ hoặc chế tài xử lý vi phạm (nếu nguồn không nêu thì ghi: không nêu)\"\n     Chỉ diễn giải nội dung có trong nguồn, không thêm ý kiến. Giữ đúng 3 nhãn viết hoa ở đầu mỗi dòng.\n   - \"raw_excerpt\": CHÉP NGUYÊN VĂN điều/khoản từ nguồn, từng chữ, không tóm tắt, không sửa. Giữ xuống dòng bằng \\n. Chỉ chép từ chính văn bản luật. KHÔNG chép phần bình luận, tóm tắt hay tiêu đề viết tắt của tài liệu khác làm nguyên văn. Nếu các nguồn trong notebook không có toàn văn điều đó (chỉ có tóm tắt hoặc bình luận), ghi đúng chuỗi \"[không có nguyên văn trong nguồn]\" và vẫn viết \"takeaway\" dựa trên những gì nguồn nói.\n   - \"source\": \"Tên văn bản, số hiệu, Điều X, khoản Y, năm ban hành\" (lấy đúng thông tin ghi trong nguồn).\n   - \"tags\": từ khóa viết thường, cách nhau dấu phẩy. TỐI ĐA 3 thẻ thường: \"pháp luật\" và 1–2 từ khóa nội dung khác tên chủ đề. KHÔNG ghi tên chủ đề (giá trị \"topic\") làm thẻ và không ghi \"chưa duyệt\" (app tự gắn). Ngoài ra, thêm \"cần kiểm tra hiệu lực\" nếu nguồn không cho biết văn bản còn hiệu lực hay không, và \"thiếu nguyên văn\" nếu \"raw_excerpt\" là \"[không có nguyên văn trong nguồn]\".\n5. Đảm bảo JSON hợp lệ: dấu nháy kép trong nội dung phải viết \\\" và xuống dòng viết \\n.", "book": "Chỉ dựa vào các nguồn đã có trong notebook này, hãy tạo ghi chú đọc sách cho phạm vi sau.\n\nPHẠM VI: [ví dụ: Chương 3 của cuốn \"Tên sách\" / phần nói về khái niệm X]\nCHỦ ĐỀ GỢI Ý (nếu có): [ví dụ: Quản trị, Kỹ năng, Kinh tế]\n\nQUY TẮC\n1. Chỉ dùng nội dung có trong nguồn của notebook. Không dùng kiến thức bên ngoài và không bịa số trang. Nếu nguồn không cho biết số trang thì ghi \"[trang ?]\" (hoặc tên chương nếu có). Nếu không tìm thấy phạm vi này trong nguồn, trả về mảng rỗng [].\n2. Mỗi ghi chú chứa MỘT ý hoặc khái niệm. Chỉ chọn những ý đáng nhớ nhất của phạm vi, tối đa 5 ghi chú mỗi lượt.\n3. Trả về DUY NHẤT một mảng JSON hợp lệ, không bọc trong ```, không viết thêm chữ nào ngoài mảng. KHÔNG chèn số trích dẫn kiểu [1], [2] vào bất kỳ chỗ nào trong nội dung.\n4. Mỗi phần tử có đúng 6 trường kiểu chuỗi:\n   - \"topic\": dạng \"Chuyên đề/Chủ đề con\" (đúng một dấu /, tối đa 2 cấp, ví dụ \"Sách/Quản trị\"). Chuyên đề CHỌN TRONG DANH SÁCH: [điền các chuyên đề của bạn, ví dụ: Sách, Kiến thức pháp luật, Tin tức]. Chủ đề con là chủ đề chính ngắn gọn. Nếu không hợp chuyên đề nào thì chỉ ghi chủ đề con, không dùng dấu /.\n   - \"title\": ý chính của ghi chú trong một câu ngắn, đừng chỉ chép tên chương.\n   - \"takeaway\": ĐÚNG 3 gạch đầu dòng theo thứ tự từ tổng quan đến chi tiết, mỗi dòng bắt đầu bằng \"- \", ngăn cách bằng \\n:\n     \"- TỔNG QUAN: bản chất ý tưởng cốt lõi của tác giả, trong 1 câu\"\n     \"- ĐIỂM SÁNG CẦN NHỚ: nguyên lý hoặc luận điểm đắt giá nhất\"\n     \"- VẬN DỤNG: cách áp dụng cụ thể vào công việc hoặc cuộc sống, rút ra từ chính nội dung nguồn (nếu nguồn không nêu thì ghi: không nêu)\"\n     Diễn đạt lại bằng lời của bạn, không chép lại đoạn dài. Giữ đúng 3 nhãn viết hoa ở đầu mỗi dòng.\n   - \"raw_excerpt\": MỘT đoạn ngắn (1–3 câu) chép nguyên văn từ nguồn làm bằng chứng cho ghi chú.\n   - \"source\": \"Tên sách, tác giả, tr. [số trang]\" (lấy đúng thông tin có trong nguồn).\n   - \"tags\": từ khóa viết thường, cách nhau dấu phẩy. TỐI ĐA 3 thẻ thường: \"sách\" và 1–2 từ khóa nội dung khác tên chủ đề. KHÔNG ghi tên chủ đề (giá trị \"topic\") làm thẻ và không ghi \"chưa duyệt\" (app tự gắn).\n5. Đảm bảo JSON hợp lệ: dấu nháy kép trong nội dung phải viết \\\" và xuống dòng viết \\n.", "news": "Chỉ dựa vào các nguồn đã có trong notebook này, hãy tạo ghi chú tin tức cho phạm vi sau.\n\nPHẠM VI: [ví dụ: bài \"Tiêu đề bài báo\" / tất cả bài về chủ đề X trong notebook]\n\nQUY TẮC\n1. Chỉ dùng nội dung có trong nguồn của notebook. Không bổ sung bối cảnh, số liệu hay đánh giá từ kiến thức bên ngoài. Con số, tên người, tên tổ chức phải khớp nguồn. Nếu không tìm thấy phạm vi này trong nguồn, trả về mảng rỗng [].\n2. Mỗi bài báo tạo MỘT ghi chú (bài rất dài và có nhiều chủ đề thì tối đa 3 ghi chú). Mỗi lượt xử lý tối đa 5 bài.\n3. Trả về DUY NHẤT một mảng JSON hợp lệ, không bọc trong ```, không viết thêm chữ nào ngoài mảng. KHÔNG chèn số trích dẫn kiểu [1], [2] vào bất kỳ chỗ nào trong nội dung.\n4. Mỗi phần tử có đúng 6 trường kiểu chuỗi:\n   - \"topic\": dạng \"Chuyên đề/Chủ đề con\" (đúng một dấu /, tối đa 2 cấp, ví dụ \"Tin tức/Kinh tế\"). Chuyên đề CHỌN TRONG DANH SÁCH: [điền các chuyên đề của bạn, ví dụ: Kiến thức pháp luật, Sách, Tin tức]. Chủ đề con là lĩnh vực ngắn gọn (ví dụ: Kinh tế, Chính sách, Công nghệ, Xã hội, Quốc tế). Nếu không hợp chuyên đề nào thì chỉ ghi chủ đề con, không dùng dấu /.\n   - \"title\": sự việc chính trong một câu ngắn.\n   - \"takeaway\": ĐÚNG 3 gạch đầu dòng theo thứ tự từ tổng quan đến chi tiết, mỗi dòng bắt đầu bằng \"- \", ngăn cách bằng \\n:\n     \"- TỔNG QUAN: sự kiện chính: ai, làm gì, khi nào, con số then chốt (chỉ nêu dữ kiện có trong bài)\"\n     \"- TÁC ĐỘNG CẦN NHỚ: ý nghĩa chính sách, tác động xã hội / kinh tế mà bài nêu ra\"\n     \"- THEO DÕI: diễn biến tiếp theo mà bài đề cập (nếu bài không nói thì ghi: không nêu)\"\n     Phân biệt rõ dữ kiện với ý kiến của người được trích dẫn hoặc của tác giả bài viết. Giữ đúng 3 nhãn viết hoa ở đầu mỗi dòng.\n   - \"raw_excerpt\": 1–2 câu then chốt chép nguyên văn từ bài.\n   - \"source\": \"Tên báo, ngày đăng (dd/mm/yyyy), link nếu nguồn có\". Ngày đăng rất quan trọng, nếu nguồn không cho biết thì ghi \"[ngày ?]\".\n   - \"tags\": từ khóa viết thường, cách nhau dấu phẩy. TỐI ĐA 3 thẻ thường: \"báo chí\" và năm đăng nếu biết (ví dụ \"2026\"). KHÔNG ghi tên chủ đề (giá trị \"topic\") làm thẻ và không ghi \"chưa duyệt\" (app tự gắn).\n5. Đảm bảo JSON hợp lệ: dấu nháy kép trong nội dung phải viết \\\" và xuống dòng viết \\n."};
-  let helpKind = 'law';
-  // Điền sẵn danh sách chuyên đề thật của bạn vào dòng "[điền các chuyên đề của bạn, ...]"
-  function helpPromptText(kind) {
+  const HELP_PROMPTS = {"law1": "Chỉ dựa vào các nguồn đã có trong notebook này. Hãy khảo sát văn bản sau để lập danh mục các điều cần ghi nhớ.\n\nVĂN BẢN: [ví dụ: Luật Bảo vệ bí mật nhà nước 2018]\n\nTrả lời bằng tiếng Việt, KHÔNG dùng JSON, gồm 4 phần:\n1. CẤU TRÚC: văn bản gồm những chương hoặc nhóm nội dung nào (mỗi nhóm một dòng: tên chương, phạm vi Điều, nội dung chính). Mục tiêu điều chỉnh bao trùm là gì (1 đến 2 câu).\n2. TRỌNG TÂM CẦN NẮM: những quy định then chốt mà người thực thi bắt buộc phải nắm vững (nêu Điều và Khoản, kèm lý do ngắn).\n3. DỄ VI PHẠM: các hành vi bị nghiêm cấm, điểm dễ vi phạm, chế tài hoặc ngoại lệ đặc thù (nêu Điều và Khoản).\n4. DANH MỤC NẠP VÀO KHO: chọn những điều đáng ghi nhớ nhất, sắp theo thứ tự trong văn bản, chia thành các LÔ, mỗi lô TỐI ĐA 5 điều. Mỗi lô viết đúng một dòng theo mẫu dưới đây để tôi dán sang bước sau:\n   LÔ 1 - PHẠM VI: Điều 5, Điều 6, Điều 7 (một cụm ngắn nêu chủ đề của lô)\n   LÔ 2 - PHẠM VI: ...\n\nQuy tắc: chỉ dùng nội dung có trong nguồn, không tự thêm điều luật hay ví dụ. KHÔNG chèn số trích dẫn kiểu [1], [2]. Nếu nguồn chỉ có bản tóm tắt hoặc bình luận mà không có toàn văn điều luật, hãy nói rõ ở cuối câu trả lời.", "book1": "Chỉ dựa vào các nguồn đã có trong notebook này. Hãy khảo sát tài liệu sau để lập danh mục các ý đáng ghi nhớ.\n\nTÀI LIỆU: [ví dụ: tên cuốn sách hoặc tên báo cáo]\n\nTrả lời bằng tiếng Việt, KHÔNG dùng JSON, gồm 4 phần:\n1. LUẬN ĐỀ VÀ CẤU TRÚC: mục đích cốt lõi và luận đề xuyên suốt của tác phẩm; tác phẩm chia thành những phần hoặc chương nào (mỗi dòng một phần, kèm ý chính).\n2. KHÁI NIỆM VÀ MÔ HÌNH CỐT LÕI: các khái niệm, mô hình, nguyên lý tác giả đưa ra (mỗi mục một dòng: tên, chương hoặc phần, một câu giải thích).\n3. LUẬN ĐIỂM ĐÁNG CHÚ Ý: những luận điểm phản trực giác hoặc chỉnh lại nhận thức sai phổ biến, và các nguyên tắc hành động áp dụng được ngay.\n4. DANH MỤC NẠP VÀO KHO: chọn 5 đến 10 ý đắt giá nhất, chia thành các LÔ, mỗi lô TỐI ĐA 5 ý. Mỗi lô viết đúng một dòng theo mẫu dưới đây để tôi dán sang bước sau:\n   LÔ 1 - PHẠM VI: Chương 2, khái niệm X; Chương 3, mô hình Y\n   LÔ 2 - PHẠM VI: ...\n\nQuy tắc: chỉ dùng nội dung có trong nguồn, không dùng kiến thức bên ngoài, không bịa số trang. KHÔNG chèn số trích dẫn kiểu [1], [2].", "law": "Chỉ dựa vào các nguồn đã có trong notebook này, hãy tạo ghi chú pháp luật cho phạm vi sau.\n\nPHẠM VI: [dán dòng PHẠM VI của một lô ở Bước 1, ví dụ: Điều 5, Điều 6, Điều 7 của Luật Bảo vệ bí mật nhà nước]\n\nQUY TẮC\n1. Chỉ dùng nội dung có trong nguồn của notebook. Không dùng kiến thức bên ngoài, không tự thêm điều luật hay ví dụ. Nếu không tìm thấy phạm vi này trong nguồn, trả về mảng rỗng [].\n2. Mỗi ghi chú ứng với MỘT điều (hoặc một khoản quan trọng nếu điều quá dài).\n3. Trả về DUY NHẤT một mảng JSON hợp lệ, không bọc trong ```, không viết thêm chữ nào ngoài mảng. KHÔNG chèn số trích dẫn kiểu [1], [2] vào bất kỳ chỗ nào trong nội dung.\n4. Mỗi phần tử có đúng 6 trường kiểu chuỗi:\n   - \"topic\": dạng \"Chuyên đề/Chủ đề con\" (đúng một dấu /, tối đa 2 cấp, ví dụ \"Kiến thức pháp luật/Bí mật nhà nước\"). Chuyên đề CHỌN TRONG DANH SÁCH: [điền các chuyên đề của bạn, ví dụ: Kiến thức pháp luật, Sách, Tin tức]. Chủ đề con là lĩnh vực pháp luật, ngắn gọn (ví dụ: Bí mật nhà nước, Dân sự, Lao động). Nếu không hợp chuyên đề nào thì chỉ ghi chủ đề con, không dùng dấu /.\n   - \"title\": dạng \"Điều X – Tên điều\" (hoặc \"Điều X khoản Y – ...\" nếu tách khoản).\n   - \"takeaway\": nội dung cốt lõi bằng tiếng Việt, ĐÚNG 3 gạch đầu dòng theo thứ tự từ tổng quan đến chi tiết, mỗi dòng bắt đầu bằng \"- \", ngăn cách bằng ký tự \\n:\n     \"- TỔNG QUAN: mục đích và phạm vi bao trùm của điều luật, trong 1 câu\"\n     \"- CỐT LÕI CẦN NHỚ: hành vi bị cấm / điều kiện bắt buộc / thẩm quyền / mốc thời hạn then chốt (ngắn gọn, ngăn cách bằng dấu chấm phẩy)\"\n     \"- LƯU Ý / HỆ QUẢ: ngoại lệ hoặc chế tài xử lý vi phạm (nếu nguồn không nêu thì ghi: không nêu)\"\n     Chỉ diễn giải nội dung có trong nguồn, không thêm ý kiến. Giữ đúng 3 nhãn viết hoa ở đầu mỗi dòng.\n   - \"raw_excerpt\": CHÉP NGUYÊN VĂN điều/khoản từ nguồn, từng chữ, không tóm tắt, không sửa. Giữ xuống dòng bằng \\n. Chỉ chép từ chính văn bản luật. KHÔNG chép phần bình luận, tóm tắt hay tiêu đề viết tắt của tài liệu khác làm nguyên văn. Nếu các nguồn trong notebook không có toàn văn điều đó (chỉ có tóm tắt hoặc bình luận), ghi đúng chuỗi \"[không có nguyên văn trong nguồn]\" và vẫn viết \"takeaway\" dựa trên những gì nguồn nói.\n   - \"source\": \"Tên văn bản, số hiệu, Điều X, khoản Y, năm ban hành\" (lấy đúng thông tin ghi trong nguồn).\n   - \"tags\": từ khóa viết thường, cách nhau dấu phẩy. TỐI ĐA 3 thẻ thường: \"pháp luật\" và 1–2 từ khóa nội dung khác tên chủ đề. KHÔNG ghi tên chủ đề (giá trị \"topic\") làm thẻ và không ghi \"chưa duyệt\" (app tự gắn). Ngoài ra, thêm \"cần kiểm tra hiệu lực\" nếu nguồn không cho biết văn bản còn hiệu lực hay không, và \"thiếu nguyên văn\" nếu \"raw_excerpt\" là \"[không có nguyên văn trong nguồn]\".\n5. Đảm bảo JSON hợp lệ: dấu nháy kép trong nội dung phải viết \\\" và xuống dòng viết \\n.", "book": "Chỉ dựa vào các nguồn đã có trong notebook này, hãy tạo ghi chú đọc sách cho phạm vi sau.\n\nPHẠM VI: [dán dòng PHẠM VI của một lô ở Bước 1, ví dụ: Chương 3 của cuốn \"Tên sách\", khái niệm X]\nCHỦ ĐỀ GỢI Ý (nếu có): [ví dụ: Quản trị, Kỹ năng, Kinh tế]\n\nQUY TẮC\n1. Chỉ dùng nội dung có trong nguồn của notebook. Không dùng kiến thức bên ngoài và không bịa số trang. Nếu nguồn không cho biết số trang thì ghi \"[trang ?]\" (hoặc tên chương nếu có). Nếu không tìm thấy phạm vi này trong nguồn, trả về mảng rỗng [].\n2. Mỗi ghi chú chứa MỘT ý hoặc khái niệm. Chỉ chọn những ý đáng nhớ nhất của phạm vi, tối đa 5 ghi chú mỗi lượt.\n3. Trả về DUY NHẤT một mảng JSON hợp lệ, không bọc trong ```, không viết thêm chữ nào ngoài mảng. KHÔNG chèn số trích dẫn kiểu [1], [2] vào bất kỳ chỗ nào trong nội dung.\n4. Mỗi phần tử có đúng 6 trường kiểu chuỗi:\n   - \"topic\": dạng \"Chuyên đề/Chủ đề con\" (đúng một dấu /, tối đa 2 cấp, ví dụ \"Sách/Quản trị\"). Chuyên đề CHỌN TRONG DANH SÁCH: [điền các chuyên đề của bạn, ví dụ: Sách, Kiến thức pháp luật, Tin tức]. Chủ đề con là chủ đề chính ngắn gọn. Nếu không hợp chuyên đề nào thì chỉ ghi chủ đề con, không dùng dấu /.\n   - \"title\": ý chính của ghi chú trong một câu ngắn, đừng chỉ chép tên chương.\n   - \"takeaway\": ĐÚNG 3 gạch đầu dòng theo thứ tự từ tổng quan đến chi tiết, mỗi dòng bắt đầu bằng \"- \", ngăn cách bằng \\n:\n     \"- TỔNG QUAN: bản chất ý tưởng cốt lõi của tác giả, trong 1 câu\"\n     \"- ĐIỂM SÁNG CẦN NHỚ: nguyên lý hoặc luận điểm đắt giá nhất\"\n     \"- VẬN DỤNG: cách áp dụng cụ thể vào công việc hoặc cuộc sống, rút ra từ chính nội dung nguồn (nếu nguồn không nêu thì ghi: không nêu)\"\n     Diễn đạt lại bằng lời của bạn, không chép lại đoạn dài. Giữ đúng 3 nhãn viết hoa ở đầu mỗi dòng.\n   - \"raw_excerpt\": MỘT đoạn ngắn (1–3 câu) chép nguyên văn từ nguồn làm bằng chứng cho ghi chú.\n   - \"source\": \"Tên sách, tác giả, tr. [số trang]\" (lấy đúng thông tin có trong nguồn).\n   - \"tags\": từ khóa viết thường, cách nhau dấu phẩy. TỐI ĐA 3 thẻ thường: \"sách\" và 1–2 từ khóa nội dung khác tên chủ đề. KHÔNG ghi tên chủ đề (giá trị \"topic\") làm thẻ và không ghi \"chưa duyệt\" (app tự gắn).\n5. Đảm bảo JSON hợp lệ: dấu nháy kép trong nội dung phải viết \\\" và xuống dòng viết \\n.", "news": "Chỉ dựa vào các nguồn đã có trong notebook này, hãy tạo ghi chú tin tức cho phạm vi sau.\n\nPHẠM VI: [ví dụ: bài \"Tiêu đề bài báo\" / tất cả bài về chủ đề X trong notebook]\n\nQUY TẮC\n1. Chỉ dùng nội dung có trong nguồn của notebook. Không bổ sung bối cảnh, số liệu hay đánh giá từ kiến thức bên ngoài. Con số, tên người, tên tổ chức phải khớp nguồn. Nếu không tìm thấy phạm vi này trong nguồn, trả về mảng rỗng [].\n2. Mỗi bài báo tạo MỘT ghi chú (bài rất dài và có nhiều chủ đề thì tối đa 3 ghi chú). Mỗi lượt xử lý tối đa 5 bài.\n3. Trả về DUY NHẤT một mảng JSON hợp lệ, không bọc trong ```, không viết thêm chữ nào ngoài mảng. KHÔNG chèn số trích dẫn kiểu [1], [2] vào bất kỳ chỗ nào trong nội dung.\n4. Mỗi phần tử có đúng 6 trường kiểu chuỗi:\n   - \"topic\": dạng \"Chuyên đề/Chủ đề con\" (đúng một dấu /, tối đa 2 cấp, ví dụ \"Tin tức/Kinh tế\"). Chuyên đề CHỌN TRONG DANH SÁCH: [điền các chuyên đề của bạn, ví dụ: Kiến thức pháp luật, Sách, Tin tức]. Chủ đề con là lĩnh vực ngắn gọn (ví dụ: Kinh tế, Chính sách, Công nghệ, Xã hội, Quốc tế). Nếu không hợp chuyên đề nào thì chỉ ghi chủ đề con, không dùng dấu /.\n   - \"title\": sự việc chính trong một câu ngắn.\n   - \"takeaway\": ĐÚNG 3 gạch đầu dòng theo thứ tự từ tổng quan đến chi tiết, mỗi dòng bắt đầu bằng \"- \", ngăn cách bằng \\n:\n     \"- TỔNG QUAN: sự kiện chính: ai, làm gì, khi nào, con số then chốt (chỉ nêu dữ kiện có trong bài)\"\n     \"- TÁC ĐỘNG CẦN NHỚ: ý nghĩa chính sách, tác động xã hội / kinh tế mà bài nêu ra\"\n     \"- THEO DÕI: diễn biến tiếp theo mà bài đề cập (nếu bài không nói thì ghi: không nêu)\"\n     Phân biệt rõ dữ kiện với ý kiến của người được trích dẫn hoặc của tác giả bài viết. Giữ đúng 3 nhãn viết hoa ở đầu mỗi dòng.\n   - \"raw_excerpt\": 1–2 câu then chốt chép nguyên văn từ bài.\n   - \"source\": \"Tên báo, ngày đăng (dd/mm/yyyy), link nếu nguồn có\". Ngày đăng rất quan trọng, nếu nguồn không cho biết thì ghi \"[ngày ?]\".\n   - \"tags\": từ khóa viết thường, cách nhau dấu phẩy. TỐI ĐA 3 thẻ thường: \"báo chí\" và năm đăng nếu biết (ví dụ \"2026\"). KHÔNG ghi tên chủ đề (giá trị \"topic\") làm thẻ và không ghi \"chưa duyệt\" (app tự gắn).\n5. Đảm bảo JSON hợp lệ: dấu nháy kép trong nội dung phải viết \\\" và xuống dòng viết \\n."};
+  let helpKind = 'law', helpStage = 1;
+  // Điền sẵn danh sách chuyên đề thật của bạn vào dòng "[điền các chuyên đề của bạn, ...]" (chỉ có ở prompt Bước 2)
+  function helpPromptText(key) {
     const names = [...buildGroups(topicCounts()).keys()].sort((a, b) => a.localeCompare(b, 'vi'));
-    return HELP_PROMPTS[kind].replace(/\[điền các chuyên đề của bạn[^\]]*\]/, names.length ? names.join(', ') : '[điền các chuyên đề của bạn, ví dụ: Kiến thức pháp luật, Sách, Tin tức]');
+    return HELP_PROMPTS[key].replace(/\[điền các chuyên đề của bạn[^\]]*\]/, names.length ? names.join(', ') : '[điền các chuyên đề của bạn, ví dụ: Kiến thức pháp luật, Sách, Tin tức]');
   }
-  function showHelpPrompt(kind) {
+  function showHelpPrompt(kind, stage) {
     helpKind = kind;
+    helpStage = kind === 'news' ? 2 : stage;   // Báo chí chỉ có một bước
     document.querySelectorAll('#helpSeg button').forEach(b => b.classList.toggle('primary', b.dataset.k === kind));
-    $('helpPrompt').value = helpPromptText(kind);
+    document.querySelectorAll('#helpStage button').forEach(b => {
+      b.classList.toggle('primary', Number(b.dataset.s) === helpStage);
+      if (b.dataset.s === '1') { b.disabled = kind === 'news'; b.title = kind === 'news' ? 'Báo chí chỉ cần một bước' : ''; }
+    });
+    $('helpPrompt').value = helpPromptText(helpStage === 1 ? kind + '1' : kind);
     const has = active().length > 0;
-    $('helpNote').textContent = has ? 'Danh sách chuyên đề trong prompt đã lấy từ kho của bạn. Chỉ cần sửa dòng PHẠM VI sau khi dán.' : 'Kho còn trống nên dòng chuyên đề là ví dụ; hãy sửa theo ý bạn, rồi sửa dòng PHẠM VI sau khi dán.';
+    $('helpNote').textContent = kind === 'news' ? 'Báo chí chỉ cần một bước: sửa dòng PHẠM VI rồi dán vào NotebookLM.'
+      : helpStage === 1 ? 'Bước 1: sửa dòng ' + (kind === 'law' ? 'VĂN BẢN' : 'TÀI LIỆU') + ' rồi dán vào NotebookLM. Kết quả có danh mục chia thành các lô; mỗi lô một dòng PHẠM VI.'
+      : (has ? 'Bước 2: danh sách chuyên đề đã lấy từ kho của bạn. Thay dòng PHẠM VI bằng dòng của một lô ở Bước 1.' : 'Bước 2: kho còn trống nên dòng chuyên đề là ví dụ; hãy sửa theo ý bạn, và thay dòng PHẠM VI bằng dòng của một lô ở Bước 1.');
   }
   function openHelp() {
     $('menu').open = false;
-    showHelpPrompt(helpKind);
+    showHelpPrompt(helpKind, helpStage);
     $('helpModal').hidden = false;
   }
   function closeHelp() { $('helpModal').hidden = true; }
@@ -2741,6 +2786,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   function applyImport() {
     let plan, extra;
     try { extra = parseImportData($('importText').value); plan = planImport(extra.arr, $('overwrite').checked); } catch (e) { return previewImport(); }
+    const cutNote = extra.cut ? ` JSON bị cắt sau “${extra.cut.last || '…'}”: hỏi AI tiếp phần còn lại.` : '';
     const changes = [...plan.update, ...plan.replace, ...plan.add];
     const byId = new Map(notes.map(n => [n.id, n]));
     changes.forEach(n => { byId.set(n.id, n); dirty.add(n.id); });
@@ -2753,7 +2799,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
     state.limit = PAGE;
     render();
     scheduleSync();
-    toast(`Đã nhập ${changes.length} ghi chú` + (restored.n || restored.days || restored.reps ? `, khôi phục ${restored.n} lịch rèn luyện, ${restored.reps} lượt rèn luyện và ${restored.days} ngày học.` : '.'));
+    toast(`Đã nhập ${changes.length} ghi chú` + (restored.n || restored.days || restored.reps ? `, khôi phục ${restored.n} lịch rèn luyện, ${restored.reps} lượt rèn luyện và ${restored.days} ngày học.` : '.') + cutNote);
   }
 
   async function readImportFile(file) {
@@ -2773,8 +2819,9 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   $('helpBtn').onclick = openHelp;
   $('importHelp').onclick = openHelp;
   $('helpClose').onclick = closeHelp;
-  $('helpSeg').onclick = e => { const b = e.target.closest('button[data-k]'); if (b) showHelpPrompt(b.dataset.k); };
-  $('helpCopy').onclick = async () => { await copyText($('helpPrompt').value); toast('Đã sao chép prompt. Dán vào NotebookLM và sửa dòng PHẠM VI.'); };
+  $('helpSeg').onclick = e => { const b = e.target.closest('button[data-k]'); if (b) showHelpPrompt(b.dataset.k, helpKind === 'news' ? 1 : helpStage); };
+  $('helpStage').onclick = e => { const b = e.target.closest('button[data-s]'); if (b && !b.disabled) showHelpPrompt(helpKind, Number(b.dataset.s)); };
+  $('helpCopy').onclick = async () => { await copyText($('helpPrompt').value); toast('Đã sao chép prompt. Dán vào NotebookLM và sửa dòng đầu vào cho đúng.'); };
   $('helpToImport').onclick = () => { closeHelp(); openImport(); };
   $('closeImport').onclick = () => { $('importModal').hidden = true; };
   $('pickFile').onclick = () => $('importFile').click();
@@ -2783,6 +2830,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   $('importText').oninput = () => { clearTimeout(importTimer); importTimer = setTimeout(previewImport, 250); };
   $('overwrite').onchange = previewImport;
   $('doImport').onclick = applyImport;
+  $('importPreview').addEventListener('click', async e => { if (e.target.id === 'copyCont' && contText) { await copyText(contText); toast('Đã sao chép. Dán vào NotebookLM để lấy phần còn lại.'); } });
   $('statsBtn').onclick = openStats;
   $('closeStats').onclick = () => { $('statsModal').hidden = true; };
   $('reviewChip').onclick = () => { if (state.review) exitReview(); else enterReview('', state.topic === 'all' ? '' : state.topic); };
