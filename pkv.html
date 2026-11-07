@@ -177,25 +177,32 @@
 
   .item {
     display: block; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--border);
-    border-left: 3px solid transparent; padding: 8px 12px 8px 10px; position: relative;
+    border-left: 3px solid var(--c, transparent); padding: 8px 12px 8px 10px; position: relative;
   }
-  .item:hover { background: var(--hover); }
-  .item.sel { background: #f0f7ff; border-left-color: #2563eb; box-shadow: 0 1px 3px rgba(15,23,42,.10); z-index: 1; }
-  .item.sel .t { color: #312e81; }
+  /* Màu theo chuyên đề: --c (đậm, dùng cho chữ và viền) và --bg (nền nhạt) đặt trên từng thẻ */
+  .item:hover { background: var(--bg, var(--hover)); }
+  .item.sel { background: color-mix(in srgb, var(--c, #2563eb) 9%, #fff); border-left-color: var(--c, #2563eb); box-shadow: 0 1px 3px rgba(15,23,42,.10); z-index: 1; }
+  .item.sel .t { color: var(--c, #312e81); }
+  .item .mt.tc { color: var(--c); background: var(--bg); border-radius: 99px; padding: 0 7px; font-weight: 600; }
   .item .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: 600; font-size: 13.5px; line-height: 1.3; }
   .item .m { margin-top: 2px; display: flex; align-items: center; gap: 5px; font-size: 11px; line-height: 1.35; color: #7c8696; }
   .item .mt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); flex: none; }
   .more { margin: 12px auto; display: block; }
   /* Nhóm trong danh sách: tiêu đề nhỏ dính ngay dưới đầu cột (--lh = chiều cao phần đầu cột, đặt bằng JS) */
-  .grp-h { display: flex; align-items: center; gap: 6px; width: 100%; text-align: left; background: #f1f5f9; border: 0; border-bottom: 1px solid var(--border);
-    padding: 6px 12px; position: sticky; top: var(--lh, 0px); z-index: 1; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #1e293b; cursor: pointer; }
-  .grp-h:hover { background: #e2e8f0; }
+  .grp-h { display: flex; align-items: center; gap: 6px; width: 100%; text-align: left; background: var(--bg, #f1f5f9); border: 0; border-bottom: 1px solid var(--border); border-left: 3px solid var(--c, transparent);
+    padding: 6px 12px 6px 10px; position: sticky; top: var(--lh, 0px); z-index: 1; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--c, #1e293b); cursor: pointer; }
+  .grp-h:hover { background: color-mix(in srgb, var(--c, #94a3b8) 11%, #fff); }
   .grp-h.static { cursor: default; }
-  .grp-h.static:hover { background: #f1f5f9; }
-  .grp-h .gc { width: 10px; flex: none; color: #64748b; }
+  .grp-h.static:hover { background: var(--bg, #f1f5f9); }
+  .grp-h .gc { width: 10px; flex: none; color: var(--c, #64748b); }
   .grp-h .gn { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .grp-h .gcount { font-weight: 500; color: #64748b; }
+  .grp-h .gcount { font-weight: 500; color: var(--c, #64748b); }
+  .pill .pd { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--c, #94a3b8); margin-right: 6px; vertical-align: 1px; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sw { width: 28px; height: 28px; border-radius: 50%; background: var(--bg); border: 2px solid var(--c); padding: 0; position: relative; }
+  .sw.on::after { content: ''; position: absolute; inset: 5px; border-radius: 50%; background: var(--c); }
+  .sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .grp .more { margin: 6px auto 10px; }
   .empty { padding: 40px 18px; text-align: center; color: var(--faint); font-size: 14px; }
 
@@ -492,6 +499,16 @@
     .doc { --gut: 14px; --pad: 10px; padding: 0 16px 20px; border-radius: 14px; }
     .doc-bar { top: -12px; margin: 0 -16px 6px; padding: 6px 16px 0; }
     .doc h2 { font-size: 20px; }
+    /* Điện thoại: thanh trên gọn hơn (Ghi nhanh đã có nút tròn) và thanh nút của bài tự xuống dòng khi chữ hệ thống to, không tràn ra ngoài thẻ */
+    .top { gap: 8px; padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+    .head-actions { gap: 6px; }
+    .head-actions .btn { padding: 7px 9px; }
+    #quickBtn { display: none; }
+    .search, .search input { min-width: 0; }
+    .col-list, .col-detail { min-width: 0; }
+    .back { white-space: nowrap; flex: none; }
+    .acts { flex: 0 1 auto; min-width: 0; flex-wrap: wrap; justify-content: flex-end; gap: 5px; }
+    .acts button { padding: 6px 7px; }
   }
 </style>
 </head>
@@ -734,6 +751,11 @@
       <h4>Đổi tên</h4>
       <div class="mg-row"><input id="tmName" type="text" aria-label="Tên mới" autocomplete="off"><button type="button" class="btn primary" id="tmRename">Đổi tên</button></div>
       <div class="note">Đổi tên chuyên đề thì các chủ đề con đi theo. Đổi thành tên đã có sẽ gộp hai mục (có hỏi lại). Gõ <b>Chuyên đề/Chủ đề</b> (ví dụ Pháp luật/Dân sự) để vừa đổi tên vừa chuyển vào chuyên đề; chỉ áp dụng cho mục chưa có chủ đề con.</div>
+    </div>
+    <div class="mg-sec">
+      <h4>Màu của chuyên đề</h4>
+      <div class="swatches" id="tmHues" role="radiogroup" aria-label="Màu chuyên đề"></div>
+      <div class="note" id="tmHueNote"></div>
     </div>
     <div class="mg-sec">
       <h4>Chuyển vào chuyên đề…</h4>
@@ -1058,6 +1080,29 @@
     return n.topic === sel || n.topic.startsWith(sel + '/');
   }
   const prettyTopic = t => t.replace('/', ' / ');
+  // ---------- Màu theo chuyên đề (theo chuyên đề mẹ; chủ đề con dùng chung màu mẹ) ----------
+  // Mỗi màu hai token: c (đậm: chữ, viền, chấm) và bg (nền nhạt). Chữ c trên nền bg đạt độ tương phản từ 4,8 trở lên.
+  const HUES = {
+    amber: { c: '#92400e', bg: '#fffbeb' }, blue: { c: '#1d4ed8', bg: '#eff6ff' }, red: { c: '#b91c1c', bg: '#fef2f2' },
+    green: { c: '#047857', bg: '#ecfdf5' }, violet: { c: '#5b21b6', bg: '#f5f3ff' }, pink: { c: '#be185d', bg: '#fdf2f8' },
+    cyan: { c: '#0e7490', bg: '#ecfeff' }, orange: { c: '#c2410c', bg: '#fff7ed' }, slate: { c: '#475569', bg: '#f1f5f9' }
+  };
+  const HUE_NAMES = { amber: 'Hổ phách', blue: 'Xanh dương', red: 'Đỏ gạch', green: 'Xanh ngọc', violet: 'Tím', pink: 'Hồng', cyan: 'Xanh lơ', orange: 'Cam', slate: 'Xám' };
+  const FIXED_HUE = { 'hop thu den': 'amber', 'lap trinh web': 'blue', 'to chuc dang, dang vien': 'red', 'van de phap luat': 'green' };
+  const AUTO_HUE = ['violet', 'pink', 'cyan', 'orange'];
+  // Thứ tự ưu tiên: màu bạn tự chọn (chỉ trên máy này) > màu cố định của bốn chuyên đề quen thuộc > chọn theo băm tên (giống nhau ở mọi máy)
+  function hueKey(topic) {
+    const parent = norm(splitTopic(String(topic || '')).parent);
+    if (!parent) return 'slate';
+    const own = ui.hues && ui.hues[parent];
+    if (own && HUES[own]) return own;
+    if (FIXED_HUE[parent]) return FIXED_HUE[parent];
+    let h = 7;
+    for (const ch of parent) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return AUTO_HUE[h % AUTO_HUE.length];
+  }
+  const topicHue = t => HUES[hueKey(t)] || HUES.slate;
+  const hueStyle = t => { const h = topicHue(t); return `--c:${h.c};--bg:${h.bg}`; };
   const topicLabel = sel => sel.endsWith('/') ? sel.slice(0, -1) + ' / Tổng quan' : prettyTopic(sel);
   // Dùng đúng cách viết đã có cho cả đường dẫn lẫn phần Mẹ ("kien thuc/Con" -> "Kiến thức/Con")
   // childMatch (khi nhập từ AI): chỉ có tên con thì xếp vào đường dẫn đầy đủ nếu có đúng MỘT chủ đề con trùng tên
@@ -1224,9 +1269,10 @@
   // ctx: '' (danh sách phẳng, ghi cả chuyên đề), 'parent' (đã có tiêu đề chuyên đề, chỉ ghi chủ đề con), 'child' (đã có tiêu đề chủ đề con)
   function itemHtml(n, ctx = '') {
     const draft = parseTags(n.tags).includes(DRAFT_TAG);
-    return `<button type="button" class="item${n.id === state.sel && !state.greet ? ' sel' : ''}" data-id="${esc(n.id)}">
+    const lab = ctx === 'parent' ? splitTopic(n.topic).child : ctx === 'child' ? '' : prettyTopic(n.topic);
+    return `<button type="button" class="item${n.id === state.sel && !state.greet ? ' sel' : ''}" data-id="${esc(n.id)}" style="${hueStyle(n.topic)}">
       <span class="t">${esc(n.title)}</span>
-      <span class="m">${draft ? '<span class="dot" title="Chưa duyệt"></span>' : ''}${(ctx === 'parent' ? splitTopic(n.topic).child : ctx === 'child' ? '' : prettyTopic(n.topic)) ? `<span class="mt">${esc(ctx === 'parent' ? splitTopic(n.topic).child : prettyTopic(n.topic))}</span><span>·</span>` : ''}<span>${fmtDate(n.created_at)}</span>${isDue(n) && !state.review ? '<span class="due-tag">Đến hạn</span>' : ''}</span>
+      <span class="m">${draft ? '<span class="dot" title="Chưa duyệt"></span>' : ''}${lab ? `<span class="mt${ctx === '' ? ' tc' : ''}">${esc(lab)}</span><span>·</span>` : ''}<span>${fmtDate(n.created_at)}</span>${isDue(n) && !state.review ? '<span class="due-tag">Đến hạn</span>' : ''}</span>
     </button>`;
   }
 
@@ -1264,7 +1310,7 @@
           <button type="button" data-act="del" class="danger" title="Xóa ghi chú"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg><span>Xóa</span></button>
         </span>
       </div>
-      <div class="doc-meta"><span class="pill">${esc(prettyTopic(n.topic))}</span>${draft ? '<button type="button" class="badge" data-act="approve" title="Bấm để duyệt (phím D)">Chưa duyệt ✓</button>' : '<span class="badge ok">Đã duyệt ✓</span>'}${draft ? '' : inReview(n) ? `<span class="badge rev" title="Đang rèn luyện; lần kế tiếp vào ngày này">Rèn luyện · ${fmtDay(review[n.id].due)}</span>` : '<span class="badge mute" title="Chưa bật rèn luyện. Bấm Bật rèn luyện (phím R) khi muốn ghi nhớ bài này">Tra cứu</span>'}${parseTags(n.tags).includes(MISSING_TAG) ? '<span class="badge" title="Nguồn không có nguyên văn điều luật">Thiếu nguyên văn</span>' : ''}<time>${fmtDate(n.created_at)}</time></div>
+      <div class="doc-meta"><span class="pill" style="${hueStyle(n.topic)}"><i class="pd"></i>${esc(prettyTopic(n.topic))}</span>${draft ? '<button type="button" class="badge" data-act="approve" title="Bấm để duyệt (phím D)">Chưa duyệt ✓</button>' : '<span class="badge ok">Đã duyệt ✓</span>'}${draft ? '' : inReview(n) ? `<span class="badge rev" title="Đang rèn luyện; lần kế tiếp vào ngày này">Rèn luyện · ${fmtDay(review[n.id].due)}</span>` : '<span class="badge mute" title="Chưa bật rèn luyện. Bấm Bật rèn luyện (phím R) khi muốn ghi nhớ bài này">Tra cứu</span>'}${parseTags(n.tags).includes(MISSING_TAG) ? '<span class="badge" title="Nguồn không có nguyên văn điều luật">Thiếu nguyên văn</span>' : ''}<time>${fmtDate(n.created_at)}</time></div>
       <h2>${esc(n.title)}</h2>
       <div class="take">${takeHtml(n.takeaway)}</div>
       ${n.raw_excerpt ? `<h3 class="sec">Trích dẫn</h3>${excerptHtml(n)}` : ''}
@@ -1315,7 +1361,7 @@
         <span class="rv-count">Còn ${left} bài</span>
         <span class="acts"><button type="button" data-act="unenroll" title="Đã vững: tắt rèn luyện, giữ bài ở mục Tra cứu (phím R)"><span>Tắt rèn luyện</span></button><button type="button" data-act="exitReview" title="Thoát rèn luyện (Esc)"><span>Thoát rèn luyện</span></button></span>
       </div>
-      <div class="doc-meta"><span class="pill">${esc(prettyTopic(n.topic))}</span></div>
+      <div class="doc-meta"><span class="pill" style="${hueStyle(n.topic)}"><i class="pd"></i>${esc(prettyTopic(n.topic))}</span></div>
       <h2>${esc(n.title)}</h2>
       ${back}
     </div>`;
@@ -1360,7 +1406,6 @@
     const topics = Object.entries(by).sort((a, b) => b[1].all - a[1].all || a[0].localeCompare(b[0], 'vi'));
     const fmt = d => d.split('-').reverse().join('/');
     const maxAll = topics.length ? topics[0][1].all : 1;
-    const TC = ['#4f46e5', '#0369a1', '#15803d', '#b45309', '#be185d', '#6d28d9'];
     const cards = topics.map(([name, t], ci) => {
       const chips = INTERVALS.map((d, i) => t.stage[i] ? `<span class="st-chip">Sau ${d} ngày: ${t.stage[i]}</span>` : '').join('') +
         (t.none ? `<span class="st-chip none" title="Chỉ lưu để tra cứu, chưa bật rèn luyện">Tra cứu: ${t.none}</span>` : '');
@@ -1375,7 +1420,7 @@
       const info = `<div><div class="nm" title="${esc(name)}">${esc(name)}</div>
           <div class="st-share" title="${t.all} / ${maxAll} so với chuyên đề lớn nhất"><i style="width:${Math.max(4, Math.round(t.all / maxAll * 100))}%"></i></div>
           <div class="tm"><b>${t.all}</b> tài liệu (${Math.round(t.all / list.length * 100)}%) · ${t.ok} đã duyệt · ${fmtSize(t.bytes)}${t.rev ? ` · ${t.rev} đang rèn luyện` : ''}${t.reps ? ` · ${t.reps} lượt rèn luyện` : ''}</div>${kidsHtml}</div>`;
-      const tcs = `style="--tc:${TC[ci % TC.length]}"`;
+      const tcs = `style="--tc:${topicHue(name).c}"`;
       if (!t.rev) return `<div class="st-topic plain" ${tcs}>${info}</div>`;   // chưa có bài đang ôn: chỉ thông tin kho, không có lịch ôn
       return `<div class="st-topic" ${tcs}>${info}
         <div><div class="lb">Chặng rèn luyện</div><div class="st-chips">${chips || '<span class="st-chip none">–</span>'}</div></div>
@@ -1560,11 +1605,29 @@
     const ok = [...$('tmSel').options].some(o => o.value === want);
     $('tmSel').value = ok ? want : $('tmSel').options[0].value;
     refreshMgr();
+    paintHues();
     $('topicModal').hidden = false;
   }
   const closeTopicMgr = () => { $('topicModal').hidden = true; };
 
-  $('tmSel').onchange = refreshMgr;
+  // Ô chọn màu cho chuyên đề mẹ của mục đang chọn. Màu tự chọn chỉ lưu trên máy này; màu mặc định giống nhau ở mọi máy.
+  function paintHues() {
+    const parent = splitTopic($('tmSel').value).parent;
+    const cur = hueKey(parent), own = !!(ui.hues && ui.hues[norm(parent)]);
+    $('tmHues').innerHTML = Object.keys(HUES).map(k => `<button type="button" class="sw${k === cur ? ' on' : ''}" data-hue="${k}" style="--c:${HUES[k].c};--bg:${HUES[k].bg}" role="radio" aria-checked="${k === cur}" aria-label="${HUE_NAMES[k]}" title="${HUE_NAMES[k]}"></button>`).join('');
+    $('tmHueNote').innerHTML = `Màu của cả chuyên đề “${esc(parent)}” (chủ đề con dùng chung): <b>${HUE_NAMES[cur]}</b>.${own ? ' <button type="button" class="linkbtn" data-hue="">Dùng màu mặc định</button>' : ''} Màu bạn chọn chỉ lưu trên máy này.`;
+  }
+  $('topicModal').addEventListener('click', e => {
+    const b = e.target.closest('[data-hue]');
+    if (!b) return;
+    const key = norm(splitTopic($('tmSel').value).parent);
+    ui.hues = ui.hues || {};
+    if (b.dataset.hue) ui.hues[key] = b.dataset.hue; else delete ui.hues[key];
+    lsSet(LS_UI, ui);
+    render();
+    paintHues();
+  });
+  $('tmSel').onchange = () => { refreshMgr(); paintHues(); };
   $('tmTarget').onchange = () => { $('tmNewParent').hidden = $('tmTarget').value !== '__new'; if (!$('tmNewParent').hidden) $('tmNewParent').focus(); };
   $('tmClose').onclick = $('tmDone').onclick = closeTopicMgr;
   $('topicMgrBtn').onclick = () => openTopicMgr('');
@@ -1608,7 +1671,9 @@
     const mine = active().filter(n => inTopic(n, sel)).length;
     if (other && !confirm(`Đã có “${other}” (${active().filter(n => inTopic(n, other)).length} ghi chú).\nGộp ${mine} ghi chú của “${sel}” vào đó? Các chủ đề con trùng tên sẽ nhập chung.`)) return;
     const to = other || name;
-    ui.collapsed = (ui.collapsed || []).map(x => x === sel ? to : x); lsSet(LS_UI, ui);
+    ui.collapsed = (ui.collapsed || []).map(x => x === sel ? to : x);
+    if (!other) { ui.hues = ui.hues || {}; ui.hues[norm(to)] = hueKey(sel); }   // đổi tên thì giữ nguyên màu
+    lsSet(LS_UI, ui);
     closeTopicMgr();
     retopic(t => t === sel ? to : t.startsWith(sel + '/') ? to + t.slice(sel.length) : t, to, other ? 'Đã gộp' : 'Đã đổi tên');
   };
@@ -1756,7 +1821,7 @@
     const map = new Map();
     list.forEach(n => { const k = mode === 'parent' ? splitTopic(n.topic).parent : splitTopic(n.topic).child; if (!map.has(k)) map.set(k, []); map.get(k).push(n); });
     const keys = [...map.keys()].sort((a, b) => a === '' ? -1 : b === '' ? 1 : a.localeCompare(b, 'vi'));   // A→Z như cột trái; Tổng quan đứng đầu
-    return keys.map(k => ({ id: state.topic + '|' + k, label: k || 'Tổng quan', items: map.get(k) }));
+    return keys.map(k => ({ id: state.topic + '|' + k, label: k || 'Tổng quan', hue: mode === 'parent' ? k : state.topic, items: map.get(k) }));
   }
   // Tìm kiếm / lọc thẻ: mở hết các nhóm để thấy kết quả. Còn lại: theo trạng thái đã nhớ, mặc định chỉ nhóm đầu tiên mở.
   function listModel() {
@@ -1783,8 +1848,8 @@
   }
   function groupHtml(g, mode, force) {
     const head = force
-      ? `<div class="grp-h static"><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length}</span></div>`
-      : `<button type="button" class="grp-h" data-act="grp" data-g="${esc(g.id)}" aria-expanded="${g.open}"><span class="gc">${g.open ? '▾' : '▸'}</span><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length}</span></button>`;
+      ? `<div class="grp-h static" style="${hueStyle(g.hue)}"><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length}</span></div>`
+      : `<button type="button" class="grp-h" style="${hueStyle(g.hue)}" data-act="grp" data-g="${esc(g.id)}" aria-expanded="${g.open}"><span class="gc">${g.open ? '▾' : '▸'}</span><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length}</span></button>`;
     const more = g.open && g.items.length > g.shown.length ? `<button type="button" class="btn more" data-act="more" data-g="${esc(g.id)}">Hiện thêm (${g.items.length - g.shown.length})</button>` : '';
     return `<section class="grp">${head}${g.shown.map(n => itemHtml(n, mode)).join('')}${more}</section>`;
   }
