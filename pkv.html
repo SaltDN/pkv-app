@@ -197,12 +197,13 @@
   .grp-h.static:hover { background: var(--bg, #f1f5f9); }
   .grp-h .gc { width: 10px; flex: none; color: var(--c, #64748b); }
   .grp-h .gn { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .grp-h .gcount { font-weight: 500; color: var(--c, #64748b); }
+  .grp-h .gcount { font-weight: 500; text-transform: none; letter-spacing: 0; font-size: 11px; color: var(--c, #64748b); white-space: nowrap; }
   .pill .pd { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--c, #94a3b8); margin-right: 6px; vertical-align: 1px; }
   .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
   .sw { width: 28px; height: 28px; border-radius: 50%; background: var(--bg); border: 2px solid var(--c); padding: 0; position: relative; }
   .sw.on::after { content: ''; position: absolute; inset: 5px; border-radius: 50%; background: var(--c); }
   .sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .grp .item { padding-left: 20px; }   /* thẻ thụt vào so với thanh nhóm */
   .grp .more { margin: 6px auto 10px; }
   .empty { padding: 40px 18px; text-align: center; color: var(--faint); font-size: 14px; }
 
@@ -1811,6 +1812,7 @@
 
   // ---------- Danh sách cột giữa: gom nhóm theo chuyên đề (xem Tất cả) hoặc theo chủ đề con (xem một chuyên đề có chủ đề con) ----------
   const GROUP_PAGE = 40;
+  const GROUP_FIRST = 8;   // từ 2 nhóm trở lên, mỗi nhóm lúc đầu chỉ hiện 8 bài để thấy được tiêu đề của mọi nhóm
   function groupMode(list) {
     if (state.review) return '';
     if (state.topic === 'all') return 'parent';
@@ -1832,7 +1834,7 @@
     const groups = listGroups(list, mode);
     groups.forEach((g, i) => {
       g.open = force || (ui.groups && ui.groups[g.id] !== undefined ? ui.groups[g.id] : i === 0);
-      g.limit = state.glimit[g.id] || GROUP_PAGE;
+      g.limit = state.glimit[g.id] || (groups.length >= 2 ? GROUP_FIRST : GROUP_PAGE);
       g.shown = g.open ? g.items.slice(0, g.limit) : [];
     });
     return { mode, list, groups, force, ordered: groups.flatMap(g => g.items), visible: groups.flatMap(g => g.shown) };
@@ -1848,8 +1850,8 @@
   }
   function groupHtml(g, mode, force) {
     const head = force
-      ? `<div class="grp-h static" style="${hueStyle(g.hue)}"><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length}</span></div>`
-      : `<button type="button" class="grp-h" style="${hueStyle(g.hue)}" data-act="grp" data-g="${esc(g.id)}" aria-expanded="${g.open}"><span class="gc">${g.open ? '▾' : '▸'}</span><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length}</span></button>`;
+      ? `<div class="grp-h static" style="${hueStyle(g.hue)}"><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length} ghi chú</span></div>`
+      : `<button type="button" class="grp-h" style="${hueStyle(g.hue)}" data-act="grp" data-g="${esc(g.id)}" aria-expanded="${g.open}"><span class="gc">${g.open ? '▾' : '▸'}</span><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length} ghi chú</span></button>`;
     const more = g.open && g.items.length > g.shown.length ? `<button type="button" class="btn more" data-act="more" data-g="${esc(g.id)}">Hiện thêm (${g.items.length - g.shown.length})</button>` : '';
     return `<section class="grp">${head}${g.shown.map(n => itemHtml(n, mode)).join('')}${more}</section>`;
   }
@@ -2839,7 +2841,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   $('notes').onclick = e => {
     const mo = e.target.closest('[data-act="more"]');
     if (mo) {
-      if (mo.dataset.g) state.glimit[mo.dataset.g] = (state.glimit[mo.dataset.g] || GROUP_PAGE) + GROUP_PAGE; else state.limit += PAGE;
+      if (mo.dataset.g) { const gm = listModel().groups, cg = gm && gm.find(x => x.id === mo.dataset.g); state.glimit[mo.dataset.g] = (cg ? cg.limit : GROUP_PAGE) + GROUP_PAGE; } else state.limit += PAGE;
       return renderNotes();
     }
     const gh = e.target.closest('[data-act="grp"]');
