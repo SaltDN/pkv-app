@@ -205,6 +205,11 @@
   .sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .grp .item { padding-left: 20px; }   /* thẻ thụt vào so với thanh nhóm */
   .grp .more { margin: 6px auto 10px; }
+  /* Nhóm con trong một chuyên đề (mục Tất cả): tiêu đề nhỏ hơn, không dính, thẻ thụt sâu hơn */
+  .grp-h.sub { position: static; background: color-mix(in srgb, var(--c, #94a3b8) 4%, #fff); padding: 5px 12px 5px 22px; font-size: 10.5px; letter-spacing: .05em; }
+  .grp-h.sub:hover { background: color-mix(in srgb, var(--c, #94a3b8) 9%, #fff); }
+  .grp-h.sub.static:hover { background: color-mix(in srgb, var(--c, #94a3b8) 4%, #fff); }
+  .sub-grp .item { padding-left: 30px; }
   .empty { padding: 40px 18px; text-align: center; color: var(--faint); font-size: 14px; }
 
   /* ---------- Khung đọc chi tiết ---------- */
@@ -1843,8 +1848,26 @@
       g.open = force || (ui.groups && ui.groups[g.id] !== undefined ? ui.groups[g.id] : i === 0);
       g.limit = state.glimit[g.id] || (groups.length >= 2 ? GROUP_FIRST : GROUP_PAGE);
       g.shown = g.open ? g.items.slice(0, g.limit) : [];
+      g.vis = g.open;
     });
-    return { mode, list, groups, force, ordered: groups.flatMap(g => g.items), visible: groups.flatMap(g => g.shown) };
+    // Mục Tất cả: chuyên đề có từ 2 chủ đề con (kể cả "Tổng quan") thì chia tiếp thành nhóm con, nhóm con đầu tiên mở sẵn
+    if (mode === 'parent') groups.forEach(g => {
+      const kids = new Map();
+      g.items.forEach(n => { const c = splitTopic(n.topic).child; if (!kids.has(c)) kids.set(c, []); kids.get(c).push(n); });
+      if (kids.size < 2) return;
+      const keys = [...kids.keys()].sort((a, b) => a === '' ? -1 : b === '' ? 1 : a.localeCompare(b, 'vi'));
+      g.subs = keys.map((k, j) => {
+        const sg = { id: g.id + '|' + k, label: k || 'Tổng quan', hue: g.hue, items: kids.get(k) };
+        sg.open = force || (ui.groups && ui.groups[sg.id] !== undefined ? ui.groups[sg.id] : j === 0);
+        sg.limit = state.glimit[sg.id] || GROUP_FIRST;
+        sg.vis = g.open && sg.open;
+        sg.shown = sg.vis ? sg.items.slice(0, sg.limit) : [];
+        return sg;
+      });
+      g.shown = [];
+    });
+    const leaves = g => g.subs || [g];
+    return { mode, list, groups, force, ordered: groups.flatMap(g => leaves(g).flatMap(x => x.items)), visible: groups.flatMap(g => leaves(g).flatMap(x => x.shown)) };
   }
   // Mở nhóm chứa ghi chú này (dùng khi chọn ghi chú bằng cách khác ngoài bấm vào thẻ)
   function revealNote(id) {
@@ -1853,14 +1876,25 @@
     if (!g) return;
     ui.groups = ui.groups || {};
     ui.groups[g.id] = true;
+    const sg = g.subs && g.subs.find(x => x.items.some(n => n.id === id));
+    if (sg) ui.groups[sg.id] = true;
     lsSet(LS_UI, ui);
   }
   function groupHtml(g, mode, force) {
     const head = force
       ? `<div class="grp-h static" style="${hueStyle(g.hue)}"><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length} ghi chú</span></div>`
       : `<button type="button" class="grp-h" style="${hueStyle(g.hue)}" data-act="grp" data-g="${esc(g.id)}" aria-expanded="${g.open}"><span class="gc">${g.open ? '▾' : '▸'}</span><span class="gn">${esc(g.label)}</span><span class="gcount">${g.items.length} ghi chú</span></button>`;
+    if (g.subs) return `<section class="grp">${head}${g.open ? g.subs.map(sg => subHtml(sg, force)).join('') : ''}</section>`;
     const more = g.open && g.items.length > g.shown.length ? `<button type="button" class="btn more" data-act="more" data-g="${esc(g.id)}">Hiện thêm (${g.items.length - g.shown.length})</button>` : '';
     return `<section class="grp">${head}${g.shown.map(n => itemHtml(n, mode)).join('')}${more}</section>`;
+  }
+  // Nhóm con (chủ đề con) nằm trong một nhóm chuyên đề ở mục Tất cả
+  function subHtml(sg, force) {
+    const head = force
+      ? `<div class="grp-h sub static" style="${hueStyle(sg.hue)}"><span class="gn">${esc(sg.label)}</span><span class="gcount">${sg.items.length} ghi chú</span></div>`
+      : `<button type="button" class="grp-h sub" style="${hueStyle(sg.hue)}" data-act="grp" data-g="${esc(sg.id)}" aria-expanded="${sg.open}"><span class="gc">${sg.open ? '▾' : '▸'}</span><span class="gn">${esc(sg.label)}</span><span class="gcount">${sg.items.length} ghi chú</span></button>`;
+    const more = sg.open && sg.items.length > sg.shown.length ? `<button type="button" class="btn more" data-act="more" data-g="${esc(sg.id)}">Hiện thêm (${sg.items.length - sg.shown.length})</button>` : '';
+    return `<div class="sub-grp">${head}${sg.shown.map(n => itemHtml(n, 'child')).join('')}${more}</div>`;
   }
 
   function selectNote(id, open) {
@@ -1886,8 +1920,8 @@
     if (!model.groups) {
       if (idx >= state.limit) state.limit = idx + 1;
     } else {   // ghi chú đang chọn nằm quá "Hiện thêm" của nhóm thì nới nhóm đó ra
-      const g = model.groups.find(x => x.items.some(n => n.id === state.sel));
-      if (g && g.open && g.items.findIndex(n => n.id === state.sel) >= g.limit) { state.glimit[g.id] = g.items.findIndex(n => n.id === state.sel) + 1; model = listModel(); }
+      const leaf = model.groups.flatMap(x => x.subs || [x]).find(x => x.items.some(n => n.id === state.sel));
+      if (leaf && leaf.vis && leaf.items.findIndex(n => n.id === state.sel) >= leaf.limit) { state.glimit[leaf.id] = leaf.items.findIndex(n => n.id === state.sel) + 1; model = listModel(); }
     }
     const shown = list.slice(0, state.limit);
 
@@ -2889,7 +2923,7 @@ OK = đổi tất cả · Hủy = giữ “${canon}”.`)) return canon;
   $('notes').onclick = e => {
     const mo = e.target.closest('[data-act="more"]');
     if (mo) {
-      if (mo.dataset.g) { const gm = listModel().groups, cg = gm && gm.find(x => x.id === mo.dataset.g); state.glimit[mo.dataset.g] = (cg ? cg.limit : GROUP_PAGE) + GROUP_PAGE; } else state.limit += PAGE;
+      if (mo.dataset.g) { const gm = listModel().groups, cg = gm && gm.flatMap(x => x.subs || [x]).find(x => x.id === mo.dataset.g); state.glimit[mo.dataset.g] = (cg ? cg.limit : GROUP_PAGE) + GROUP_PAGE; } else state.limit += PAGE;
       return renderNotes();
     }
     const gh = e.target.closest('[data-act="grp"]');
